@@ -13,6 +13,7 @@ GEOJSON_PATH = Path(__file__).parent / "shapefiles" / "MG_Municipios_2025.geojso
 
 _AREAS_CACHE: list[dict] | None = None
 _AREA_GEOMETRY_CACHE: dict[str, object | None] = {}
+_MUNICIPALITY_FEATURES_BY_NAME_CACHE: dict[str, dict] | None = None
 _GEOJSON_CACHE: dict | None = None
 _MUNICIPALITY_KEY_CACHE: str | None = None
 
@@ -29,6 +30,15 @@ def _normalize_name(value: str | None) -> str:
     normalized = unicodedata.normalize("NFKD", value)
     without_accents = "".join(char for char in normalized if not unicodedata.combining(char))
     return without_accents.replace("'", "").strip().casefold()
+
+
+def _decode_mojibake(value: str | None) -> str:
+    if not value:
+        return ""
+    try:
+        return value.encode("latin-1").decode("utf-8")
+    except (UnicodeEncodeError, UnicodeDecodeError):
+        return value
 
 
 def _load_geojson() -> dict:
@@ -76,6 +86,90 @@ def _get_area_municipios(area_id: str) -> set[str] | None:
     if area is None:
         return None
     return {_normalize_name(name) for name in area.get("municipios", [])}
+
+
+def _get_municipality_features_by_name() -> dict[str, dict]:
+    global _MUNICIPALITY_FEATURES_BY_NAME_CACHE
+
+    if _MUNICIPALITY_FEATURES_BY_NAME_CACHE is not None:
+        return _MUNICIPALITY_FEATURES_BY_NAME_CACHE
+
+    municipality_key = _get_municipality_name_key()
+    if municipality_key is None:
+        _MUNICIPALITY_FEATURES_BY_NAME_CACHE = {}
+        return _MUNICIPALITY_FEATURES_BY_NAME_CACHE
+
+    features_by_name = {}
+    for feature in _load_geojson().get("features", []):
+        properties = feature.get("properties") or {}
+        normalized_name = _normalize_name(properties.get(municipality_key))
+        if normalized_name:
+            features_by_name[normalized_name] = feature
+
+    _MUNICIPALITY_FEATURES_BY_NAME_CACHE = features_by_name
+    return features_by_name
+
+
+def get_municipality_names() -> list[str]:
+    """Return display names for all municipalities present in the MG GeoJSON."""
+    municipality_key = _get_municipality_name_key()
+    if municipality_key is None:
+        return []
+
+    names = []
+    for feature in _load_geojson().get("features", []):
+        properties = feature.get("properties") or {}
+        name = properties.get(municipality_key)
+        if name:
+            names.append(_decode_mojibake(name))
+    return names
+
+
+def get_municipality_features(municipios: list[str] | set[str]) -> list[dict]:
+    """Return GeoJSON municipality features matching the provided names."""
+    features_by_name = _get_municipality_features_by_name()
+    features = []
+    seen_names = set()
+    for municipio in municipios:
+        normalized_name = _normalize_name(municipio)
+        if normalized_name in seen_names:
+            continue
+        feature = features_by_name.get(normalized_name)
+        if feature is not None:
+            features.append(feature)
+            seen_names.add(normalized_name)
+    return features
+
+
+def build_municipality_geometry(
+    municipios: list[str] | set[str],
+    cache_key: str | None = None,
+) -> object | None:
+    """Return a cached unary_union for a set of municipality names."""
+    if cache_key and cache_key in _AREA_GEOMETRY_CACHE:
+        return _AREA_GEOMETRY_CACHE[cache_key]
+
+    try:
+        geometries = [
+            shape(feature["geometry"])
+            for feature in get_municipality_features(municipios)
+            if feature.get("geometry")
+        ]
+
+        if not geometries:
+            if cache_key:
+                _AREA_GEOMETRY_CACHE[cache_key] = None
+            return None
+
+        geometry = unary_union(geometries)
+        if cache_key:
+            _AREA_GEOMETRY_CACHE[cache_key] = geometry
+        return geometry
+    except Exception as exc:
+        print(f"Failed to build municipality geometry {cache_key or ''}: {exc}")
+        if cache_key:
+            _AREA_GEOMETRY_CACHE[cache_key] = None
+        return None
 
 
 def load_areas() -> list[dict]:
@@ -130,26 +224,14 @@ def get_area_geometry(area_id: str) -> object | None:
             _AREA_GEOMETRY_CACHE[area_id] = None
             return None
 
-        municipality_key = _get_municipality_name_key()
-        if municipality_key is None:
-            _AREA_GEOMETRY_CACHE[area_id] = None
-            return None
-
-        geojson = _load_geojson()
-        geometries = []
-        for feature in geojson.get("features", []):
-            properties = feature.get("properties") or {}
-            feature_name = _normalize_name(properties.get(municipality_key))
-            if feature_name in municipality_names:
-                geometries.append(shape(feature["geometry"]))
-
-        if not geometries:
+        geometry = build_municipality_geometry(
+            municipality_names,
+            cache_key=area_id,
+        )
+        if geometry is None:
             print(f"No geometries matched area {area_id}")
-            _AREA_GEOMETRY_CACHE[area_id] = None
             return None
 
-        geometry = unary_union(geometries)
-        _AREA_GEOMETRY_CACHE[area_id] = geometry
         return geometry
     except Exception as exc:
         print(f"Failed to build geometry for area {area_id}: {exc}")

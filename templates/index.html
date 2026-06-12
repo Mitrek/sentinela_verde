@@ -1,188 +1,137 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sentinela Verde</title>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-            background-color: #3C464C;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sentinela Verde — Monitor de Incêndios</title>
 
-        #status-bar {
-            height: 40px;
-            background-color: #3C464C;
-            color: #F0EBE4;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            box-sizing: border-box;
-            font-size: 14px;
-            border-bottom: 3px solid #F48030;
-        }
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-        .status-info {
-            display: flex;
-            gap: 20px;
-        }
-
-        .status-controls {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .filter-select {
-            background-color: #F0EBE4;
-            color: #3C464C;
-            border: 1px solid #F68C29;
-            padding: 4px 8px;
-            border-radius: 3px;
-            font-size: 13px;
-            cursor: pointer;
-        }
-
-        .filter-select:focus {
-            outline: none;
-            border-color: #F48030;
-            box-shadow: 0 0 0 2px rgba(244, 128, 48, 0.25);
-        }
-
-        #refresh-btn {
-            background-color: #F48030;
-            color: #3C464C;
-            border: none;
-            padding: 5px 15px;
-            border-radius: 3px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.2s;
-        }
-
-        #refresh-btn:hover {
-            background-color: #F68C29;
-        }
-
-        #refresh-btn:disabled {
-            background-color: #7d878c;
-            color: #F0EBE4;
-            cursor: not-allowed;
-        }
-
-        #map-frame {
-            width: 100%;
-            height: calc(100vh - 40px);
-            border: none;
-        }
-    </style>
+  <link rel="stylesheet" href="/static/css/style.css" />
 </head>
 <body>
-    <div id="status-bar">
-        <div class="status-info">
-            <span id="last-updated">Última atualização: Carregando...</span>
-            <span id="total-events">0 focos de incêndio</span>
-        </div>
-        <div class="status-controls">
-            <select id="area-select" class="filter-select">
-                <option value="">Todo o estado de Minas Gerais</option>
-            </select>
-            <button id="refresh-btn">Atualizar</button>
-        </div>
+
+<div id="app">
+
+  <!-- ── Top bar ────────────────────────────────────────────────────────────── -->
+  <header id="topbar">
+    <div class="topbar-meta">
+      <div class="meta-item">Última atualização: <strong id="last-updated">—</strong></div>
+      <div class="meta-item">Focos ativos: <strong id="total-events">—</strong></div>
     </div>
-    <iframe id="map-frame" src="/map"></iframe>
+    <div class="topbar-right">
+      <div class="layer-switcher">
+        <button class="layer-btn active" data-layer="dark">Escuro</button>
+        <button class="layer-btn" data-layer="satellite">Satélite</button>
+      </div>
+      <button id="refresh-btn">
+        <span id="refresh-icon">↻</span> Atualizar
+      </button>
+    </div>
+  </header>
 
-    <script>
-        const lastUpdatedEl = document.getElementById('last-updated');
-        const totalEventsEl = document.getElementById('total-events');
-        const refreshBtn = document.getElementById('refresh-btn');
-        const mapFrame = document.getElementById('map-frame');
-        const areaSelect = document.getElementById('area-select');
+  <!-- ── Sidebar ───────────────────────────────────────────────────────────── -->
+  <aside id="sidebar">
 
-        const DEFAULT_AREA = '1COB';
+    <div class="sidebar-logo">
+      <img src="/static/brasaocbmmg.png" class="sidebar-logo-badge" alt="CBMMG"
+           style="background:none;padding:2px;object-fit:contain;">
+      <div class="sidebar-logo-text">
+        <div class="sidebar-logo-name">Sentinela Verde</div>
+        <div class="sidebar-logo-sub">CBMMG · Monitor de Incêndios</div>
+      </div>
+    </div>
 
-        function updateMapFrame() {
-            const area = areaSelect.value;
-            const base = '/map';
-            const t = new Date().getTime();
-            const params = new URLSearchParams({ t });
+    <div class="sidebar-panels">
 
-            if (area) {
-                params.set('area', area);
-            }
+      <!-- Visão geral -->
+      <div class="panel">
+        <div class="panel-title">Visão geral</div>
+        <div class="stats-grid">
+          <div class="stat-card full">
+            <div class="stat-value" id="stat-total">—</div>
+            <div class="stat-label">Total de focos de incêndio</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" style="color:#F48030" id="stat-high">—</div>
+            <div class="stat-label"><span class="stat-dot" style="background:#F48030"></span>Alta (&gt;100 MW)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" style="color:#F68C29" id="stat-mid">—</div>
+            <div class="stat-label"><span class="stat-dot" style="background:#F68C29"></span>Moderada</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-low">—</div>
+            <div class="stat-label"><span class="stat-dot" style="background:#F0EBE4;border:1.5px solid #7a6a55"></span>Baixa (≤30 MW)</div>
+          </div>
+        </div>
+      </div>
 
-            mapFrame.src = `${base}?${params.toString()}`;
-        }
+      <!-- Filtros -->
+      <div class="panel">
+        <div class="panel-title">Filtros</div>
+        <div class="filter-group">
+          <label class="filter-label" for="cob-select">Comando Operacional (COB)</label>
+          <select id="cob-select" class="filter-select">
+            <option value="">Todo o estado de Minas Gerais</option>
+          </select>
 
-        async function updateStatus() {
-            try {
-                const area = areaSelect.value;
-                const url = area ? `/api/status?area=${encodeURIComponent(area)}` : '/api/status';
-                const response = await fetch(url);
-                const data = await response.json();
+          <label class="filter-label" for="battalion-select">Batalhão</label>
+          <select id="battalion-select" class="filter-select" disabled>
+            <option value="">Todos os batalhões</option>
+          </select>
 
-                const timestamp = data.last_fetch_at || 'Nunca';
-                lastUpdatedEl.textContent = `Última atualização: ${timestamp}`;
-                totalEventsEl.textContent = `${data.total_events || 0} focos de incêndio`;
-            } catch (error) {
-                console.error('Erro ao buscar status:', error);
-            }
-        }
+          <label class="filter-label" for="company-select">Companhia</label>
+          <select id="company-select" class="filter-select" disabled>
+            <option value="">Todas as companhias</option>
+          </select>
 
-        async function loadAreas() {
-            try {
-                const response = await fetch('/api/areas');
-                const areas = await response.json();
-                areas.forEach(area => {
-                    const opt = document.createElement('option');
-                    opt.value = area.id;
-                    opt.textContent = `${area.name} (${area.region})`;
-                    areaSelect.appendChild(opt);
-                });
-                areaSelect.value = DEFAULT_AREA;
-                updateMapFrame();
-                updateStatus();
-            } catch (e) {
-                console.error('Falha ao carregar áreas', e);
-            }
-        }
+          <label class="filter-label" for="fraction-select">Pelotão / Posto</label>
+          <select id="fraction-select" class="filter-select" disabled>
+            <option value="">Todos os pelotões e postos</option>
+          </select>
+        </div>
+      </div>
 
-        async function handleRefresh() {
-            refreshBtn.disabled = true;
-            refreshBtn.textContent = 'Atualizando...';
-            
-            try {
-                const response = await fetch('/api/fetch', { method: 'POST' });
-                if (response.ok) {
-                    updateMapFrame();
-                    await updateStatus();
-                } else {
-                    alert('Falha ao buscar novos dados.');
-                }
-            } catch (error) {
-                console.error('Erro durante a atualização:', error);
-                alert('Ocorreu um erro durante a atualização.');
-            } finally {
-                refreshBtn.disabled = false;
-                refreshBtn.textContent = 'Atualizar';
-            }
-        }
+      <!-- Legenda -->
+      <div class="panel">
+        <div class="panel-title">Legenda</div>
+        <ul class="legend-list">
+          <li class="legend-item">
+            <span class="legend-marker">
+              <span class="fire-marker fire-marker--high"></span>
+            </span>
+            Alta intensidade
+            <span class="legend-range">&gt; 100 MW</span>
+          </li>
+          <li class="legend-item">
+            <span class="legend-marker">
+              <span class="fire-marker fire-marker--medium"></span>
+            </span>
+            Moderada
+            <span class="legend-range">31–100 MW</span>
+          </li>
+          <li class="legend-item">
+            <span class="legend-marker">
+              <span class="fire-marker fire-marker--low"></span>
+            </span>
+            Baixa intensidade
+            <span class="legend-range">≤ 30 MW</span>
+          </li>
+        </ul>
+      </div>
 
-        refreshBtn.addEventListener('click', handleRefresh);
-        areaSelect.addEventListener('change', () => {
-            updateMapFrame();
-            updateStatus();
-        });
+    </div><!-- /.sidebar-panels -->
+  </aside>
 
-        loadAreas();
-        updateStatus();
-        setInterval(updateStatus, 5 * 60 * 1000);
-    </script>
+  <!-- ── Map ───────────────────────────────────────────────────────────────── -->
+  <div id="map"></div>
+
+</div>
+
+<div id="toast"></div>
+
+<script src="/static/js/app.js"></script>
 </body>
 </html>

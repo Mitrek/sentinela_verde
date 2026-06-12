@@ -21,13 +21,13 @@ async function apiPost(path) {
 // ─── Fire intensity helpers ───────────────────────────────────────────────────
 function frpTier(frp) {
   if (frp > 100) return "high";
-  if (frp > 30)  return "mid";
+  if (frp > 30)  return "medium";
   return "low";
 }
 
 function frpColor(frp) {
-  if (frp > 100) return "#F48030";
-  if (frp > 30)  return "#F68C29";
+  if (frp > 100) return "#F46F25";
+  if (frp > 30)  return "#E98A3A";
   return "#F0EBE4";
 }
 
@@ -39,6 +39,32 @@ function frpLabel(frp) {
 
 function confidenceLabel(c) {
   return c === "h" ? "Alta" : "Nominal";
+}
+
+function formattedDetectionTime(raw) {
+  const time = String(raw ?? "").padStart(4, "0");
+  return `${time.slice(0, 2)}h${time.slice(2)} UTC (${time.slice(0, 2)}:${time.slice(2)} no horário universal)`;
+}
+
+function fireMarkerSize(level) {
+  const sizes = {
+    high: 22,
+    medium: 17,
+    low: 12,
+  };
+  return sizes[level] || sizes.low;
+}
+
+function createFireIcon(level) {
+  const size = fireMarkerSize(level);
+
+  return L.divIcon({
+    className: "fire-div-icon",
+    html: `<span class="fire-marker fire-marker--${level}"></span>`,
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
+    popupAnchor: [0, -(size / 2)],
+  });
 }
 
 // ─── Map setup ────────────────────────────────────────────────────────────────
@@ -86,15 +112,9 @@ function buildMarker(event) {
   const frp   = event.frp ?? 0;
   const color = frpColor(frp);
   const tier  = frpTier(frp);
-  const radius = tier === "high" ? 10 : tier === "mid" ? 7 : 5;
 
-  const marker = L.circleMarker([event.latitude, event.longitude], {
-    radius,
-    color,
-    fillColor: color,
-    fillOpacity: 0.85,
-    weight: 1.5,
-    className: `fire-marker fire-${tier}`,
+  const marker = L.marker([event.latitude, event.longitude], {
+    icon: createFireIcon(tier),
   });
 
   marker.bindPopup(`
@@ -103,15 +123,18 @@ function buildMarker(event) {
         <span class="popup-tier">Intensidade ${frpLabel(frp)}</span>
       </div>
       <table class="popup-table">
-        <tr><td>FRP</td><td><strong>${frp} MW</strong></td></tr>
-        <tr><td>Data</td><td>${event.acq_date}</td></tr>
-        <tr><td>Hora</td><td>${event.acq_time} UTC</td></tr>
-        <tr><td>Satélite</td><td>${event.satellite}</td></tr>
-        <tr><td>Confiança</td><td>${confidenceLabel(event.confidence)}</td></tr>
+        <tr><td>Data da detecção</td><td>${event.acq_date}<br><small>Dia em que o satélite identificou este foco.</small></td></tr>
+        <tr><td>Horário da detecção</td><td>${formattedDetectionTime(event.acq_time)}<br><small>Horário universal; em Brasília, subtraia 3 horas.</small></td></tr>
+        <tr><td>Potência Radiativa do Fogo (FRP)</td><td><strong>${frp} MW</strong><br><small>Estimativa da energia/calor emitido pelo fogo no momento da passagem do satélite.</small></td></tr>
+        <tr><td>Satélite/sensor</td><td>${event.satellite}<br><small>Plataforma que detectou o foco.</small></td></tr>
+        <tr><td>Confiança da detecção</td><td>${confidenceLabel(event.confidence)}</td></tr>
         <tr><td>Lat / Lon</td><td>${event.latitude.toFixed(3)}, ${event.longitude.toFixed(3)}</td></tr>
       </table>
+      <div style="margin-top:8px;font-size:11px;color:#777">
+        FRP = Fire Radiative Power, ou Potência Radiativa do Fogo. Valores maiores indicam maior energia emitida pelo foco.
+      </div>
     </div>
-  `, { maxWidth: 260, className: "fire-popup" });
+  `, { maxWidth: 420, className: "fire-popup" });
 
   return marker;
 }

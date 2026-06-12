@@ -27,10 +27,18 @@ from config import (
     MAP_OUTPUT_PATH,
     REGION_BBOX,
 )
-from conservation_units import load_ucs
+from conservation_units import get_ucs_for_boundary, load_ucs
 from db import get_all_events, get_recent_events, init_db, insert_fire_events
 from fetcher import fetch_firms_data, start_scheduler
 from map_renderer import render_map, render_map_html
+from operational_units import (
+    filter_events_by_operational_unit,
+    get_operational_unit,
+    get_operational_unit_bounds,
+    get_operational_unit_features,
+    get_operational_unit_geometry,
+    load_operational_units,
+)
 
 
 last_fetch_at: str | None = None
@@ -101,8 +109,13 @@ async def index(request: Request):
 @app.get("/map", response_class=HTMLResponse)
 async def get_map(
     area: str | None = Query(default=None),
+    unit: str | None = Query(default=None),
 ) -> HTMLResponse:
     map_events = _get_map_events(hours=48)
+
+    if unit is not None and get_operational_unit(unit) is not None:
+        html = render_map_html(map_events, unit_id=unit)
+        return HTMLResponse(content=html)
 
     if area is not None and get_area_by_id(area) is not None:
         html = render_map_html(map_events, area_id=area)
@@ -112,14 +125,42 @@ async def get_map(
 
 
 @app.get("/api/fires")
-async def api_fires(hours: int = Query(default=48, ge=1)) -> JSONResponse:
-    return JSONResponse(get_recent_events(DB_FILE_PATH, hours=hours))
+async def api_fires(
+    hours: int = Query(default=48, ge=1),
+    unit: str | None = Query(default=None),
+) -> JSONResponse:
+    events = get_recent_events(DB_FILE_PATH, hours=hours)
+    if unit and get_operational_unit(unit) is not None:
+        events = filter_events_by_operational_unit(events, unit)
+    else:
+        events = filter_events_by_mg(events)
+    return JSONResponse(events)
+
+
+@app.get("/api/geojson/unit/{unit_id}")
+async def api_geojson_unit(unit_id: str) -> JSONResponse:
+    """GeoJSON FeatureCollection of municipality polygons for the selected unit."""
+    features = get_operational_unit_features(unit_id)
+    return JSONResponse({"type": "FeatureCollection", "features": features})
+
+
+@app.get("/api/geojson/ucs/{unit_id}")
+async def api_geojson_ucs(unit_id: str) -> JSONResponse:
+    """GeoJSON FeatureCollection of UC polygons that intersect the selected unit."""
+    geometry = get_operational_unit_geometry(unit_id)
+    features = get_ucs_for_boundary(unit_id, geometry)
+    return JSONResponse({"type": "FeatureCollection", "features": features})
 
 
 @app.get("/api/status")
-async def api_status(area: str | None = Query(default=None)) -> JSONResponse:
+async def api_status(
+    area: str | None = Query(default=None),
+    unit: str | None = Query(default=None),
+) -> JSONResponse:
     events = get_recent_events(DB_FILE_PATH, hours=48)
-    if area and get_area_by_id(area) is not None:
+    if unit and get_operational_unit(unit) is not None:
+        events = filter_events_by_operational_unit(events, unit)
+    elif area and get_area_by_id(area) is not None:
         events = filter_events_by_area(events, area)
     else:
         events = filter_events_by_mg(events)
@@ -130,6 +171,11 @@ async def api_status(area: str | None = Query(default=None)) -> JSONResponse:
             "scheduler_running": bool(scheduler and scheduler.running),
         }
     )
+
+
+@app.get("/api/operational-units")
+async def api_operational_units() -> JSONResponse:
+    return JSONResponse(load_operational_units())
 
 
 @app.get("/api/areas")
@@ -165,6 +211,24 @@ async def api_debug_area(area_id: str) -> JSONResponse:
             "geometry_built": geometry is not None,
             "geometry_bounds": get_area_bounds(area_id) if geometry is not None else None,
             "events_after_filter": len(filter_events_by_area(recent_events, area_id)),
+        }
+    )
+
+
+@app.get("/api/debug/unit/{unit_id}")
+async def api_debug_unit(unit_id: str) -> JSONResponse:
+    recent_events = get_recent_events(DB_FILE_PATH, hours=48)
+    unit = get_operational_unit(unit_id)
+    geometry = get_operational_unit_geometry(unit_id)
+
+    return JSONResponse(
+        {
+            "unit": unit,
+            "total_recent_events": len(recent_events),
+            "total_all_events": len(get_all_events(DB_FILE_PATH)),
+            "geometry_built": geometry is not None,
+            "geometry_bounds": get_operational_unit_bounds(unit_id) if geometry is not None else None,
+            "events_after_filter": len(filter_events_by_operational_unit(recent_events, unit_id)),
         }
     )
 

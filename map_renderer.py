@@ -24,6 +24,13 @@ from conservation_units import (
     get_uc_bounds,
     get_uc_feature,
 )
+from operational_units import (
+    filter_events_by_operational_unit,
+    get_operational_unit,
+    get_operational_unit_bounds,
+    get_operational_unit_features,
+    get_operational_unit_geometry,
+)
 
 
 DEFAULT_CENTER = (-18.5, -44.5)
@@ -67,12 +74,40 @@ def _map_center(events: list[dict]) -> tuple[float, float]:
     return (sum(latitudes) / len(latitudes), sum(longitudes) / len(longitudes))
 
 
-def _marker_color(frp: float | None) -> str:
+def _fire_marker_level(frp: float | None) -> str:
     if frp is not None and frp > 100:
-        return "red"
+        return "high"
     if frp is not None and frp > 30:
-        return "orange"
-    return "yellow"
+        return "medium"
+    return "low"
+
+
+def _fire_marker_size(level: str) -> int:
+    return {
+        "high": 22,
+        "medium": 17,
+        "low": 12,
+    }.get(level, 12)
+
+
+def _fire_marker_html(level: str) -> str:
+    return f'<span class="fire-marker fire-marker--{level}"></span>'
+
+
+def _add_fire_marker(fire_map: folium.Map, event: dict) -> None:
+    level = _fire_marker_level(event.get("frp"))
+    size = _fire_marker_size(level)
+    folium.Marker(
+        location=[event["latitude"], event["longitude"]],
+        icon=folium.DivIcon(
+            html=_fire_marker_html(level),
+            icon_size=(size, size),
+            icon_anchor=(size / 2, size / 2),
+            popup_anchor=(0, -(size / 2)),
+            class_name="fire-div-icon",
+        ),
+        popup=folium.Popup(_popup_html(event), max_width=420),
+    ).add_to(fire_map)
 
 
 _CONFIDENCE_LABELS = {
@@ -120,7 +155,7 @@ def _format_time(raw: str | None) -> str:
     if raw is None:
         return "Não informado"
     t = str(raw).zfill(4)
-    return f"{t[:2]}h{t[2:]} UTC"
+    return f"{t[:2]}h{t[2:]} UTC ({t[:2]}:{t[2:]} no horário universal)"
 
 
 def _format_frp(frp: float | None) -> str:
@@ -148,27 +183,31 @@ def _popup_html(event: dict) -> str:
     period   = " (diurno)" if daynight == "D" else " (noturno)" if daynight == "N" else ""
 
     rows = [
-        ("📅 Detecção",    f"{date}{period} — data/hora em que o satélite sobrevoou e identificou o foco"),
-        ("🕐 Hora UTC",    f"{_format_time(event.get('acq_time'))} — horário universal (BRT = UTC−3)"),
-        ("🔥 Potência (FRP)", _format_frp(frp) + " — energia liberada pelo fogo no momento da passagem"),
-        ("🛰️ Satélite",    _format_satellite(event.get("satellite"))),
-        ("✅ Confiança",   _format_confidence(event.get("confidence"))),
-        ("📍 Coordenadas", f"{event.get('latitude', ''):.4f}, {event.get('longitude', ''):.4f}"),
+        ("Data da detecção", f"{date}{period} — dia em que o satélite identificou este foco"),
+        ("Horário da detecção", f"{_format_time(event.get('acq_time'))}; em Brasília, subtraia 3 horas"),
+        ("Potência Radiativa do Fogo (FRP)", _format_frp(frp) + " — estimativa da energia/calor emitido pelo fogo no momento da passagem do satélite"),
+        ("Satélite/sensor", _format_satellite(event.get("satellite")) + " — plataforma que detectou o foco"),
+        ("Confiança da detecção", _format_confidence(event.get("confidence"))),
+        ("Coordenadas", f"{event.get('latitude', ''):.4f}, {event.get('longitude', ''):.4f}"),
     ]
 
     inner = "".join(
-        f'<tr><td style="color:#888;padding:3px 8px 3px 0;vertical-align:top;white-space:nowrap">{label}</td>'
-        f'<td style="padding:3px 0;font-size:12px">{value}</td></tr>'
+        f'<tr><td style="color:#666;padding:5px 10px 5px 0;vertical-align:top;'
+        f'font-weight:700;min-width:150px">{label}</td>'
+        f'<td style="padding:5px 0;font-size:12px;line-height:1.35">{value}</td></tr>'
         for label, value in rows
     )
 
     return (
-        '<div style="font-family:system-ui,sans-serif;font-size:13px;min-width:260px">'
-        '<div style="font-weight:700;font-size:14px;margin-bottom:8px;padding-bottom:6px;'
-        'border-bottom:2px solid #F48030">🔥 Foco de Incêndio</div>'
+        '<div style="font-family:system-ui,sans-serif;font-size:13px;min-width:330px;max-width:390px">'
+        '<div style="font-weight:700;font-size:15px;margin-bottom:6px;padding-bottom:6px;'
+        'border-bottom:2px solid #F48030">Foco de Incêndio</div>'
+        '<div style="font-size:12px;color:#555;margin-bottom:8px;line-height:1.35">'
+        'Registro de detecção por satélite da NASA FIRMS. Não é despacho operacional nem confirmação em campo.'
+        '</div>'
         f'<table style="border-collapse:collapse;width:100%">{inner}</table>'
-        '<div style="margin-top:8px;font-size:11px;color:#aaa">'
-        'Fonte: NASA FIRMS · dados de satélite em tempo quase real</div>'
+        '<div style="margin-top:8px;font-size:11px;color:#777;line-height:1.35">'
+        'FRP = Fire Radiative Power, ou Potência Radiativa do Fogo. Valores maiores indicam maior energia emitida pelo foco.</div>'
         '</div>'
     )
 
@@ -228,16 +267,7 @@ def _render_base_map(events: list[dict]) -> folium.Map:
         ).add_to(fire_map)
 
     for event in filtered_events:
-        color = _marker_color(event.get("frp"))
-        folium.CircleMarker(
-            location=[event["latitude"], event["longitude"]],
-            radius=5,
-            color=color,
-            fill=True,
-            fill_color=color,
-            fill_opacity=0.7,
-            popup=folium.Popup(_popup_html(event), max_width=300),
-        ).add_to(fire_map)
+        _add_fire_marker(fire_map, event)
 
     return fire_map
 
@@ -327,16 +357,7 @@ def _render_filtered_map(
         ).add_to(fire_map)
 
     for event in events:
-        color = _marker_color(event.get("frp"))
-        folium.CircleMarker(
-            location=[event["latitude"], event["longitude"]],
-            radius=5,
-            color=color,
-            fill=True,
-            fill_color=color,
-            fill_opacity=0.7,
-            popup=folium.Popup(_popup_html(event), max_width=300),
-        ).add_to(fire_map)
+        _add_fire_marker(fire_map, event)
 
     return fire_map.get_root().render()
 
@@ -344,6 +365,7 @@ def _render_filtered_map(
 def render_map_html(
     events: list[dict],
     area_id: str | None = None,
+    unit_id: str | None = None,
     uc_id: str | None = None,
 ) -> str:
     """
@@ -360,7 +382,7 @@ def render_map_html(
     If area_id is None or not found:
       - Behave exactly like render_map but return HTML string
 
-    Fire markers use the same color logic and popup as render_map.
+    Fire markers use circular DivIcon markers and the same popup as render_map.
     Return fire_map.get_root().render() as a string.
     """
     try:
@@ -379,6 +401,24 @@ def render_map_html(
                 UC_OVERLAY_COLOR,
             )
 
+        if unit_id is not None and get_operational_unit(unit_id) is not None:
+            filtered_events = filter_events_by_operational_unit(events, unit_id)
+            unit_bounds = get_operational_unit_bounds(unit_id)
+            unit_geometry = get_operational_unit_geometry(unit_id)
+
+            if unit_bounds is None:
+                return _render_base_map(filtered_events).get_root().render()
+
+            outline_features = get_operational_unit_features(unit_id)
+            uc_features = get_ucs_for_boundary(unit_id, unit_geometry)
+            return _render_filtered_map(
+                filtered_events,
+                unit_bounds,
+                outline_features,
+                MUNICIPALITY_COLOR,
+                uc_features,
+            )
+
         if area_id is None or get_area_by_id(area_id) is None:
             return _render_base_map(events).get_root().render()
 
@@ -395,11 +435,11 @@ def render_map_html(
             filtered_events,
             area_bounds,
             outline_features,
-            "#F48030",
+            MUNICIPALITY_COLOR,
             uc_features,
         )
     except Exception as exc:
-        print(f"Failed to render map HTML for area {area_id} or UC {uc_id}: {exc}")
+        print(f"Failed to render map HTML for area {area_id}, unit {unit_id}, or UC {uc_id}: {exc}")
         return _render_base_map(events).get_root().render()
 
 
@@ -410,12 +450,10 @@ def render_map(events: list[dict], output_path: str) -> None:
     Center: centroid of all event lat/lons.
     Fallback if no events: center=(-15.0, -55.0), zoom=4.
 
-    Each event → folium.CircleMarker:
-      radius=5, fill=True, fill_opacity=0.7
-      color + fill_color:
-        frp > 100  → "red"
-        frp > 30   → "orange"
-        else       → "yellow"
+    Each event → folium.Marker with a circular DivIcon:
+      frp > 100  → high marker
+      frp > 30   → medium marker
+      else       → low marker
       popup HTML: acq_date, acq_time, frp MW, satellite, confidence
 
     Save as HTML to output_path.

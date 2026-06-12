@@ -43,7 +43,7 @@
 
     <!-- Logo / brand block (mirrors CBMMG intranet sidebar header) -->
     <div class="sidebar-logo">
-      <div class="sidebar-logo-badge">🔥</div>
+      <img src="./brasaocbmmg.png" class="sidebar-logo-badge" alt="CBMMG" style="background:none;padding:2px;object-fit:contain;">
       <div class="sidebar-logo-text">
         <div class="sidebar-logo-name">Sentinela Verde</div>
         <div class="sidebar-logo-sub">CBMMG · Monitor de Incêndios</div>
@@ -90,18 +90,24 @@
     <div class="panel">
       <div class="panel-title">Legenda</div>
       <ul class="legend-list">
-        <li class="legend-item">
-          <span class="legend-dot" style="background: #F48030; border: 1.5px solid #7a3a0a"></span>
+          <li class="legend-item">
+          <span class="legend-marker">
+            <span class="fire-marker fire-marker--high"></span>
+          </span>
           Alta intensidade
           <span class="legend-range">&gt; 100 MW</span>
         </li>
         <li class="legend-item">
-          <span class="legend-dot" style="background: #F68C29; border: 1.5px solid #7a4a0a"></span>
+          <span class="legend-marker">
+            <span class="fire-marker fire-marker--medium"></span>
+          </span>
           Moderada
           <span class="legend-range">31–100 MW</span>
         </li>
         <li class="legend-item">
-          <span class="legend-dot" style="background: #F0EBE4; border: 1.5px solid #7a6a55"></span>
+          <span class="legend-marker">
+            <span class="fire-marker fire-marker--low"></span>
+          </span>
           Baixa intensidade
           <span class="legend-range">≤ 30 MW</span>
         </li>
