@@ -179,6 +179,58 @@ def filter_events_by_area(events: list[dict], area_id: str) -> list[dict]:
         return events
 
 
+_ALL_MG_GEOMETRY_CACHE: object | None = None
+_ALL_MG_FEATURES_CACHE: list[dict] | None = None
+
+
+def get_all_mg_features() -> list[dict]:
+    """Return all 853 municipality GeoJSON features for Minas Gerais."""
+    global _ALL_MG_FEATURES_CACHE
+    if _ALL_MG_FEATURES_CACHE is not None:
+        return _ALL_MG_FEATURES_CACHE
+    try:
+        _ALL_MG_FEATURES_CACHE = _load_geojson().get("features", [])
+        return _ALL_MG_FEATURES_CACHE
+    except Exception as exc:
+        print(f"Failed to load all MG features: {exc}")
+        return []
+
+
+def get_all_mg_geometry() -> object | None:
+    """Return unary_union of all 853 MG municipality geometries (cached)."""
+    global _ALL_MG_GEOMETRY_CACHE
+    if _ALL_MG_GEOMETRY_CACHE is not None:
+        return _ALL_MG_GEOMETRY_CACHE
+    try:
+        geometries = [
+            shape(f["geometry"])
+            for f in get_all_mg_features()
+            if f.get("geometry")
+        ]
+        if not geometries:
+            return None
+        _ALL_MG_GEOMETRY_CACHE = unary_union(geometries)
+        return _ALL_MG_GEOMETRY_CACHE
+    except Exception as exc:
+        print(f"Failed to build all-MG geometry: {exc}")
+        return None
+
+
+def filter_events_by_mg(events: list[dict]) -> list[dict]:
+    """Return only events that fall within actual MG municipality boundaries."""
+    try:
+        geometry = get_all_mg_geometry()
+        if geometry is None:
+            return events
+        return [
+            e for e in events
+            if geometry.covers(Point(float(e["longitude"]), float(e["latitude"])))
+        ]
+    except Exception as exc:
+        print(f"Failed to filter events by MG boundary: {exc}")
+        return events
+
+
 def get_area_bounds(area_id: str) -> tuple[float, float, float, float] | None:
     """
     Return (min_lat, min_lon, max_lat, max_lon) bounding box of the area geometry.

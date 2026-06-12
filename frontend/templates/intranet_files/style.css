@@ -1,0 +1,106 @@
+.ms-options {
+    padding: 20px;
+    border: none;
+}
+
+#ms-list-1 {
+    width: 100%;
+}
+
+.ms-options-wrap > button:focus,
+.ms-options-wrap > button {
+    border-radius: 4px;
+    border: 1px solid gray;
+    border-radius: 0.25rem !important;
+    height: 37.5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    z-index: 2;
+}
+
+.ms-options-wrap > button:focus:after,
+.ms-options-wrap > button:after {
+    right: 10px;
+}
+
+.ms-options-wrap > button:focus:active,
+.ms-options-wrap > button:focus:focus,
+.ms-options-wrap > button:active,
+.ms-options-wrap > button:focus {
+    outline: none;
+}
+
+
+.ms-options-wrap > .ms-options {
+    z-index: 1;
+    margin-top: 5px;
+    border: none !important;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 2px 10px 0 rgb(0 0 0);
+    box-shadow: 0px 1px 8px 3px rgb(0 0 0 / 30%);
+}
+
+.ms-options-wrap > .ms-options .ms-search input {
+    border: 1px solid gray;
+    border-radius: 0.25rem;
+    height: 37.5px;
+}
+
+.ms-options-wrap > .ms-options .ms-selectall {
+    color: #000;
+    text-transform: uppercase;
+    font-size: 13px;
+    font-weight: bold;
+    margin-top: 10px !important;
+    background: #fff;
+
+    padding: 2px 8px;
+    border-radius: 6px;
+}
+
+.ms-options-wrap > .ms-options .ms-selectall:hover {
+    /* color: #ffffff;
+     background: #1a2978; */
+}
+
+.ms-options-wrap > .ms-options > ul li.selected label {
+    border-radius: 4px;
+    background: #e1f2fb;
+}
+
+.ms-options-wrap > .ms-options > ul li label {
+    border-radius: 4px;
+    border: none;
+    padding-top: 5px;
+    padding-left: 20px;
+    padding-bottom: 5px;
+    font-weight: normal !important;
+}
+
+.ms-options-wrap > .ms-options > ul li:hover label {
+    border: none;
+    background: #f7f7f7;
+}
+
+.selecionado {
+    color: #000;
+    font-weight: normal;
+    /*
+    display: inline-block;
+    vertical-align: initial;
+    border-radius: 7px;
+    padding: 2px 7px;
+    font-size: 11px;
+    font-weight: 400;
+    margin-right: 3.75px;
+    margin-bottom: 3.75px;
+    margin-top: 2px;
+    background-color: #405189;
+    border: 1px solid #405189;
+    word-break: break-all;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    color: #fff;
+    -webkit-box-shadow: none;
+    box-shadow: none; */
+}

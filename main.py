@@ -13,6 +13,7 @@ from fastapi.templating import Jinja2Templates
 
 from areas import (
     filter_events_by_area,
+    filter_events_by_mg,
     get_area_bounds,
     get_area_by_id,
     get_area_geometry,
@@ -26,7 +27,7 @@ from config import (
     MAP_OUTPUT_PATH,
     REGION_BBOX,
 )
-from conservation_units import get_uc_feature, load_ucs
+from conservation_units import load_ucs
 from db import get_all_events, get_recent_events, init_db, insert_fire_events
 from fetcher import fetch_firms_data, start_scheduler
 from map_renderer import render_map, render_map_html
@@ -100,13 +101,8 @@ async def index(request: Request):
 @app.get("/map", response_class=HTMLResponse)
 async def get_map(
     area: str | None = Query(default=None),
-    uc: str | None = Query(default=None),
 ) -> HTMLResponse:
     map_events = _get_map_events(hours=48)
-
-    if uc is not None and get_uc_feature(uc) is not None:
-        html = render_map_html(map_events, uc_id=uc)
-        return HTMLResponse(content=html)
 
     if area is not None and get_area_by_id(area) is not None:
         html = render_map_html(map_events, area_id=area)
@@ -121,11 +117,16 @@ async def api_fires(hours: int = Query(default=48, ge=1)) -> JSONResponse:
 
 
 @app.get("/api/status")
-async def api_status() -> JSONResponse:
+async def api_status(area: str | None = Query(default=None)) -> JSONResponse:
+    events = get_recent_events(DB_FILE_PATH, hours=48)
+    if area and get_area_by_id(area) is not None:
+        events = filter_events_by_area(events, area)
+    else:
+        events = filter_events_by_mg(events)
     return JSONResponse(
         {
             "last_fetch_at": last_fetch_at,
-            "total_events": len(get_all_events(DB_FILE_PATH)),
+            "total_events": len(events),
             "scheduler_running": bool(scheduler and scheduler.running),
         }
     )

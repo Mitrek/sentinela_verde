@@ -1,0 +1,17 @@
+/*  
+    Created on : 05 June 2023
+    Author     : Tiego Masemola | Hashbrown_CWA
+    https://cw-arts.netlify.app/about-us
+*/
+
+
+/* GALLERY STYLING */
+.image-container{
+    width: 100%;
+    height: auto;
+    background-color: #FFF;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+

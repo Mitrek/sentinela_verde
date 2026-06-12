@@ -1,0 +1,19 @@
+
+.searchuser {
+    border: 1px solid rgba(34, 36, 38, 0.15);
+    border-radius: 0.285714rem;
+    color: rgba(0, 0, 0, 0.87);
+    font-family: "Lato", "Helvetica Neue", Arial, Helvetica, sans-serif;
+    font-size: 1em;
+    line-height: 1.2142em;
+    padding: 0.678614em 1em;
+  }
+  .searchuser input {
+    cursor: text !important;
+  }
+  .searchuser .menu {
+    margin-top: 5px !important;
+    width: 100% !important;
+  }
+ 
+/*# sourceMappingURL=custom.min.css.map */

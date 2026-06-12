@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fire Catcher</title>
+    <title>Sentinela Verde</title>
     <style>
         body, html {
             margin: 0;
@@ -11,20 +11,21 @@
             height: 100%;
             width: 100%;
             overflow: hidden;
-            background-color: #111111;
+            background-color: #3C464C;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         #status-bar {
             height: 40px;
-            background-color: #1a1a1a;
-            color: #eeeeee;
+            background-color: #3C464C;
+            color: #F0EBE4;
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 20px;
             box-sizing: border-box;
             font-size: 14px;
+            border-bottom: 3px solid #F48030;
         }
 
         .status-info {
@@ -39,9 +40,9 @@
         }
 
         .filter-select {
-            background-color: #2a2a2a;
-            color: #eeeeee;
-            border: 1px solid #444;
+            background-color: #F0EBE4;
+            color: #3C464C;
+            border: 1px solid #F68C29;
             padding: 4px 8px;
             border-radius: 3px;
             font-size: 13px;
@@ -50,12 +51,13 @@
 
         .filter-select:focus {
             outline: none;
-            border-color: #c0392b;
+            border-color: #F48030;
+            box-shadow: 0 0 0 2px rgba(244, 128, 48, 0.25);
         }
 
         #refresh-btn {
-            background-color: #c0392b;
-            color: #ffffff;
+            background-color: #F48030;
+            color: #3C464C;
             border: none;
             padding: 5px 15px;
             border-radius: 3px;
@@ -65,11 +67,12 @@
         }
 
         #refresh-btn:hover {
-            background-color: #e74c3c;
+            background-color: #F68C29;
         }
 
         #refresh-btn:disabled {
-            background-color: #555;
+            background-color: #7d878c;
+            color: #F0EBE4;
             cursor: not-allowed;
         }
 
@@ -83,17 +86,14 @@
 <body>
     <div id="status-bar">
         <div class="status-info">
-            <span id="last-updated">Last updated: Loading...</span>
-            <span id="total-events">0 fire events</span>
+            <span id="last-updated">Última atualização: Carregando...</span>
+            <span id="total-events">0 focos de incêndio</span>
         </div>
         <div class="status-controls">
             <select id="area-select" class="filter-select">
-                <option value="">All Minas Gerais</option>
+                <option value="">Todo o estado de Minas Gerais</option>
             </select>
-            <select id="uc-select" class="filter-select">
-                <option value="">All Conservation Units</option>
-            </select>
-            <button id="refresh-btn">Refresh</button>
+            <button id="refresh-btn">Atualizar</button>
         </div>
     </div>
     <iframe id="map-frame" src="/map"></iframe>
@@ -104,18 +104,16 @@
         const refreshBtn = document.getElementById('refresh-btn');
         const mapFrame = document.getElementById('map-frame');
         const areaSelect = document.getElementById('area-select');
-        const ucSelect = document.getElementById('uc-select');
+
+        const DEFAULT_AREA = '1COB';
 
         function updateMapFrame() {
             const area = areaSelect.value;
-            const uc = ucSelect.value;
             const base = '/map';
             const t = new Date().getTime();
             const params = new URLSearchParams({ t });
 
-            if (uc) {
-                params.set('uc', uc);
-            } else if (area) {
+            if (area) {
                 params.set('area', area);
             }
 
@@ -124,14 +122,16 @@
 
         async function updateStatus() {
             try {
-                const response = await fetch('/api/status');
+                const area = areaSelect.value;
+                const url = area ? `/api/status?area=${encodeURIComponent(area)}` : '/api/status';
+                const response = await fetch(url);
                 const data = await response.json();
-                
-                const timestamp = data.last_fetch_at || 'Never';
-                lastUpdatedEl.textContent = `Last updated: ${timestamp}`;
-                totalEventsEl.textContent = `${data.total_events || 0} fire events`;
+
+                const timestamp = data.last_fetch_at || 'Nunca';
+                lastUpdatedEl.textContent = `Última atualização: ${timestamp}`;
+                totalEventsEl.textContent = `${data.total_events || 0} focos de incêndio`;
             } catch (error) {
-                console.error('Error fetching status:', error);
+                console.error('Erro ao buscar status:', error);
             }
         }
 
@@ -145,29 +145,17 @@
                     opt.textContent = `${area.name} (${area.region})`;
                     areaSelect.appendChild(opt);
                 });
+                areaSelect.value = DEFAULT_AREA;
+                updateMapFrame();
+                updateStatus();
             } catch (e) {
-                console.error('Failed to load areas', e);
-            }
-        }
-
-        async function loadUcs() {
-            try {
-                const response = await fetch('/api/ucs');
-                const ucs = await response.json();
-                ucs.forEach(uc => {
-                    const opt = document.createElement('option');
-                    opt.value = uc.id;
-                    opt.textContent = uc.name;
-                    ucSelect.appendChild(opt);
-                });
-            } catch (e) {
-                console.error('Failed to load conservation units', e);
+                console.error('Falha ao carregar áreas', e);
             }
         }
 
         async function handleRefresh() {
             refreshBtn.disabled = true;
-            refreshBtn.textContent = 'Updating...';
+            refreshBtn.textContent = 'Atualizando...';
             
             try {
                 const response = await fetch('/api/fetch', { method: 'POST' });
@@ -175,33 +163,24 @@
                     updateMapFrame();
                     await updateStatus();
                 } else {
-                    alert('Failed to fetch new data.');
+                    alert('Falha ao buscar novos dados.');
                 }
             } catch (error) {
-                console.error('Error during refresh:', error);
-                alert('An error occurred while refreshing.');
+                console.error('Erro durante a atualização:', error);
+                alert('Ocorreu um erro durante a atualização.');
             } finally {
                 refreshBtn.disabled = false;
-                refreshBtn.textContent = 'Refresh';
+                refreshBtn.textContent = 'Atualizar';
             }
         }
 
         refreshBtn.addEventListener('click', handleRefresh);
         areaSelect.addEventListener('change', () => {
-            if (areaSelect.value) {
-                ucSelect.value = '';
-            }
             updateMapFrame();
-        });
-        ucSelect.addEventListener('change', () => {
-            if (ucSelect.value) {
-                areaSelect.value = '';
-            }
-            updateMapFrame();
+            updateStatus();
         });
 
         loadAreas();
-        loadUcs();
         updateStatus();
         setInterval(updateStatus, 5 * 60 * 1000);
     </script>

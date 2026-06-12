@@ -1,0 +1,712 @@
+/* ─── Reset & base ───────────────────────────────────────────────────────── */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #263b50;
+  --surface: #3c464c;
+  --surface2: #f0ebe4;
+  --border: #f48030;
+
+  --text: #f0ebe4;
+  --text-dark: #3c464c;
+  --text-muted: #f0ebe4;
+  --text-muted-dark: #697177;
+
+  --accent: #f48030;
+  --accent2: #f68c29;
+
+  --red: #f48030;
+  --orange: #f68c29;
+  --yellow: #f0ebe4;
+
+  --radius: 8px;
+  --sidebar-w: 300px;
+  --topbar-h: 52px;
+
+  /*
+   * Textura de triângulos equiláteros.
+   *
+   * Lado de cada triângulo: 48px
+   * Altura: 41.569px
+   * Módulo repetível: 192px × 166.277px
+   *
+   * O SVG está incorporado ao próprio CSS.
+   */
+  --texture-bg: #2d4157;
+  --texture-w: 192px;
+  --texture-h: 166.277px;
+
+  --texture-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxOTIgMTY2LjI3Nycgc2hhcGUtcmVuZGVyaW5nPSdnZW9tZXRyaWNQcmVjaXNpb24nPjxyZWN0IHdpZHRoPScxMDAlJyBoZWlnaHQ9JzEwMCUnIGZpbGw9JyMyZDQxNTcnLz48cG9seWdvbiBwb2ludHM9Jy00OC4wMDAsMC4wMDAgMC4wMDAsMC4wMDAgLTI0LjAwMCw0MS41NjknIGZpbGw9JyMzMTQ1NWInLz48cG9seWdvbiBwb2ludHM9JzAuMDAwLDAuMDAwIDQ4LjAwMCwwLjAwMCAyNC4wMDAsNDEuNTY5JyBmaWxsPScjMmY0MzU5Jy8+PHBvbHlnb24gcG9pbnRzPSc0OC4wMDAsMC4wMDAgOTYuMDAwLDAuMDAwIDcyLjAwMCw0MS41NjknIGZpbGw9JyMzMDQ0NWEnLz48cG9seWdvbiBwb2ludHM9Jzk2LjAwMCwwLjAwMCAxNDQuMDAwLDAuMDAwIDEyMC4wMDAsNDEuNTY5JyBmaWxsPScjMzE0NTViJy8+PHBvbHlnb24gcG9pbnRzPScxNDQuMDAwLDAuMDAwIDE5Mi4wMDAsMC4wMDAgMTY4LjAwMCw0MS41NjknIGZpbGw9JyMyZjQzNTknLz48cG9seWdvbiBwb2ludHM9JzE5Mi4wMDAsMC4wMDAgMjQwLjAwMCwwLjAwMCAyMTYuMDAwLDQxLjU2OScgZmlsbD0nIzMwNDQ1YScvPjxwb2x5Z29uIHBvaW50cz0nLTQ4LjAwMCwwLjAwMCAtNzIuMDAwLDQxLjU2OSAtMjQuMDAwLDQxLjU2OScgZmlsbD0nIzJkNDE1NycvPjxwb2x5Z29uIHBvaW50cz0nMC4wMDAsMC4wMDAgLTI0LjAwMCw0MS41NjkgMjQuMDAwLDQxLjU2OScgZmlsbD0nIzJiM2Y1NScvPjxwb2x5Z29uIHBvaW50cz0nNDguMDAwLDAuMDAwIDI0LjAwMCw0MS41NjkgNzIuMDAwLDQxLjU2OScgZmlsbD0nIzJjNDA1NicvPjxwb2x5Z29uIHBvaW50cz0nOTYuMDAwLDAuMDAwIDcyLjAwMCw0MS41NjkgMTIwLjAwMCw0MS41NjknIGZpbGw9JyMyZDQxNTcnLz48cG9seWdvbiBwb2ludHM9JzE0NC4wMDAsMC4wMDAgMTIwLjAwMCw0MS41NjkgMTY4LjAwMCw0MS41NjknIGZpbGw9JyMyYjNmNTUnLz48cG9seWdvbiBwb2ludHM9JzE5Mi4wMDAsMC4wMDAgMTY4LjAwMCw0MS41NjkgMjE2LjAwMCw0MS41NjknIGZpbGw9JyMyYzQwNTYnLz48cG9seWdvbiBwb2ludHM9JzI0MC4wMDAsMC4wMDAgMjE2LjAwMCw0MS41NjkgMjY0LjAwMCw0MS41NjknIGZpbGw9JyMyZDQxNTcnLz48cG9seWdvbiBwb2ludHM9Jy0yNC4wMDAsNDEuNTY5IDI0LjAwMCw0MS41NjkgMC4wMDAsODMuMTM4JyBmaWxsPScjMmY0MzU5Jy8+PHBvbHlnb24gcG9pbnRzPScyNC4wMDAsNDEuNTY5IDcyLjAwMCw0MS41NjkgNDguMDAwLDgzLjEzOCcgZmlsbD0nIzMwNDQ1YScvPjxwb2x5Z29uIHBvaW50cz0nNzIuMDAwLDQxLjU2OSAxMjAuMDAwLDQxLjU2OSA5Ni4wMDAsODMuMTM4JyBmaWxsPScjMzE0NTViJy8+PHBvbHlnb24gcG9pbnRzPScxMjAuMDAwLDQxLjU2OSAxNjguMDAwLDQxLjU2OSAxNDQuMDAwLDgzLjEzOCcgZmlsbD0nIzJmNDM1OScvPjxwb2x5Z29uIHBvaW50cz0nMTY4LjAwMCw0MS41NjkgMjE2LjAwMCw0MS41NjkgMTkyLjAwMCw4My4xMzgnIGZpbGw9JyMzMDQ0NWEnLz48cG9seWdvbiBwb2ludHM9JzIxNi4wMDAsNDEuNTY5IDI2NC4wMDAsNDEuNTY5IDI0MC4wMDAsODMuMTM4JyBmaWxsPScjMzE0NTViJy8+PHBvbHlnb24gcG9pbnRzPSctMjQuMDAwLDQxLjU2OSAtNDguMDAwLDgzLjEzOCAwLjAwMCw4My4xMzgnIGZpbGw9JyMyYjNmNTUnLz48cG9seWdvbiBwb2ludHM9JzI0LjAwMCw0MS41NjkgMC4wMDAsODMuMTM4IDQ4LjAwMCw4My4xMzgnIGZpbGw9JyMyYzQwNTYnLz48cG9seWdvbiBwb2ludHM9JzcyLjAwMCw0MS41NjkgNDguMDAwLDgzLjEzOCA5Ni4wMDAsODMuMTM4JyBmaWxsPScjMmQ0MTU3Jy8+PHBvbHlnb24gcG9pbnRzPScxMjAuMDAwLDQxLjU2OSA5Ni4wMDAsODMuMTM4IDE0NC4wMDAsODMuMTM4JyBmaWxsPScjMmIzZjU1Jy8+PHBvbHlnb24gcG9pbnRzPScxNjguMDAwLDQxLjU2OSAxNDQuMDAwLDgzLjEzOCAxOTIuMDAwLDgzLjEzOCcgZmlsbD0nIzJjNDA1NicvPjxwb2x5Z29uIHBvaW50cz0nMjE2LjAwMCw0MS41NjkgMTkyLjAwMCw4My4xMzggMjQwLjAwMCw4My4xMzgnIGZpbGw9JyMyZDQxNTcnLz48cG9seWdvbiBwb2ludHM9JzI2NC4wMDAsNDEuNTY5IDI0MC4wMDAsODMuMTM4IDI4OC4wMDAsODMuMTM4JyBmaWxsPScjMmIzZjU1Jy8+PHBvbHlnb24gcG9pbnRzPSctNDguMDAwLDgzLjEzOCAwLjAwMCw4My4xMzggLTI0LjAwMCwxMjQuNzA4JyBmaWxsPScjMzA0NDVhJy8+PHBvbHlnb24gcG9pbnRzPScwLjAwMCw4My4xMzggNDguMDAwLDgzLjEzOCAyNC4wMDAsMTI0LjcwOCcgZmlsbD0nIzMxNDU1YicvPjxwb2x5Z29uIHBvaW50cz0nNDguMDAwLDgzLjEzOCA5Ni4wMDAsODMuMTM4IDcyLjAwMCwxMjQuNzA4JyBmaWxsPScjMmY0MzU5Jy8+PHBvbHlnb24gcG9pbnRzPSc5Ni4wMDAsODMuMTM4IDE0NC4wMDAsODMuMTM4IDEyMC4wMDAsMTI0LjcwOCcgZmlsbD0nIzMwNDQ1YScvPjxwb2x5Z29uIHBvaW50cz0nMTQ0LjAwMCw4My4xMzggMTkyLjAwMCw4My4xMzggMTY4LjAwMCwxMjQuNzA4JyBmaWxsPScjMzE0NTViJy8+PHBvbHlnb24gcG9pbnRzPScxOTIuMDAwLDgzLjEzOCAyNDAuMDAwLDgzLjEzOCAyMTYuMDAwLDEyNC43MDgnIGZpbGw9JyMyZjQzNTknLz48cG9seWdvbiBwb2ludHM9Jy00OC4wMDAsODMuMTM4IC03Mi4wMDAsMTI0LjcwOCAtMjQuMDAwLDEyNC43MDgnIGZpbGw9JyMyYzQwNTYnLz48cG9seWdvbiBwb2ludHM9JzAuMDAwLDgzLjEzOCAtMjQuMDAwLDEyNC43MDggMjQuMDAwLDEyNC43MDgnIGZpbGw9JyMyZDQxNTcnLz48cG9seWdvbiBwb2ludHM9JzQ4LjAwMCw4My4xMzggMjQuMDAwLDEyNC43MDggNzIuMDAwLDEyNC43MDgnIGZpbGw9JyMyYjNmNTUnLz48cG9seWdvbiBwb2ludHM9Jzk2LjAwMCw4My4xMzggNzIuMDAwLDEyNC43MDggMTIwLjAwMCwxMjQuNzA4JyBmaWxsPScjMmM0MDU2Jy8+PHBvbHlnb24gcG9pbnRzPScxNDQuMDAwLDgzLjEzOCAxMjAuMDAwLDEyNC43MDggMTY4LjAwMCwxMjQuNzA4JyBmaWxsPScjMmQ0MTU3Jy8+PHBvbHlnb24gcG9pbnRzPScxOTIuMDAwLDgzLjEzOCAxNjguMDAwLDEyNC43MDggMjE2LjAwMCwxMjQuNzA4JyBmaWxsPScjMmIzZjU1Jy8+PHBvbHlnb24gcG9pbnRzPScyNDAuMDAwLDgzLjEzOCAyMTYuMDAwLDEyNC43MDggMjY0LjAwMCwxMjQuNzA4JyBmaWxsPScjMmM0MDU2Jy8+PHBvbHlnb24gcG9pbnRzPSctMjQuMDAwLDEyNC43MDggMjQuMDAwLDEyNC43MDggMC4wMDAsMTY2LjI3NycgZmlsbD0nIzMxNDU1YicvPjxwb2x5Z29uIHBvaW50cz0nMjQuMDAwLDEyNC43MDggNzIuMDAwLDEyNC43MDggNDguMDAwLDE2Ni4yNzcnIGZpbGw9JyMyZjQzNTknLz48cG9seWdvbiBwb2ludHM9JzcyLjAwMCwxMjQuNzA4IDEyMC4wMDAsMTI0LjcwOCA5Ni4wMDAsMTY2LjI3NycgZmlsbD0nIzMwNDQ1YScvPjxwb2x5Z29uIHBvaW50cz0nMTIwLjAwMCwxMjQuNzA4IDE2OC4wMDAsMTI0LjcwOCAxNDQuMDAwLDE2Ni4yNzcnIGZpbGw9JyMzMTQ1NWInLz48cG9seWdvbiBwb2ludHM9JzE2OC4wMDAsMTI0LjcwOCAyMTYuMDAwLDEyNC43MDggMTkyLjAwMCwxNjYuMjc3JyBmaWxsPScjMmY0MzU5Jy8+PHBvbHlnb24gcG9pbnRzPScyMTYuMDAwLDEyNC43MDggMjY0LjAwMCwxMjQuNzA4IDI0MC4wMDAsMTY2LjI3NycgZmlsbD0nIzMwNDQ1YScvPjxwb2x5Z29uIHBvaW50cz0nLTI0LjAwMCwxMjQuNzA4IC00OC4wMDAsMTY2LjI3NyAwLjAwMCwxNjYuMjc3JyBmaWxsPScjMmQ0MTU3Jy8+PHBvbHlnb24gcG9pbnRzPScyNC4wMDAsMTI0LjcwOCAwLjAwMCwxNjYuMjc3IDQ4LjAwMCwxNjYuMjc3JyBmaWxsPScjMmIzZjU1Jy8+PHBvbHlnb24gcG9pbnRzPSc3Mi4wMDAsMTI0LjcwOCA0OC4wMDAsMTY2LjI3NyA5Ni4wMDAsMTY2LjI3NycgZmlsbD0nIzJjNDA1NicvPjxwb2x5Z29uIHBvaW50cz0nMTIwLjAwMCwxMjQuNzA4IDk2LjAwMCwxNjYuMjc3IDE0NC4wMDAsMTY2LjI3NycgZmlsbD0nIzJkNDE1NycvPjxwb2x5Z29uIHBvaW50cz0nMTY4LjAwMCwxMjQuNzA4IDE0NC4wMDAsMTY2LjI3NyAxOTIuMDAwLDE2Ni4yNzcnIGZpbGw9JyMyYjNmNTUnLz48cG9seWdvbiBwb2ludHM9JzIxNi4wMDAsMTI0LjcwOCAxOTIuMDAwLDE2Ni4yNzcgMjQwLjAwMCwxNjYuMjc3JyBmaWxsPScjMmM0MDU2Jy8+PHBvbHlnb24gcG9pbnRzPScyNjQuMDAwLDEyNC43MDggMjQwLjAwMCwxNjYuMjc3IDI4OC4wMDAsMTY2LjI3NycgZmlsbD0nIzJkNDE1NycvPjwvc3ZnPg==");
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+
+  font-size: 14px;
+
+  background: var(--bg);
+  color: var(--text);
+}
+
+
+/* ─── Layout ─────────────────────────────────────────────────────────────── */
+
+#app {
+  display: grid;
+
+  grid-template-rows:
+    var(--topbar-h)
+    minmax(0, 1fr);
+
+  grid-template-columns:
+    var(--sidebar-w)
+    minmax(0, 1fr);
+
+  width: 100%;
+  height: 100vh;
+}
+
+
+/* ─── Textura compartilhada ──────────────────────────────────────────────── */
+
+#topbar,
+#sidebar {
+  background-color: var(--texture-bg);
+  background-image: var(--texture-image);
+  background-repeat: repeat;
+
+  background-size:
+    var(--texture-w)
+    var(--texture-h);
+}
+
+
+/* ─── Top bar ────────────────────────────────────────────────────────────── */
+
+#topbar {
+  grid-column: 1 / -1;
+
+  width: 100%;
+  height: var(--topbar-h);
+  min-width: 0;
+
+  background-position: 0 0;
+
+  border-bottom: 3px solid var(--border);
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 20px;
+  gap: 16px;
+
+  overflow: hidden;
+
+  z-index: 1000;
+}
+
+.topbar-meta {
+  display: flex;
+  align-items: center;
+
+  min-width: 0;
+
+  gap: 20px;
+
+  color: var(--text-muted);
+  font-size: 12px;
+
+  white-space: nowrap;
+}
+
+.meta-item strong {
+  color: var(--text);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+
+  flex-shrink: 0;
+
+  gap: 10px;
+}
+
+
+/* Layer switcher */
+
+.layer-switcher {
+  display: flex;
+
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+
+  overflow: hidden;
+}
+
+.layer-btn {
+  background: none;
+
+  border: none;
+
+  color: var(--text);
+
+  padding: 5px 10px;
+
+  cursor: pointer;
+
+  font-size: 12px;
+
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.layer-btn:hover {
+  background: var(--accent2);
+  color: var(--text-dark);
+}
+
+.layer-btn.active {
+  background: var(--accent);
+  color: var(--text-dark);
+}
+
+
+/* Refresh button */
+
+#refresh-btn {
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  background: var(--accent);
+  color: var(--text-dark);
+
+  border: none;
+  border-radius: var(--radius);
+
+  padding: 6px 14px;
+
+  cursor: pointer;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  transition: opacity 0.15s;
+}
+
+#refresh-btn:hover {
+  opacity: 0.85;
+}
+
+#refresh-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+#refresh-icon {
+  display: inline-block;
+
+  font-size: 14px;
+}
+
+#refresh-icon.spinning {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* ─── Sidebar ────────────────────────────────────────────────────────────── */
+
+#sidebar {
+  min-width: 0;
+  min-height: 0;
+
+  /*
+   * Faz a textura continuar da top bar para a sidebar,
+   * sem reiniciar o desenho na borda.
+   */
+  background-position:
+    0
+    calc(0px - var(--topbar-h));
+
+  border-right: 3px solid var(--border);
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  padding: 0;
+  gap: 0;
+
+  z-index: 500;
+}
+
+
+/* Logo */
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+
+  flex-shrink: 0;
+
+  gap: 12px;
+
+  padding: 18px 16px 14px;
+  margin-bottom: 4px;
+
+  border-bottom:
+    1px solid
+    rgba(244, 128, 48, 0.35);
+}
+
+.sidebar-logo-badge {
+  width: 44px;
+  height: 44px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: var(--accent);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 20px;
+
+  box-shadow:
+    0 2px 8px
+    rgba(0, 0, 0, 0.4);
+}
+
+.sidebar-logo-text {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+}
+
+.sidebar-logo-name {
+  color: var(--text);
+
+  font-size: 14px;
+  font-weight: 700;
+
+  letter-spacing: 0.2px;
+}
+
+.sidebar-logo-sub {
+  margin-top: 2px;
+
+  color: rgba(240, 235, 228, 0.68);
+
+  font-size: 10px;
+
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+
+/* ─── Painéis ────────────────────────────────────────────────────────────── */
+
+.sidebar-panels {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+
+  min-height: 0;
+
+  gap: 12px;
+  padding: 14px;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.panel {
+  background: var(--surface2);
+  color: var(--text-dark);
+
+  border:
+    1px solid
+    rgba(244, 128, 48, 0.72);
+
+  border-radius: var(--radius);
+
+  padding: 14px;
+
+  box-shadow:
+    0 2px 8px
+    rgba(20, 31, 42, 0.14);
+}
+
+.panel-title {
+  margin-bottom: 12px;
+
+  color: var(--text-dark);
+
+  font-size: 11px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+
+/* ─── Estatísticas ───────────────────────────────────────────────────────── */
+
+.stats-grid {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(0, 1fr);
+
+  gap: 8px;
+}
+
+.stat-card {
+  min-width: 0;
+
+  background: var(--surface);
+  color: var(--text);
+
+  border: 1px solid var(--border);
+  border-radius: 6px;
+
+  padding: 10px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+.stat-card.full {
+  grid-column: 1 / -1;
+}
+
+.stat-value {
+  color: var(--text);
+
+  font-size: 22px;
+  font-weight: 700;
+
+  line-height: 1;
+}
+
+.stat-label {
+  color: rgba(240, 235, 228, 0.92);
+
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.stat-dot {
+  width: 8px;
+  height: 8px;
+
+  display: inline-block;
+
+  margin-right: 4px;
+
+  border-radius: 50%;
+}
+
+
+/* ─── Filtros ────────────────────────────────────────────────────────────── */
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+.filter-label {
+  color: var(--text-dark);
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.filter-select {
+  width: 100%;
+
+  background-color: var(--surface);
+
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23F0EBE4' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+
+  border: 1px solid var(--border);
+  border-radius: 6px;
+
+  color: var(--text);
+
+  padding:
+    7px
+    30px
+    7px
+    10px;
+
+  font-size: 13px;
+
+  cursor: pointer;
+
+  appearance: none;
+
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+.filter-select:focus {
+  outline: none;
+
+  border-color: var(--accent);
+
+  box-shadow:
+    0 0 0 2px
+    rgba(244, 128, 48, 0.25);
+}
+
+
+/* ─── Legenda ────────────────────────────────────────────────────────────── */
+
+.legend-list {
+  list-style: none;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  color: var(--text-dark);
+
+  font-size: 13px;
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+}
+
+.legend-range {
+  margin-left: auto;
+
+  color: var(--text-muted-dark);
+
+  font-size: 11px;
+  font-weight: 500;
+
+  white-space: nowrap;
+}
+
+
+/* ─── Mapa ───────────────────────────────────────────────────────────────── */
+
+#map {
+  min-width: 0;
+  min-height: 0;
+
+  z-index: 1;
+}
+
+
+/* ─── Leaflet ────────────────────────────────────────────────────────────── */
+
+.leaflet-popup-content-wrapper {
+  background: var(--surface2) !important;
+  color: var(--text-dark) !important;
+
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+
+  box-shadow:
+    0 8px 24px
+    rgba(0, 0, 0, 0.5) !important;
+
+  padding: 0 !important;
+}
+
+.leaflet-popup-tip {
+  background: var(--surface2) !important;
+}
+
+.leaflet-popup-content {
+  width: auto !important;
+  margin: 0 !important;
+}
+
+.popup-inner {
+  min-width: 220px;
+
+  padding: 14px;
+}
+
+.popup-header {
+  margin-bottom: 10px;
+  padding-left: 10px;
+}
+
+.popup-tier {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.popup-table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  font-size: 12px;
+}
+
+.popup-table td {
+  padding: 3px 0;
+
+  vertical-align: top;
+}
+
+.popup-table td:first-child {
+  width: 80px;
+
+  color: var(--text-muted-dark);
+}
+
+.leaflet-control-zoom a {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+
+  border-color: var(--border) !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: var(--accent) !important;
+  color: var(--text-dark) !important;
+}
+
+.leaflet-control-attribution {
+  background:
+    rgba(60, 70, 76, 0.8) !important;
+
+  color: var(--text) !important;
+
+  font-size: 10px !important;
+}
+
+
+/* ─── Animação dos focos ─────────────────────────────────────────────────── */
+
+.fire-high {
+  animation:
+    pulse
+    1.8s
+    ease-in-out
+    infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.55;
+  }
+}
+
+
+/* ─── Toast ──────────────────────────────────────────────────────────────── */
+
+#toast {
+  position: fixed;
+
+  right: 24px;
+  bottom: 24px;
+
+  z-index: 9999;
+
+  background: var(--surface2);
+  color: var(--text-dark);
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+
+  padding: 10px 16px;
+
+  font-size: 13px;
+
+  opacity: 0;
+
+  transform: translateY(8px);
+
+  transition:
+    opacity 0.25s,
+    transform 0.25s;
+
+  pointer-events: none;
+}
+
+#toast.show {
+  opacity: 1;
+
+  transform: translateY(0);
+}
+
+#toast.toast-error {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+#toast.toast-info {
+  border-color: var(--accent);
+}
+

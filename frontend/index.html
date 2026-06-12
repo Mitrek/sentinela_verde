@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sentinela Verde - Monitor de Incêndios</title>
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ── Top bar ──────────────────────────────────────────────────────────── -->
+  <header id="topbar">
+    <div class="topbar-meta">
+      <div class="meta-item">
+        Última atualização: <strong id="last-updated">—</strong>
+      </div>
+      <div class="meta-item">
+        Focos ativos: <strong id="total-events">—</strong>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <div class="layer-switcher">
+        <button class="layer-btn active" data-layer="dark">Escuro</button>
+        <button class="layer-btn" data-layer="satellite">Satélite</button>
+        <button class="layer-btn" data-layer="terrain">Terreno</button>
+      </div>
+      <button id="refresh-btn">
+        <span id="refresh-icon">↻</span> Atualizar
+      </button>
+    </div>
+  </header>
+
+  <!-- ── Sidebar ───────────────────────────────────────────────────────────── -->
+  <aside id="sidebar">
+
+    <!-- Logo / brand block (mirrors CBMMG intranet sidebar header) -->
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-badge">🔥</div>
+      <div class="sidebar-logo-text">
+        <div class="sidebar-logo-name">Sentinela Verde</div>
+        <div class="sidebar-logo-sub">CBMMG · Monitor de Incêndios</div>
+      </div>
+    </div>
+
+    <div class="sidebar-panels">
+
+    <!-- Stats -->
+    <div class="panel">
+      <div class="panel-title">Visão geral</div>
+      <div class="stats-grid">
+        <div class="stat-card full">
+          <div class="stat-value" id="stat-total">—</div>
+          <div class="stat-label">Total de focos de incêndio</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="color: #F48030" id="stat-high">—</div>
+          <div class="stat-label"><span class="stat-dot" style="background:#F48030"></span>Alta (&gt;100 MW)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="color: #F68C29" id="stat-mid">—</div>
+          <div class="stat-label"><span class="stat-dot" style="background:#F68C29"></span>Moderada</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="color: #3C464C" id="stat-low">—</div>
+          <div class="stat-label"><span class="stat-dot" style="background:#F0EBE4"></span>Baixa (≤30 MW)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="panel">
+      <div class="panel-title">Filtros</div>
+      <div class="filter-group">
+        <label class="filter-label" for="area-select">Região (COB)</label>
+        <select id="area-select" class="filter-select">
+          <option value="">Todo o estado de Minas Gerais</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="panel">
+      <div class="panel-title">Legenda</div>
+      <ul class="legend-list">
+        <li class="legend-item">
+          <span class="legend-dot" style="background: #F48030; border: 1.5px solid #7a3a0a"></span>
+          Alta intensidade
+          <span class="legend-range">&gt; 100 MW</span>
+        </li>
+        <li class="legend-item">
+          <span class="legend-dot" style="background: #F68C29; border: 1.5px solid #7a4a0a"></span>
+          Moderada
+          <span class="legend-range">31–100 MW</span>
+        </li>
+        <li class="legend-item">
+          <span class="legend-dot" style="background: #F0EBE4; border: 1.5px solid #7a6a55"></span>
+          Baixa intensidade
+          <span class="legend-range">≤ 30 MW</span>
+        </li>
+      </ul>
+    </div>
+
+    </div><!-- /.sidebar-panels -->
+  </aside>
+
+  <!-- ── Map ───────────────────────────────────────────────────────────────── -->
+  <div id="map"></div>
+
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script src="js/mock-data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

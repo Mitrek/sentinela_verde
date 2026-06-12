@@ -10,6 +10,8 @@ UCS_GEOJSON_PATH = Path(__file__).parent / "shapefiles" / "ucs.geojson"
 
 _UCS_GEOJSON_CACHE: dict | None = None
 _UC_GEOMETRY_CACHE: dict[str, object | None] = {}
+_UC_FEATURE_GEOMETRIES_CACHE: list[tuple[str, dict, object]] | None = None
+_UCS_FOR_BOUNDARY_CACHE: dict[str, list[dict]] = {}
 
 
 def _load_ucs_geojson() -> dict:
@@ -71,6 +73,61 @@ def get_uc_geometry(uc_id: str) -> object | None:
         return None
 
 
+def _load_uc_feature_geometries() -> list[tuple[str, dict, object]]:
+    """Return cached UC features paired with their Shapely geometries."""
+    global _UC_FEATURE_GEOMETRIES_CACHE
+
+    if _UC_FEATURE_GEOMETRIES_CACHE is not None:
+        return _UC_FEATURE_GEOMETRIES_CACHE
+
+    geometries = []
+    geojson = _load_ucs_geojson()
+    for feature in geojson.get("features", []):
+        uc_id = feature.get("id")
+        geometry_data = feature.get("geometry")
+        if not uc_id or not geometry_data:
+            continue
+
+        try:
+            geometries.append((uc_id, feature, shape(geometry_data)))
+        except Exception as exc:
+            print(f"Failed to build conservation unit geometry for {uc_id}: {exc}")
+
+    _UC_FEATURE_GEOMETRIES_CACHE = geometries
+    return geometries
+
+
+def get_ucs_for_boundary(boundary_id: str, boundary_geometry: object | None) -> list[dict]:
+    """
+    Return UC GeoJSON features whose geometry intersects a boundary geometry.
+
+    The boundary can be any Shapely geometry. Results are deduplicated by UC id
+    so repeated source features do not render duplicate overlays.
+    """
+    if boundary_geometry is None:
+        return []
+
+    if boundary_id in _UCS_FOR_BOUNDARY_CACHE:
+        return _UCS_FOR_BOUNDARY_CACHE[boundary_id]
+
+    try:
+        matched_features = []
+        seen_uc_ids = set()
+        for uc_id, feature, uc_geometry in _load_uc_feature_geometries():
+            if uc_id in seen_uc_ids:
+                continue
+
+            if uc_geometry.intersects(boundary_geometry):
+                matched_features.append(feature)
+                seen_uc_ids.add(uc_id)
+
+        _UCS_FOR_BOUNDARY_CACHE[boundary_id] = matched_features
+        return matched_features
+    except Exception as exc:
+        print(f"Failed to match conservation units for boundary {boundary_id}: {exc}")
+        return []
+
+
 def filter_events_by_uc(events: list[dict], uc_id: str) -> list[dict]:
     """Return events whose coordinates fall within the selected conservation unit."""
     try:
@@ -87,6 +144,15 @@ def filter_events_by_uc(events: list[dict], uc_id: str) -> list[dict]:
     except Exception as exc:
         print(f"Failed to filter events for conservation unit {uc_id}: {exc}")
         return events
+
+
+def get_all_uc_features() -> list[dict]:
+    """Return all UC GeoJSON features."""
+    try:
+        return _load_ucs_geojson().get("features", [])
+    except Exception as exc:
+        print(f"Failed to load all UC features: {exc}")
+        return []
 
 
 def get_uc_bounds(uc_id: str) -> tuple[float, float, float, float] | None:

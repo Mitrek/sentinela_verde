@@ -1,39 +1,61 @@
 from __future__ import annotations
 
 import json
+from copy import deepcopy
 from pathlib import Path
 
 import folium
-from shapely.geometry import Point, Polygon
+from shapely.geometry import Point
 
 from areas import (
     GEOJSON_PATH,
     _normalize_name,
     filter_events_by_area,
+    filter_events_by_mg,
+    get_all_mg_features,
     get_area_bounds,
     get_area_by_id,
+    get_area_geometry,
 )
 from conservation_units import (
     filter_events_by_uc,
+    get_all_uc_features,
+    get_ucs_for_boundary,
     get_uc_bounds,
     get_uc_feature,
 )
 
 
-MG_BOUNDARY = Polygon([
-    (-44.0, -14.2), (-42.5, -14.5), (-41.0, -14.8), (-39.9, -15.8),
-    (-40.2, -17.0), (-39.9, -18.5), (-41.0, -20.0), (-41.8, -21.2),
-    (-43.0, -22.4), (-44.9, -22.9), (-46.5, -22.5), (-48.0, -21.5),
-    (-50.0, -21.0), (-51.0, -19.5), (-51.0, -18.0), (-50.5, -16.5),
-    (-49.0, -15.5), (-47.5, -14.5), (-46.0, -14.0), (-44.0, -14.2)
-])
-
 DEFAULT_CENTER = (-18.5, -44.5)
-DEFAULT_ZOOM = 4
+DEFAULT_ZOOM = 6
+UC_OVERLAY_COLOR = "#27ae60"
+MUNICIPALITY_COLOR = "#F48030"
 
 
-def _inside_mg(lat: float, lon: float) -> bool:
-    return MG_BOUNDARY.contains(Point(lon, lat))
+def _decode_display_text(value: object) -> str:
+    if value is None:
+        return "Não informado"
+
+    text = str(value)
+    try:
+        return text.encode("latin-1").decode("utf-8")
+    except (UnicodeEncodeError, UnicodeDecodeError):
+        return text
+
+
+def _features_with_tooltip_properties(
+    features: list[dict],
+    feature_type: str,
+    name_property: str,
+) -> list[dict]:
+    tooltip_features = []
+    for feature in features:
+        tooltip_feature = deepcopy(feature)
+        properties = tooltip_feature.setdefault("properties", {})
+        properties["sv_tipo"] = feature_type
+        properties["sv_nome"] = _decode_display_text(properties.get(name_property))
+        tooltip_features.append(tooltip_feature)
+    return tooltip_features
 
 
 def _map_center(events: list[dict]) -> tuple[float, float]:
@@ -53,23 +75,157 @@ def _marker_color(frp: float | None) -> str:
     return "yellow"
 
 
+_CONFIDENCE_LABELS = {
+    # VIIRS categorical
+    "l": "Baixa (~35%) — possível falso positivo",
+    "n": "Nominal (~75%) — provável foco real",
+    "h": "Alta (~95%) — foco confirmado",
+    # MODIS numeric bands (stored as strings)
+}
+
+_SATELLITE_LABELS = {
+    "Terra": "Terra (MODIS)",
+    "Aqua":  "Aqua (MODIS)",
+    "N": "NOAA-20 / VIIRS",
+    "N-20": "NOAA-20 / VIIRS",
+    "NOAA-20": "NOAA-20 / VIIRS",
+    "S": "Suomi NPP / VIIRS",
+    "NPP": "Suomi NPP / VIIRS",
+}
+
+
+def _format_confidence(raw: str | None) -> str:
+    if raw is None:
+        return "Não informado"
+    key = str(raw).strip().lower()
+    # VIIRS categorical
+    label = _CONFIDENCE_LABELS.get(key)
+    if label:
+        return label
+    # MODIS numeric (0–100)
+    try:
+        pct = int(float(raw))
+        if pct >= 80:
+            tier = "Alta"
+        elif pct >= 50:
+            tier = "Nominal"
+        else:
+            tier = "Baixa"
+        return f"{tier} ({pct}%) — {'foco confirmado' if pct >= 80 else 'provável foco real' if pct >= 50 else 'possível falso positivo'}"
+    except (ValueError, TypeError):
+        return str(raw)
+
+
+def _format_time(raw: str | None) -> str:
+    if raw is None:
+        return "Não informado"
+    t = str(raw).zfill(4)
+    return f"{t[:2]}h{t[2:]} UTC"
+
+
+def _format_frp(frp: float | None) -> str:
+    if frp is None:
+        return "Não informado"
+    if frp > 100:
+        intensity = "Alta intensidade"
+    elif frp > 30:
+        intensity = "Intensidade moderada"
+    else:
+        intensity = "Baixa intensidade"
+    return f"{frp} MW — {intensity}"
+
+
+def _format_satellite(raw: str | None) -> str:
+    if raw is None:
+        return "Não informado"
+    return _SATELLITE_LABELS.get(str(raw), str(raw))
+
+
 def _popup_html(event: dict) -> str:
-    frp = event.get("frp")
-    frp_display = f"{frp} MW" if frp is not None else "N/A"
+    frp      = event.get("frp")
+    date     = event.get("acq_date", "Não informado")
+    daynight = event.get("daynight", "")
+    period   = " (diurno)" if daynight == "D" else " (noturno)" if daynight == "N" else ""
+
+    rows = [
+        ("📅 Detecção",    f"{date}{period} — data/hora em que o satélite sobrevoou e identificou o foco"),
+        ("🕐 Hora UTC",    f"{_format_time(event.get('acq_time'))} — horário universal (BRT = UTC−3)"),
+        ("🔥 Potência (FRP)", _format_frp(frp) + " — energia liberada pelo fogo no momento da passagem"),
+        ("🛰️ Satélite",    _format_satellite(event.get("satellite"))),
+        ("✅ Confiança",   _format_confidence(event.get("confidence"))),
+        ("📍 Coordenadas", f"{event.get('latitude', ''):.4f}, {event.get('longitude', ''):.4f}"),
+    ]
+
+    inner = "".join(
+        f'<tr><td style="color:#888;padding:3px 8px 3px 0;vertical-align:top;white-space:nowrap">{label}</td>'
+        f'<td style="padding:3px 0;font-size:12px">{value}</td></tr>'
+        for label, value in rows
+    )
+
     return (
-        f"Date: {event.get('acq_date', 'N/A')}<br>"
-        f"Time: {event.get('acq_time', 'N/A')}<br>"
-        f"FRP: {frp_display}<br>"
-        f"Satellite: {event.get('satellite', 'N/A')}<br>"
-        f"Confidence: {event.get('confidence', 'N/A')}"
+        '<div style="font-family:system-ui,sans-serif;font-size:13px;min-width:260px">'
+        '<div style="font-weight:700;font-size:14px;margin-bottom:8px;padding-bottom:6px;'
+        'border-bottom:2px solid #F48030">🔥 Foco de Incêndio</div>'
+        f'<table style="border-collapse:collapse;width:100%">{inner}</table>'
+        '<div style="margin-top:8px;font-size:11px;color:#aaa">'
+        'Fonte: NASA FIRMS · dados de satélite em tempo quase real</div>'
+        '</div>'
     )
 
 
 def _render_base_map(events: list[dict]) -> folium.Map:
-    center = _map_center(events)
-    filtered_events = [event for event in events if _inside_mg(event["latitude"], event["longitude"])]
-    zoom_start = DEFAULT_ZOOM if not filtered_events else 6
-    fire_map = folium.Map(location=center, zoom_start=zoom_start)
+    filtered_events = filter_events_by_mg(events)
+    fire_map = folium.Map(location=DEFAULT_CENTER, zoom_start=DEFAULT_ZOOM)
+
+    # All 853 MG municipalities
+    municipality_features = get_all_mg_features()
+    if municipality_features:
+        folium.GeoJson(
+            {
+                "type": "FeatureCollection",
+                "features": _features_with_tooltip_properties(
+                    municipality_features, "Município", "NM_MUN"
+                ),
+            },
+            name="Municípios de MG",
+            style_function=lambda _: {
+                "color": MUNICIPALITY_COLOR,
+                "weight": 0.8,
+                "fill": True,
+                "fillColor": MUNICIPALITY_COLOR,
+                "fillOpacity": 0.05,
+            },
+            tooltip=folium.GeoJsonTooltip(
+                fields=["sv_tipo", "sv_nome"],
+                aliases=["Tipo:", "Nome:"],
+                sticky=True,
+            ),
+        ).add_to(fire_map)
+
+    # All UCs in MG
+    uc_features = get_all_uc_features()
+    if uc_features:
+        folium.GeoJson(
+            {
+                "type": "FeatureCollection",
+                "features": _features_with_tooltip_properties(
+                    uc_features, "Unidade de Conservação", "nome_uc"
+                ),
+            },
+            name="Unidades de Conservação",
+            style_function=lambda _: {
+                "color": UC_OVERLAY_COLOR,
+                "weight": 1.5,
+                "fill": True,
+                "fillColor": UC_OVERLAY_COLOR,
+                "fillOpacity": 0.2,
+            },
+            tooltip=folium.GeoJsonTooltip(
+                fields=["sv_tipo", "sv_nome"],
+                aliases=["Tipo:", "Nome:"],
+                sticky=True,
+            ),
+        ).add_to(fire_map)
 
     for event in filtered_events:
         color = _marker_color(event.get("frp"))
@@ -109,6 +265,7 @@ def _render_filtered_map(
     bounds: tuple[float, float, float, float],
     outline_features: list[dict],
     outline_color: str,
+    overlay_features: list[dict] | None = None,
 ) -> str:
     min_lat, min_lon, max_lat, max_lon = bounds
     if events:
@@ -121,7 +278,15 @@ def _render_filtered_map(
 
     if outline_features:
         folium.GeoJson(
-            {"type": "FeatureCollection", "features": outline_features},
+            {
+                "type": "FeatureCollection",
+                "features": _features_with_tooltip_properties(
+                    outline_features,
+                    "Município",
+                    "NM_MUN",
+                ),
+            },
+            name="COB selecionado",
             style_function=lambda _: {
                 "color": outline_color,
                 "weight": 2.5,
@@ -129,6 +294,36 @@ def _render_filtered_map(
                 "fillColor": outline_color,
                 "fillOpacity": 0.15,
             },
+            tooltip=folium.GeoJsonTooltip(
+                fields=["sv_tipo", "sv_nome"],
+                aliases=["Tipo:", "Nome:"],
+                sticky=True,
+            ),
+        ).add_to(fire_map)
+
+    if overlay_features:
+        folium.GeoJson(
+            {
+                "type": "FeatureCollection",
+                "features": _features_with_tooltip_properties(
+                    overlay_features,
+                    "Unidade de Conservação",
+                    "nome_uc",
+                ),
+            },
+            name="Unidades de Conservação sobrepostas",
+            style_function=lambda _: {
+                "color": UC_OVERLAY_COLOR,
+                "weight": 2,
+                "fill": True,
+                "fillColor": UC_OVERLAY_COLOR,
+                "fillOpacity": 0.25,
+            },
+            tooltip=folium.GeoJsonTooltip(
+                fields=["sv_tipo", "sv_nome"],
+                aliases=["Tipo:", "Nome:"],
+                sticky=True,
+            ),
         ).add_to(fire_map)
 
     for event in events:
@@ -181,7 +376,7 @@ def render_map_html(
                 filtered_events,
                 uc_bounds,
                 [uc_feature],
-                "#27ae60",
+                UC_OVERLAY_COLOR,
             )
 
         if area_id is None or get_area_by_id(area_id) is None:
@@ -189,16 +384,19 @@ def render_map_html(
 
         filtered_events = filter_events_by_area(events, area_id)
         area_bounds = get_area_bounds(area_id)
+        area_geometry = get_area_geometry(area_id)
 
         if area_bounds is None:
             return _render_base_map(filtered_events).get_root().render()
 
         outline_features = _load_area_geojson_features(area_id)
+        uc_features = get_ucs_for_boundary(area_id, area_geometry)
         return _render_filtered_map(
             filtered_events,
             area_bounds,
             outline_features,
-            "#e67e22",
+            "#F48030",
+            uc_features,
         )
     except Exception as exc:
         print(f"Failed to render map HTML for area {area_id} or UC {uc_id}: {exc}")
