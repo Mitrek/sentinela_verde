@@ -27,7 +27,7 @@ from config import (
     FIRMS_API_KEY,
     REGION_BBOX,
 )
-from conservation_units import get_ucs_for_boundary, load_ucs
+from conservation_units import get_uc_fire_alert_groups, get_ucs_for_boundary, load_ucs
 from db import get_all_events, get_recent_events, init_db, insert_fire_events
 from fetcher import fetch_firms_data, start_scheduler
 from map_renderer import render_map_html
@@ -152,6 +152,24 @@ async def api_geojson_mg() -> JSONResponse:
     feature = get_mg_boundary_feature()
     features = [feature] if feature is not None else []
     return JSONResponse({"type": "FeatureCollection", "features": features})
+
+
+@app.get("/api/alerts/uc-fires")
+async def api_uc_fire_alerts(
+    after: str | None = Query(default=None),
+    unit: str | None = Query(default=None),
+) -> JSONResponse:
+    """Grouped UC fire alerts for satellite acquisitions after the alarm cursor."""
+    if not after or len(after) != 15 or "T" not in after:
+        return JSONResponse([])
+
+    events = get_recent_events(DB_FILE_PATH, hours=48)
+    if unit and get_operational_unit(unit) is not None:
+        events = filter_events_by_operational_unit(events, unit)
+    else:
+        events = filter_events_by_mg(events)
+
+    return JSONResponse(get_uc_fire_alert_groups(events, after))
 
 
 @app.get("/api/status")

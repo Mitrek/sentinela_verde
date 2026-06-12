@@ -22,6 +22,7 @@
     <div class="topbar-meta">
       <div class="meta-item">Última atualização: <strong id="last-updated">—</strong></div>
       <div class="meta-item">Focos ativos: <strong id="total-events">—</strong></div>
+      <div class="meta-item">Satélites ativos: <strong>NASA FIRMS (MODIS/VIIRS)</strong></div>
     </div>
     <div class="topbar-right">
       <div class="layer-switcher">
@@ -30,6 +31,10 @@
       </div>
       <button id="refresh-btn">
         <span id="refresh-icon">↻</span> Atualizar
+      </button>
+      <button id="uc-alarm-toggle" class="alarm-toggle" type="button" aria-pressed="false">
+        <span class="alarm-toggle-switch" aria-hidden="true"></span>
+        <span id="uc-alarm-toggle-label">Ativar alarme de incêndio em UC</span>
       </button>
     </div>
   </header>
@@ -131,6 +136,37 @@
   <!-- ── Map ───────────────────────────────────────────────────────────────── -->
   <div id="map"></div>
 
+</div>
+
+<div id="uc-alert-modal" class="alert-modal" aria-hidden="true">
+  <div class="alert-modal-backdrop"></div>
+  <section class="alert-modal-panel" role="dialog" aria-modal="true" aria-labelledby="uc-alert-title">
+    <div class="alert-modal-kicker">Alerta em Unidade de Conservação</div>
+    <h2 id="uc-alert-title">Novo foco detectado</h2>
+    <dl class="alert-details">
+      <div>
+        <dt>Unidade</dt>
+        <dd id="uc-alert-name">—</dd>
+      </div>
+      <div>
+        <dt>Horário</dt>
+        <dd id="uc-alert-time">—</dd>
+      </div>
+      <div>
+        <dt>Satélite/sensor</dt>
+        <dd id="uc-alert-satellite">—</dd>
+      </div>
+      <div>
+        <dt>Focos na passagem</dt>
+        <dd id="uc-alert-count">—</dd>
+      </div>
+      <div>
+        <dt>Maior FRP</dt>
+        <dd id="uc-alert-frp">—</dd>
+      </div>
+    </dl>
+    <button id="uc-alert-ack" class="alert-ack-btn" type="button">Reconhecer alerta</button>
+  </section>
 </div>
 
 <div id="toast"></div>

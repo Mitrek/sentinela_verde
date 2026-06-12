@@ -146,6 +146,97 @@ def filter_events_by_uc(events: list[dict], uc_id: str) -> list[dict]:
         return events
 
 
+def _event_acquisition_key(event: dict) -> str:
+    return f"{event.get('acq_date') or ''}T{str(event.get('acq_time') or '').zfill(4)}"
+
+
+def _event_alert_key(event: dict, uc_id: str) -> str:
+    satellite = str(event.get("satellite") or "desconhecido").strip() or "desconhecido"
+    return f"{uc_id}|{satellite}|{_event_acquisition_key(event)}"
+
+
+def _fire_intensity(frp: float | None) -> str:
+    if frp is not None and frp > 100:
+        return "Alta"
+    if frp is not None and frp > 30:
+        return "Moderada"
+    return "Baixa"
+
+
+def get_uc_fire_alert_groups(events: list[dict], after: str | None) -> list[dict]:
+    """
+    Return fire detections inside UCs grouped by UC and satellite acquisition pass.
+
+    The `after` cursor must be an acquisition key in YYYY-MM-DDTHHMM format.
+    Events at or before that cursor are ignored so arming the alarm does not
+    alert for detections that were already on screen.
+    """
+    if not after:
+        return []
+
+    try:
+        groups: dict[str, dict] = {}
+        for event in events:
+            acquisition_key = _event_acquisition_key(event)
+            if acquisition_key <= after:
+                continue
+
+            point = Point(float(event["longitude"]), float(event["latitude"]))
+            frp = event.get("frp")
+            try:
+                frp_value = float(frp) if frp is not None else None
+            except (TypeError, ValueError):
+                frp_value = None
+
+            for uc_id, feature, uc_geometry in _load_uc_feature_geometries():
+                if not uc_geometry.covers(point):
+                    continue
+
+                properties = feature.get("properties") or {}
+                alert_key = _event_alert_key(event, uc_id)
+                group = groups.setdefault(
+                    alert_key,
+                    {
+                        "alert_key": alert_key,
+                        "uc_id": uc_id,
+                        "uc_name": properties.get("nome_uc") or "UC não informada",
+                        "acq_date": event.get("acq_date"),
+                        "acq_time": str(event.get("acq_time") or "").zfill(4),
+                        "satellite": event.get("satellite"),
+                        "event_count": 0,
+                        "max_frp": None,
+                        "max_intensity": "Baixa",
+                        "events": [],
+                    },
+                )
+                group["event_count"] += 1
+                group["events"].append(
+                    {
+                        "id": event.get("id"),
+                        "latitude": event.get("latitude"),
+                        "longitude": event.get("longitude"),
+                        "frp": event.get("frp"),
+                        "confidence": event.get("confidence"),
+                    }
+                )
+                if frp_value is not None and (
+                    group["max_frp"] is None or frp_value > group["max_frp"]
+                ):
+                    group["max_frp"] = frp_value
+                    group["max_intensity"] = _fire_intensity(frp_value)
+
+        return sorted(
+            groups.values(),
+            key=lambda group: (
+                f"{group.get('acq_date') or ''}T{group.get('acq_time') or ''}",
+                str(group.get("uc_name") or ""),
+            ),
+        )
+    except Exception as exc:
+        print(f"Failed to build UC fire alert groups: {exc}")
+        return []
+
+
 def get_all_uc_features() -> list[dict]:
     """Return all UC GeoJSON features."""
     try:

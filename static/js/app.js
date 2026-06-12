@@ -49,6 +49,26 @@ function formattedDetectionTime(raw) {
   return `${String(brasiliaHour).padStart(2, "0")}:${minute} (horário de Brasília)`;
 }
 
+function acquisitionKey(event) {
+  const date = event?.acq_date || "";
+  const time = String(event?.acq_time ?? "").padStart(4, "0");
+  return `${date}T${time}`;
+}
+
+function currentUtcAcquisitionKey() {
+  const now = new Date();
+  const date = now.toISOString().slice(0, 10);
+  const time = `${String(now.getUTCHours()).padStart(2, "0")}${String(now.getUTCMinutes()).padStart(2, "0")}`;
+  return `${date}T${time}`;
+}
+
+function maxAcquisitionKey(fires) {
+  const keys = fires
+    .map(acquisitionKey)
+    .filter(key => key.length === 15 && key.includes("T"));
+  return keys.length > 0 ? keys.sort().at(-1) : currentUtcAcquisitionKey();
+}
+
 function fireMarkerSize(level) {
   const sizes = {
     high: 26,
@@ -322,6 +342,7 @@ async function applyFilters() {
     currentFires = fires;
     renderFires(fires);
     await updateStatus();
+    await checkUcAlerts();
   } catch (e) {
     console.error("Erro ao carregar focos:", e);
     showToast("Erro ao carregar focos de incêndio.", "error");
@@ -355,21 +376,187 @@ function showToast(msg, type = "info") {
   setTimeout(() => toast.classList.remove("show"), 3500);
 }
 
+// ─── UC alarm ────────────────────────────────────────────────────────────────
+const UC_ALARM_POLL_MS = 60 * 1000;
+const alarmToggle = document.getElementById("uc-alarm-toggle");
+const alarmToggleLabel = document.getElementById("uc-alarm-toggle-label");
+const alertModal = document.getElementById("uc-alert-modal");
+const alertAckBtn = document.getElementById("uc-alert-ack");
+const alertNameEl = document.getElementById("uc-alert-name");
+const alertTimeEl = document.getElementById("uc-alert-time");
+const alertSatelliteEl = document.getElementById("uc-alert-satellite");
+const alertCountEl = document.getElementById("uc-alert-count");
+const alertFrpEl = document.getElementById("uc-alert-frp");
+
+let alarmEnabled = false;
+let alarmAlerting = false;
+let alarmAfter = null;
+let alarmUnit = null;
+let alarmTimer = null;
+let audioContext = null;
+let alarmSoundTimer = null;
+let acknowledgedAlertKeys = new Set();
+
+function setAlarmButtonState() {
+  alarmToggle.classList.toggle("active", alarmEnabled);
+  alarmToggle.classList.toggle("alerting", alarmAlerting);
+  alarmToggle.setAttribute("aria-pressed", alarmEnabled ? "true" : "false");
+  alarmToggleLabel.textContent = alarmAlerting
+    ? "Alarme disparado"
+    : alarmEnabled
+      ? "Alarme UC ligado"
+      : "Ativar alarme de incêndio em UC";
+}
+
+function ensureAudioContext() {
+  const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContextCtor) return null;
+  if (!audioContext) audioContext = new AudioContextCtor();
+  if (audioContext.state === "suspended") audioContext.resume();
+  return audioContext;
+}
+
+function playAlarmBeep() {
+  const context = ensureAudioContext();
+  if (!context) return;
+
+  const oscillator = context.createOscillator();
+  const gain = context.createGain();
+  oscillator.type = "sine";
+  oscillator.frequency.setValueAtTime(740, context.currentTime);
+  gain.gain.setValueAtTime(0.0001, context.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.08, context.currentTime + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.32);
+  oscillator.connect(gain);
+  gain.connect(context.destination);
+  oscillator.start();
+  oscillator.stop(context.currentTime + 0.34);
+}
+
+function startAlarmSound() {
+  if (alarmSoundTimer) return;
+  playAlarmBeep();
+  alarmSoundTimer = setInterval(playAlarmBeep, 900);
+}
+
+function stopAlarmSound() {
+  if (alarmSoundTimer) {
+    clearInterval(alarmSoundTimer);
+    alarmSoundTimer = null;
+  }
+}
+
+function hideUcAlert() {
+  alertModal.classList.remove("show");
+  alertModal.setAttribute("aria-hidden", "true");
+}
+
+function showUcAlert(alert) {
+  const timeLabel = formattedDetectionTime(alert.acq_time);
+  const maxFrp = alert.max_frp == null ? "Não informado" : `${Number(alert.max_frp).toFixed(1)} MW (${alert.max_intensity})`;
+
+  alertNameEl.textContent = alert.uc_name || "UC não informada";
+  alertTimeEl.textContent = `${alert.acq_date || "Data não informada"} ${timeLabel}`;
+  alertSatelliteEl.textContent = alert.satellite || "Não informado";
+  alertCountEl.textContent = String(alert.event_count || 0);
+  alertFrpEl.textContent = maxFrp;
+
+  alertModal.classList.add("show");
+  alertModal.setAttribute("aria-hidden", "false");
+  alertAckBtn.focus();
+}
+
+function clearAlarmTimer() {
+  if (alarmTimer) {
+    clearInterval(alarmTimer);
+    alarmTimer = null;
+  }
+}
+
+function disableUcAlarm(showMessage = false) {
+  alarmEnabled = false;
+  alarmAlerting = false;
+  alarmAfter = null;
+  alarmUnit = null;
+  clearAlarmTimer();
+  stopAlarmSound();
+  hideUcAlert();
+  setAlarmButtonState();
+  if (showMessage) showToast("Alarme de UC desligado.", "info");
+}
+
+async function checkUcAlerts() {
+  if (!alarmEnabled || alarmAlerting || !alarmAfter) return;
+
+  try {
+    const params = new URLSearchParams({ after: alarmAfter });
+    if (alarmUnit) params.set("unit", alarmUnit);
+    const alerts = await fetch(`/api/alerts/uc-fires?${params.toString()}`).then(r => r.json());
+    const alert = alerts.find(item => !acknowledgedAlertKeys.has(item.alert_key));
+    if (!alert) return;
+
+    acknowledgedAlertKeys.add(alert.alert_key);
+    alarmAlerting = true;
+    clearAlarmTimer();
+    setAlarmButtonState();
+    showUcAlert(alert);
+    startAlarmSound();
+  } catch (e) {
+    console.error("Erro ao verificar alertas de UC:", e);
+  }
+}
+
+function enableUcAlarm() {
+  ensureAudioContext();
+  alarmEnabled = true;
+  alarmAlerting = false;
+  alarmAfter = maxAcquisitionKey(currentFires);
+  alarmUnit = selectedUnitId();
+  setAlarmButtonState();
+  clearAlarmTimer();
+  alarmTimer = setInterval(checkUcAlerts, UC_ALARM_POLL_MS);
+  showToast("Alarme de UC ligado para novas passagens de satélite.", "info");
+}
+
+function handleUcAlarmToggle() {
+  if (alarmEnabled) {
+    disableUcAlarm(true);
+    return;
+  }
+  enableUcAlarm();
+}
+
+function resetUcAlarmForFilterChange() {
+  if (!alarmEnabled && !alarmAlerting) return;
+  disableUcAlarm(false);
+  showToast("Alarme de UC desligado pela mudança de filtro.", "info");
+}
+
+alarmToggle.addEventListener("click", handleUcAlarmToggle);
+alertAckBtn.addEventListener("click", () => {
+  disableUcAlarm(false);
+  showToast("Alerta reconhecido. Alarme de UC desligado.", "info");
+});
+
 // ─── Event listeners ──────────────────────────────────────────────────────────
 cobSelect.addEventListener("change", () => {
+  resetUcAlarmForFilterChange();
   populateBattalions();
   applyFilters();
 });
 battalionSelect.addEventListener("change", () => {
+  resetUcAlarmForFilterChange();
   populateCompanies();
   populateFractions();
   applyFilters();
 });
 companySelect.addEventListener("change", () => {
+  resetUcAlarmForFilterChange();
   populateFractions();
   applyFilters();
 });
 fractionSelect.addEventListener("change", () => {
+  resetUcAlarmForFilterChange();
   applyFilters();
 });
 
