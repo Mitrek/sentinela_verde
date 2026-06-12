@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fire Catcher</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            background-color: #111111;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        #status-bar {
+            height: 40px;
+            background-color: #1a1a1a;
+            color: #eeeeee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        .status-info {
+            display: flex;
+            gap: 20px;
+        }
+
+        .status-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .filter-select {
+            background-color: #2a2a2a;
+            color: #eeeeee;
+            border: 1px solid #444;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #c0392b;
+        }
+
+        #refresh-btn {
+            background-color: #c0392b;
+            color: #ffffff;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+
+        #refresh-btn:hover {
+            background-color: #e74c3c;
+        }
+
+        #refresh-btn:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+        }
+
+        #map-frame {
+            width: 100%;
+            height: calc(100vh - 40px);
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="status-bar">
+        <div class="status-info">
+            <span id="last-updated">Last updated: Loading...</span>
+            <span id="total-events">0 fire events</span>
+        </div>
+        <div class="status-controls">
+            <select id="area-select" class="filter-select">
+                <option value="">All Minas Gerais</option>
+            </select>
+            <select id="uc-select" class="filter-select">
+                <option value="">All Conservation Units</option>
+            </select>
+            <button id="refresh-btn">Refresh</button>
+        </div>
+    </div>
+    <iframe id="map-frame" src="/map"></iframe>
+
+    <script>
+        const lastUpdatedEl = document.getElementById('last-updated');
+        const totalEventsEl = document.getElementById('total-events');
+        const refreshBtn = document.getElementById('refresh-btn');
+        const mapFrame = document.getElementById('map-frame');
+        const areaSelect = document.getElementById('area-select');
+        const ucSelect = document.getElementById('uc-select');
+
+        function updateMapFrame() {
+            const area = areaSelect.value;
+            const uc = ucSelect.value;
+            const base = '/map';
+            const t = new Date().getTime();
+            const params = new URLSearchParams({ t });
+
+            if (uc) {
+                params.set('uc', uc);
+            } else if (area) {
+                params.set('area', area);
+            }
+
+            mapFrame.src = `${base}?${params.toString()}`;
+        }
+
+        async function updateStatus() {
+            try {
+                const response = await fetch('/api/status');
+                const data = await response.json();
+                
+                const timestamp = data.last_fetch_at || 'Never';
+                lastUpdatedEl.textContent = `Last updated: ${timestamp}`;
+                totalEventsEl.textContent = `${data.total_events || 0} fire events`;
+            } catch (error) {
+                console.error('Error fetching status:', error);
+            }
+        }
+
+        async function loadAreas() {
+            try {
+                const response = await fetch('/api/areas');
+                const areas = await response.json();
+                areas.forEach(area => {
+                    const opt = document.createElement('option');
+                    opt.value = area.id;
+                    opt.textContent = `${area.name} (${area.region})`;
+                    areaSelect.appendChild(opt);
+                });
+            } catch (e) {
+                console.error('Failed to load areas', e);
+            }
+        }
+
+        async function loadUcs() {
+            try {
+                const response = await fetch('/api/ucs');
+                const ucs = await response.json();
+                ucs.forEach(uc => {
+                    const opt = document.createElement('option');
+                    opt.value = uc.id;
+                    opt.textContent = uc.name;
+                    ucSelect.appendChild(opt);
+                });
+            } catch (e) {
+                console.error('Failed to load conservation units', e);
+            }
+        }
+
+        async function handleRefresh() {
+            refreshBtn.disabled = true;
+            refreshBtn.textContent = 'Updating...';
+            
+            try {
+                const response = await fetch('/api/fetch', { method: 'POST' });
+                if (response.ok) {
+                    updateMapFrame();
+                    await updateStatus();
+                } else {
+                    alert('Failed to fetch new data.');
+                }
+            } catch (error) {
+                console.error('Error during refresh:', error);
+                alert('An error occurred while refreshing.');
+            } finally {
+                refreshBtn.disabled = false;
+                refreshBtn.textContent = 'Refresh';
+            }
+        }
+
+        refreshBtn.addEventListener('click', handleRefresh);
+        areaSelect.addEventListener('change', () => {
+            if (areaSelect.value) {
+                ucSelect.value = '';
+            }
+            updateMapFrame();
+        });
+        ucSelect.addEventListener('change', () => {
+            if (ucSelect.value) {
+                areaSelect.value = '';
+            }
+            updateMapFrame();
+        });
+
+        loadAreas();
+        loadUcs();
+        updateStatus();
+        setInterval(updateStatus, 5 * 60 * 1000);
+    </script>
+</body>
+</html>

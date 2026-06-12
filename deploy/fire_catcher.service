@@ -1,0 +1,15 @@
+[Unit]
+Description=Fire Catcher Web App
+After=network.target
+
+[Service]
+Type=simple
+User=firecatcher
+WorkingDirectory=/opt/fire_catcher
+EnvironmentFile=/opt/fire_catcher/.env
+ExecStart=/opt/fire_catcher/venv/bin/uvicorn main:app --host 0.0.0.0 --port 8000
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,1563 @@
+
+2
+COMANDO-GERAL
+PLANO DE ARTICULAÇÃO DO CORPO DE BOMBEIROS MILITAR DE MINAS GERAIS
+COMANDANTE-GERAL
+Erlon Dias do Nascimento Botelho, Coronel BM
+CHEFE DO ESTADO-MAIOR
+Daniela Lopes Rocha da Costa, Coronel BM
+ELABORAÇÃO
+Terceira Seção do Estado-Maior
+Para citar este documento:
+MINAS GERAIS. Corpo de Bombeiros Militar de Minas Gerais. Resolução nº 1.215, de 25 de setembro de 2024. Aprova o
+Plano de Articulação do Corpo de Bombeiros Militar de Minas Gerais e revoga a Resolução nº 1147, de 19 de julho de 2023.
+Belo Horizonte: Comando-Geral. 25 de setembro de 2024.
+3
+COMANDO-GERAL
+RESOLUÇÃO Nº 1.215, de 25 de setembro de 2024.
+Aprova o Plano de Articulação do Corpo de Bombeiros Militar
+de Minas Gerais e revoga a Resolução nº 1147, de 19 de julho
+de 2023.
+O COMANDANTE-GERAL DO CORPO DE BOMBEIROS MILITAR DE MINAS GERAIS, no uso das
+atribuições que lhe são conferidas pelo Art. 6º da Lei Complementar nº 54, de 13 de dezembro de 1999,
+RESOLVE:
+Art. 1º - Aprovar o Plano de Articulação Operacional do Corpo de Bombeiros Militar de Minas Gerais
+(CBMMG).
+Art. 2º - O atendimento emergencial será realizado em função da demanda e recursos disponíveis, de
+forma a permitir que o recurso adequado mais próximo seja empenhado para o atendimento, podendo ultrapassar
+os limites de bairros e do próprio município.
+§ 1º - Ocorrências em municípios cobertos por frações ainda não instaladas serão atendidas pela fração
+mais próxima, conforme descrito nas notas de rodapé dos quadros de distribuição da articulação.
+§ 2º - Ocorrências que demandem a presença de oficial e/ou Coordenador de Bombeiros da Unidade
+(CBU) serão atendidas pela Unidade de Execução Operacional (UEOp) de referência1, conforme os quadros e
+mapas constantes nesta resolução.
+§ 3º - As ocorrências programadas, sobretudo as de Segurança Contra Incêndio e Pânico, deverão ser
+atendidas pela UEOp de referência ou por outra, conforme designação do Comando Operacional responsável,
+respeitando a articulação operacional descrita nos quadros e mapas desta resolução.
+Art. 3º - A vinculação da UEOp aos Comandos Operacionais de Bombeiros não implicará alteração da
+vinculação desta Unidade às Regiões Integradas de Segurança Pública (RISP).
+§ 1º - Os Comandos Operacionais de Bombeiros manterão atualizadas junto ao Estado-Maior as
+indicações dos representantes nas respectivas RISP.
+1 UEOp de referência: é a Unidade (Batalhão ou Companhia Independente) responsável pelo atendimento dos municípios,
+em conformidade com a resolução de articulação do CBMMG, para adequação com as Regiões Integradas de Segurança
+Pública.
+4
+§ 2º - Todas as Unidades deverão observar o disposto nas notas de rodapé que tratam do atendimento
+a ocorrências de urgência e emergência em municípios localizados em áreas de responsabilidade de outras
+frações.
+Art. 4º - Fica revogada a Resolução nº 1147, de 19 de julho de 2023.
+Art. 5º - Esta Resolução entra em vigor na data de sua publicação.
+Comando-Geral em Belo Horizonte, 25 de setembro de 2024.
+(a) Erlon Dias do Nascimento Botelho, Coronel BM
+Comandante-Geral
+5
+SUMÁRIO
+1 ORGANOGRAMA GERAL DO CBMMG ........................................................ 6
+1.1 MAPA - ARTICULAÇÃO OPERACIONAL DISTRIBUIÇÃO DOS
+MUNICÍPIOS POR COMANDO OPERACIONAL............................................ 7
+1.2 TABELA NUMERADA DOS MUNICÍPIOS COM UNIDADES DO CBMMG
+......................................................................................................................... 8
+2 MAPA - ARTICULAÇÃO OPERACIONAL DO 1º COB ................................ 10
+2.1 ORGANOGRAMA OPERACIONAL DO 1º COB ............................................. 11
+2.2 ARTICULAÇÃO OPERACIONAL DO 1º BBM ................................................ 12
+2.3 ARTICULAÇÃO OPERACIONAL DO 2º BBM ................................................ 15
+2.4 ARTICULAÇÃO OPERACIONAL DO 3º BBM ................................................ 18
+2.5 ARTICULAÇÃO OPERACIONAL DO 10º BBM ............................................... 21
+2.6 ARTICULAÇÃO OPERACIONAL DA 5ª CIA IND ........................................... 23
+3 MAPA – ARTICULAÇÃO OPERACIONAL D0 2º COB ................................ 25
+3.1 ORGANOGRAMA OPERACIONAL DO 2º COB ............................................ 26
+3.2 ARTICULAÇÃO OPERACIONAL DO 5º BBM ................................................ 27
+3.3 ARTICULAÇÃO OPERACIONAL DO 8º BBM ................................................ 30
+3.4 ARTICULAÇÃO OPERACIONAL DO 12º BBM .............................................. 32
+4 MAPA – ARTICULAÇÃO OPERACIONAL DO 3º COB ................................. 34
+4.1 ORGANOGRAMA OPERACIONAL DO 3º COB ............................................. 35
+4.2 ARTICULAÇÃO OPERACIONAL DO 4º BBM ................................................. 36
+4.3 ARTICULAÇÃO OPERACIONAL DA 2ª CIA IND ............................................ 40
+5 MAPA – ARTICULAÇÃO OPERACIONAL DO 4º COB ................................. 42
+5.1 ORGANOGRAMA OPERACIONAL DO 4º COB ............................................. 43
+5.2 ARTICULAÇÃO OPERACIONAL DO 7º BBM ................................................. 44
+5.3 ARTICULAÇÃO OPERACIONAL DA 6ª CIA IND ............................................ 46
+6 MAPA – ARTICULAÇÃO OPERACIONAL DO 5º COB ................................. 48
+6.1 ORGANOGRAMA OPERACIONAL DO 5º COB ............................................. 49
+6.2 ARTICULAÇÃO OPERACIONAL DO 6º BBM ................................................. 50
+6.3 ARTICULAÇÃO OPERACIONAL DO 11º BBM ............................................... 54
+7 MAPA – ARTICULAÇÃO OPERACIONAL DO 6º COB ................................. 56
+7.1 ORGANOGRAMA OPERACIONAL DO 6º COB ............................................. 57
+7.2 ARTICULAÇÃO OPERACIONAL DO 9º BBM ................................................. 58
+7.3 ARTICULAÇÃO OPERACIONAL DA 1ª CIA IND ............................................ 60
+7.4 ARTICULAÇÃO OPERACIONAL DA 7ª CIA IND ............................................ 62
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+6
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+7
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+8
+TABELA NUMERADA DOS MUNICÍPIOS COM UNIDADES DO CBMMG
+1º COB – Belo Horizonte – Região Central
+Nº MUNICÍPIO UEOP Nº MUNICÍPIO UEOP Nº MUNICÍPIO UEOP
+1 Belo
+Horizonte 1ºBBM e 3ºBBM 8 Itaúna 2º Pel/ 2ª Cia Pará de
+Minas 16 Bom Despacho PA/ 3ª Cia - Nova Serrana
+2 Contagem 2º BBM 9 Juatuba 6º Pel /2º BBM 17 Lagoa Santa 2ª Cia/3º BBM
+3 Divinópolis 10º BBM 10 Ribeirão das
+Neves 8º Pel/2º BBM 18 Mariana PA/2ª Cia - Ouro Preto
+4 Sete Lagoas 5ª CIA IND 11 Nova Serrana 3ª Cia/ 10º BBM 19 Arcos PA/4ª Cia - Formiga
+20 Santa Luzia 4º Pel/2ª Cia - Lagoa Santa
+5 Ouro Preto 2ª Cia/1º BBM 12 Vespasiano 3º Pel/2ª Cia - Lagoa
+Santa
+21 Curvelo 2º Pel/5ª Cia Ind - Sete Lagoas
+22 Betim PA/2º BBM
+6 Pará de Minas 2ª Cia/10º BBM 13 Nova União PA/2º Pel. - Sabará ▲ Itabirito Brigada Municipal
+7 Formiga 4ª Cia/10º BBM
+14 Oliveira 2º Pel/4ª Cia - Formiga ▲ Campo Belo PA/2º Pel - Oliveira
+15 Sabará 2º Pel/ 2ªCia - Lagoa
+Santa ▲ Brumadinho PA/2º BBM
+2º COB – Uberlândia – Região Triângulo Mineiro
+Nº MUNICÍPIO UEOP Nº MUNICÍPIO UEOP Nº MUNICÍPIO UEOP
+23 Uberlândia 5º BBM 28 Campos Altos PA/2ª Cia - Araxá 33 Patrocínio 2º Pel/12ºBBM
+34 Unaí 2ª Cia/12ºBBM
+24 Uberaba 8º BBM 29 Frutal 7º Pel/8º BBM 35 João Pinheiro 3º Pel /2ª Cia - Unaí
+36 Sacramento 2º Pel/2ª Cia - Araxá
+25 Patos de
+Minas 12º BBM 30 Ituiutaba 2º Pel/2ª Cia -
+Araguari 37 Tupaciguara PA/2º Pel - Ituiutaba
+26 Araguari 2ª Cia/5º BBM 31 Iturama 8º Pel/8º BBM ▲ São Gotardo PA/2ª Cia - Araxá
+27 Araxá 2ª Cia/8º BBM 32 Paracatu 2º Pel/2ª Cia - Unaí ▲ Monte Carmelo PA/5ºPel - Patrocínio
+3º COB – Juiz de Fora – Região Zona da Mata
+Nº MUNICÍPIO UEOP Nº MUNICÍPIO UEOP Nº MUNICÍPIO UEOP
+38 Juiz de Fora 4º BBM 41 Ubá 2ª Cia/ 4º BBM 45 Viçosa 3º Pel/2ª Cia - Ubá
+39 Barbacena 2ª CIA IND 42 São João Del Rei 2º Pel/2ª Cia Ind 46 Congonhas PA/2ª Cia -
+Cons. Lafaiete
+40 Conselheiro
+Lafaiete 2ª Cia/2ª Cia Ind
+43 Leopoldina 7º Pel/4º BBM 47 Além Paraíba PA/7º Pel - Leopoldina
+48 Cataguases PA/7º Pel - Leopoldina
+44 Muriaé 2º Pel/2ª Cia - Ubá ▲ Astolfo Dutra Brigada Municipal
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+9
+TABELA ENUMERADA DOS MUNICÍPIOS COM UNIDADES DO CBMMG
+4º COB – Montes Claros – Região Norte
+Nº MUNICÍPIO UEOP Nº MUNICÍPIO UEOP Nº MUNICÍPIO UEOP
+49 Montes
+Claros 7º BBM 52 Januária 7º Pel/7º BBM 55 Francisco Sá PA/7ºBBM
+50 Diamantina 6ª CIA IND 53 Salinas 8º Pel/7º BBM 56 Bocaiúva PA/ 7º BBM
+51 Janaúba 6º Pel/7º BBM 54 Pirapora 2º Pel/6ª Cia Ind 57 Capelinha 3º Pel/6ªCia Ind
+58 Três Marias 4º Pel/6ª Cia Ind
+5º COB – Governador Valadares – Região Leste
+Nº MUNICÍPIO UEOP Nº MUNICÍPIO UEOP Nº MUNICÍPIO UEOP
+59 Governador
+Valadares 6º BBM 64 Caratinga 2º Pel/2ª Cia- Manhuaçu 70 São João Evangelista 7º Pel/6º BBM
+60 Ipatinga 11º BBM 65 Ponte Nova 3º Pel/2ª Cia- Manhuaçu
+71 Araçuaí 3º Pel/2ª Cia - Teófilo Otoni
+72 Guanhães PA/7º Pel – São João Evangelista
+61 Teófilo Otoni 2ª Cia/6º BBM 66 Coronel Fabriciano 5º Pel/11º BBM 73 São Gonçalo do Rio
+Abaixo PA/1ª Cia - Itabira
+62 Manhuaçu 2ª Cia/11ºBBM 67 Itabira 6º Pel/11º BBM 74 João Monlevade PA / 6º Pel - Itabira
+63 Almenara 2º Pel/2ª Cia - Teófilo
+Otoni
+68 Timóteo 7º Pel/11º BBM 75 Itaobim 4º Pel/2ª Cia-Teófilo Otoni
+69 Resplendor 6º Pel/6º BBM ▲ Ipanema Brigada Municipal
+6º COB – Poços de Caldas – Região Sul
+Nº MUNICÍPIO UEOP Nº MUNICÍPIO UEOP Nº MUNICÍPIO UEOP
+76 Varginha 9º BBM 82 Extrema 3º Pel/7º Cia Ind 89 Boa Esperança PA/9º BBM
+77 Poços de
+Caldas 1ª CIA IND 83 Guaxupé 4º Pel/2ª Cia- Passos 90 Andradas PA/1ª Cia Ind
+78 Alfenas 3ª Cia/1ª Cia Ind 84 Itajubá 2º Pel /7ª Cia Ind 91 Machado PA/3ªCia Alfenas
+85 Piumhi 3º Pel/2ª Cia - Passos
+79 Lavras 2ª Cia/9º BBM 86 São Lourenço 3º Pel/2ª Cia - Lavras ▲ Paraisópolis Brigada Municipal
+80 Passos 2ª Cia /1ª Cia Ind 87 São S. do Paraíso 2º Pel/2ª Cia - Passos
+88 Três Corações 2º Pel/2ª Cia - Lavras
+81 Pouso
+Alegre 7ª CIA IND
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+10
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+11
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+12
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+13
+COB UEOp CIA Pelotão RISP Municípios/bairros da área de atuação
+1º COMANDO OPERACIONAL DE BOMBEIROS
+BELO HORIZONTE
+1° BATALHÃO DE BOMBEIROS MILITAR
+BELO HORIZONTE
+1ª Cia BM
+Belo
+Horizonte
+1° ao 4° Pel BM
+Sede
+1ª RISP
+Belo Horizonte
+Bairros Regional Sul: Acaba Mundo, Anchieta, Belvedere,
+Boa Viagem, Carmo, Comiteco, Cruzeiro, Estrela,
+Funcionários, Lourdes, Mala e Cuia, Mangabeiras, Marçola,
+Nossa Senhora da Aparecida, Nossa Senhora da Conceição,
+Nossa Senhora de Fátima, Nossa Senhora do Rosário, Novo
+São Lucas, Pindura Saia, Santa Isabel, Santa Rita de Cássia,
+Santana do Cafezal, Santo Agostinho, Santo Antônio, São
+Lucas, São Pedro, Savassi, Serra, Sion, Vila FUMEC. (30)
+3ª RISP
+Vespasiano Municípios: Nova Lima, Raposos e Rio Acima. (03)
+5° Pel BM
+Centro
+1ª RISP
+Belo Horizonte
+Bairros Regional Centro-Sul: Barro Preto, Calafate, Centro,
+Colégio Batista, Floresta, Prado, Vila Calafate, Vila da
+Amizade. (08)
+6° Pel BM
+Saudade
+1ª RISP
+Belo Horizonte
+Bairros Regional Leste: Alto Vera Cruz, Baleia, Belém, Boa
+Vista, Caetano Furquim, Camponesa I, Camponesa III, Casa
+Branca, Cidade Jardim Taquaril, Cônego Pinheiro, Cônego
+Pinheiro A, Conjunto Taquaril, Esplanada, Granja de Freitas,
+Fazendinha, Grota, Horto, Horto Florestal, João Alfredo, Jonas
+Veiga, Mariano de Abreu, Nova Vista, Paraíso, Pirineus,
+Pompéia, Sagrada Família, Santa Efigênia, Santa Inês, Santa
+Tereza, São Geraldo, São Vicente, Saudade, Taquaril, Vera
+Cruz, Vila Boa Vista, Vila da Área, Vila Dias, Vila Nossa
+Senhora do Rosário, Vila Paraíso, Vila São Geraldo, Vila Novo
+São Lucas, Vila São Rafael, Vila União, Vila Vera Cruz I, Vila
+Vera Cruz II. (45)
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+14
+COB UEOp CIA Pelotão RISP Municípios/bairros da área de atuação
+1º COMANDO OPERACIONAL DE BOMBEIROS
+BELO HORIZONTE
+1° BATALHÃO DE BOMBEIROS MILITAR
+BELO HORIZONTE
+1ª Cia BM
+Belo
+Horizonte
+7° Pel BM
+Santa Lúcia
+1ª RISP
+Belo Horizonte
+Bairros Regional Oeste: Buritis, Chácara Leonina, Cidade
+Jardim, Conjunto Santa Maria, Coração de Jesus,
+Custodinha, Estoril, Estrela do Oriente, Guaratã, Havaí,
+Imbaúbas, Leonina, Luxemburgo, Marajó, Monte São José
+Palmeiras, Pantanal, Parque São José, Pilar, Santa Lúcia,
+Santa Sofia, São Bento, São João, Vila Antena, Vila
+Bandeirantes, Vila Barragem Santa Lúcia, Vila Betânia, Vila
+Nova Paraíso, Vila Olhos d'Água, Vila Paris, Vila Pilar. (31)
+PA Barroca 1ª RISP
+Belo Horizonte
+Bairros Regional Oeste: Alpes, Alto Barroca, Ambrosina,
+Ápia, Bairro das Indústrias II, Barão Homem de Melo I, Barão
+Homem de Melo III, Barão Homem de Melo IV, Barroca,
+Betânia, Cabana do Pai Tomaz, Cinquentenário, Gameleira,
+Grajaú, Gutierrez, Jardim América, Jardinópolis, Madre
+Gertrudes, Morro das Pedras, Nova Barroca, Nova Cintra,
+Nova Gameleira, Nova Granada, Nova Suíça, Olhos D’água,
+Salgado Filho ,São Jorge I, São Jorge II, São Jorge III,
+Ventosa, Vila Havaí, Vila Madre Gertrudes I, Vila Madre
+Gertrudes II, Vila Madre Gertrudes III, Vila Madre Gertrudes
+V, Vila Nova Gameleira I, Vila Nova Gameleira II, Vila Nova
+Gameleira III, Vista Alegre. (39)
+2ª Cia BM
+Ouro Preto
+1º Pel BM
+Ouro Preto
+3ª RISP
+Vespasiano Municípios: Itabirito e Ouro Preto. (02)
+PA BM
+Mariana
+3ª RISP1
+Vespasiano
+Municípios: Catas Altas, Diogo de Vasconcelos, Mariana.
+(03)
+Brigada Municipal
+Itabirito
+3ª RISP
+Vespasiano Município: Itabirito.
+1 Catas Altas pertence à 12ª RISP – Ipatinga.
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+15
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+16
+COB UEOp CIA Pelotão RISP Municípios/bairros da área de atuação
+1º COMANDO OPERACIONAL DE BOMBEIROS
+BELO HORIZONTE
+2º BATALHÃO DE BOMBEIROS MILITAR
+CONTAGEM
+1ª Cia BM
+Contagem
+1° ao 4° Pel
+BM
+Sede
+2ª RISP
+Contagem
+Bairros de Contagem: Água Branca, Alvorada, Amazonas, Bela Vista,
+Beatriz, Califórnia I, Califórnia III, Campina Verde, Canadá, Centro de
+Contagem, Chácara Boa Vista, Chácara Califórnia, Chácaras Imperiais do
+Madeira, Cidade Industrial, Cinco, Colonial, Darci Ribeiro, Eldorado,
+Eldoradinho, Europa, Flamengo, Fonte Grande, Glalijá, Granja Ouro Branco,
+Granja Vista Alegre, Inconfidentes, Jardim Califórnia, Jardim Riacho das
+Pedras, Jardim Vera Cruz, Jardim Vera Cruz II, Linda Vista, Lúcio de Abreu,
+Monte Castelo, Novo Eldorado, Nossa S. de Fátima, Novo Retiro, Olinda,
+Parque São João, Perobas, Perobas II, Parque Durval de Barros, Quintas
+Coloniais, Quintas do Jacuba, Recanto Verde, Riacho das Pedras, Santa
+Cruz, Santa Luzia, Santa Maria, Santo Antônio, São Gonçalo, Serra Verde,
+Solar do Madeira, Três Barras, Tupã, Vera Cruz, Vila Itaú, Vila Magdalena,
+Vila Militar, Vila Renascer. (59)
+Região de Nova Contagem: Columbia, Icaivera, Paulo Camilo, Riacho III,
+Santa Edwiges, Santa Helena, Sapucaia I, Sapucaia II, Sapucaia III,
+Tropical, Vila Beija Flor, Vila Belém. (12)
+Bairros de Belo Horizonte: Califórnia, Camargos, Santa Maria, Virgínia. (4)
+5º Pel BM
+CEASA
+2ª RISP
+Contagem
+1ª RISP
+Belo
+Horizonte
+Bairros de Contagem: Bom Jesus, Caiapós, Carajás, Chácara Santa
+Terezinha, Colorado, Fortaleza, Guanabara, Jardim Balneário, Jardim do
+Lago, Jardim Laguna, Kennedy, Liberdade II, Milanês, Morada Nova,
+Nacional, Novo Progresso, Oitis, Parque Xangri-lá, Pedra Azul, Ressaca,
+San Marino. (21)
+Bairros de Belo Horizonte: Conjunto Confisco, Coqueiros, Pindorama, São
+Salvador, Vila Coqueiral. (05)
+PA BM
+Betim
+2ª RISP
+Contagem Município: Betim, Mário Campos. (02)
+PA BM
+Brumadinho1
+2ª RISP2
+Contagem Municípios: Bonfim, Brumadinho, Moeda, Sarzedo. (04)
+1 Até a instalação do PA BM/2ª Cia – Brumadinho, as ocorrências de urgência e emergência nos municípios desta fração serão atendidas da seguinte
+forma: Brumadinho, Moeda e Sarzedo pelo 7º Pel/1ª Cia – Barreiro; Bonfim pelo 2º Pel/2ª Cia/10º BBM – Itaúna, observando-se o disposto no § 3º do art.
+2º desta resolução.
+2 Moeda pertence à 13ª RISP – Barbacena.
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+17
+COB UEOp CIA Pelotão RISP Municípios/bairros da área de atuação
+1º COMANDO OPERACIONAL DE BOMBEIROS
+BELO HORIZONTE
+2º BATALHÃO DE BOMBEIROS MILITAR
+CONTAGEM
+1ª Cia BM
+Contagem
+6° Pel BM
+Juatuba
+2ª RISP
+Contagem
+Município: Florestal, Igarapé, Juatuba, Mateus Leme, São Joaquim
+de Bicas (05)
+7º Pel BM
+Barreiro
+1ª RISP
+Belo
+Horizonte
+Bairros de Belo Horizonte: Águas Claras, Alta Tensão, Alto das
+Antenas, Araguaia, Átila de Paiva, Bairro das Indústrias, Barreiro de
+Baixo, Barreiro de Cima, Bernadete, Bonsucesso, Brasil
+Industrial, Cardoso, Conjunto Ademar Maldonado, Conj.
+Bonsucesso, Conj. Flavio de Oliveira, Conj. João Paulo II, Conj.
+Mangueiras, Corumbiara, Diamante, Distrito Industrial do Jatobá,
+Durval de Barros, Ernesto do Nascimento, Flávio Marques Lisboa,
+Independência, Itaipu, Jatobá, Lindeia, Marieta, Marilândia,
+Milionários, Mineirão, Miramar, Novo das Indústrias, Novo Santa
+Cecília, Olaria, Petrópolis, Pongelupe, Regina, Santa
+Cecilia, Santa Helena, Santa Margarida, Solar do Barreiro, Teixeira
+Dias, Tirol, Túnel de Ibirité, Urucuia, Vale Do Jatobá, Vila
+Castanheira, Vila CEMIG, Vila COPASA, Vila Formosa, Vila
+Independência, Vila Pinho, Vila Santa Rita, Vitória da
+Conquista, Washington Pires. (56)
+2ª RISP
+Contagem Município: Ibirité. (01)
+8º Pel BM
+Ribeirão das
+Neves
+2ª RISP
+Contagem Municípios: Ribeirão das Neves1, Esmeraldas. (02)
+1 Exceto os bairros pertencentes à Justinópolis, que serão atendidos pelo 5° Pel BM Venda Nova/3º BBM.
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+18
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+19
+COB UEOp CIA Pelotão RISP Municípios/bairros da área de atuação
+1º COMANDO OPERACIONAL DE BOMBEIROS
+BELO HORIZONTE
+3º BATALHÃO DE BOMBEIROS MILITAR
+BELO HORIZONTE
+1ª Cia BM
+Belo
+Horizonte
+1° ao 4°
+Pel BM
+Sede
+1ª RISP
+Belo
+Horizonte
+Bairros Regional Norte: Aarão Reis, Andiroba, Bacurau, Biquinhas, Boa União I, Boa União
+II, Chácara Novo Aarão Reis, Conjunto Floramar, Conjunto Providência, Granja Werneck,
+Guarani, Heliópolis, Jardim Felicidade, Jardim Guanabara, Lajedo, Minaslândia, Mirante,
+Monte Azul, Novo Aarão Reis, Primeiro de Maio, Providência, São Bernardo, São Gonçalo,
+São Tomaz, Solimões, Tupi - A, Tupi - B, Vila Clóris, Vila Minaslândia, Vila Primeiro de Maio,
+Vila Aeroporto. (31)
+Bairros Noroeste: Alípio de Melo, Alto dos Caiçaras, Alto dos Pinheiros, Álvaro Camargos,
+Aparecida, Aparecida Sétima Seção, Bom Jesus, Bonfim, Caiçara-Adelaide, Caiçaras,
+Califórnia, Carlos Prates, Conjunto Califórnia I, Conjunto Califórnia II, Conjunto Celso
+Machado, Conjunto Itacolomi, Conjunto Jardim Filadélfia, Conjunto Novo Dom Bosco,
+Coração Eucarístico, Delta, Dom Bosco, Dom Cabral, Ermelinda, Frei Eustáquio, Glória,
+Inconfidência, Ipanema, Jardim Alvorada, Jardim Montanhês, Jardim São José, João
+Pinheiro, Lorena, Manacás, Maravilha, Marmiteiros, Minas Brasil, Monsenhor Messias, Nova
+Cachoeirinha, Nova Esperança, Novo Glória, Oeste, Padre Eustáquio, Pedreira Prado Lopes,
+Pedro II, Primavera, Santo André, São Francisco das Chagas, Senhor dos Passos, Sport
+Club, Sumaré, Vila Califórnia, Vila das Oliveiras, Vila Jardim Alvorada, Vila Jardim Montanhês,
+Vila Jardim São José, Vila Oeste, Vila PUC, Vila Sumaré, Vila Trinta e um de Março. (59)
+1ª RISP
+Belo
+Horizonte
+Bairros Regional Pampulha: Aeroporto, Bandeirantes, Bispo de Maura, Braúnas, Castelo,
+Conjunto Celso Machado, Conjunto Lagoa, Conjunto São Francisco de Assis, Dona Clara,
+Engenho Nogueira, Garças, Indaiá, Itapoã, Itatiaia, Jaraguá, Lagoa da Pampulha, Liberdade,
+Nova Pampulha, Novo Ouro Preto, Ouro Preto, Paquetá, Santa Amélia, Santa Branca, Santa
+Rosa, Santa Terezinha, São Francisco, São José, São Luiz, Sarandi, Serrano, Suzana, Trevo,
+UFMG Campus, Universitário, Urca, Vila Aeroporto Jaraguá, Vila Engenho Nogueira, Vila
+Paquetá, Vila Real I, Vila Real II, Vila Rica, Vila Santa Rosa, Vila Santo Antônio, Vila Santo
+Antônio Barroquinha, Vila São Francisco, Vila Suzana I, Vila Suzana II. (47)
+1ª RISP
+Belo
+Horizonte
+Bairros Regional Nordeste: Acaiaca, Antônio Ribeiro de Abreu, Bairro da Graça, Beira
+Linha, Belmonte, Boa Esperança, Cachoeirinha, Canadá, Cidade Nova, Concórdia, Dom
+Joaquim, Dom Silvério, Eymard, Fazenda Capitão Eduardo, Fernão Dias, Goiânia, Grotinha,
+Guanabara, Ipiranga, Lagoinha, Maria Goretti, Maria Tereza, Maria Virgínia, Morro dos
+Macacos, Nazaré, Nova Floresta, Ouro Minas, Palmares, Paulo VI, Penha, Pirajá,
+Renascença, Santa Cruz, São Cristóvão, São Gabriel, São Marcos, São Paulo, São
+Sebastião, Silveira, Tiradentes, Três Marias, União, Vila Brasília, Vila da Luz, Vila da Paz,
+Vila de Sá, Vila do Pombal, Vila Esplanada, Vila Ipê, Vila Inestan, Vila Ipiranga, Vila Maria
+Virginia, Vila Nova Cachoeirinha I, Vila Nova Cachoeirinha II, Vila Nova Cachoeirinha IV, Vila
+Ouro Minas, Vila São Dimas, Vila São Gabriel, Vila São Gabriel Jacuí, Vila São Paulo, Vila
+Maloca, Vista Do Sol. (62)
+1 Quando ativado, o Pel Acadêmico (ABM) atuará em apoio aos Pelotões pertencentes à 1ª Cia/3º BBM.
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+20
+1 Todos os bairros pertencentes à Justinópolis.
+2 Pedro Leopoldo pertence à 19 RISP- Sete Lagoas.
+COB UEOp CIA Pelotão RISP Municípios/bairros da área de atuação
+1º COMANDO OPERACIONAL DE BOMBEIROS
+BELO HORIZONTE
+3º BATALHÃO DE BOMBEIROS MILITAR
+BELO HORIZONTE
+1ª Cia BM
+Belo
+Horizonte
+5° Pel BM1
+Venda Nova
+1ª RISP
+Belo
+Horizonte
+Bairros: Apolônia, Campo Alegre, Candelária, Cenáculo, Céu Azul, Conjunto Minas
+caixa, Copacabana, Etelvina Carneiro, Flamengo, Floramar, Frei Leopoldo, Jaqueline,
+Jardim Atlântico, Jardim Leblon, Juliana, Justinópolis1, Lagoa, Lagoinha (Venda
+Nova), Letícia, Madri, Mantiqueira, Maria Helena, Mariquinhas, Nossa Senhora
+Aparecida, Nova América, Parque São Pedro, Piratininga, Planalto, Rio Branco, São
+João Batista (Venda Nova), São Paulo (Venda Nova), Santa Mônica, São Benedito,
+Satélite, Unidas, Universo, Várzea da Palma, Venda Nova, Vila Jardim Leblon, Vila
+Canto Do Sabiá, Vila Copacabana, Vila dos Anjos, Vila Mantiqueira, Vila Nova, Vila
+Piratininga, Vila Santa Mônica, Vila São João Batista, Vila Satélite, Vila SESC, Xangri-
+lá, Xodó-Marize, Zilah Spósito. (52)
+PA BM
+Cid.
+Administrativa
+1ª RISP
+Belo
+Horizonte
+Bairros: Canaã, Conjunto Minas Caixa, Conjunto Morro Alto (Vespasiano), Esplendor
+Venda Nova, Europa, Jardim dos Comerciários, Laranjeiras, Nova York, Serra Verde,
+São Damião. (10)
+2ª Cia
+Lagoa
+Santa
+1° Pel BM
+Sede
+3ª RISP
+Vespasiano
+Municípios: Baldim, Conceição do Mato Dentro, Lagoa Santa, Morro do Pilar,
+Santana do Riacho. (05)
+2º Pel BM
+Sabará
+3ª RISP
+Vespasiano Municípios: Caeté, Sabará. (02)
+1ª RISP
+Belo
+Horizonte
+Bairros de Belo Horizonte: Beija Flor, Bela Vitória, Capitão Eduardo, Conjunto
+Capitão Eduardo, Conjunto Paulo VI, Jardim Vitória, Mirtes, Pousada Santo Antônio,
+Vila Maria, Vitória. (10)
+PA BM
+Nova União
+3ª RISP
+Vespasiano Municípios: Nova União, Taquaraçu de Minas. (02)
+3º Pel BM
+Vespasiano
+3ª RISP2
+Vespasiano Municípios: Confins, Pedro Leopoldo, São José da Lapa, Vespasiano. (04)
+4º Pel BM
+Santa Luzia
+3ª RISP
+Vespasiano Município: Santa Luzia, Jaboticatubas (02)
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+21
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+22
+COB UEOp CIA Pelotão RISP Municípios/bairros da área de atuação
+1º COMANDO OPERACIONAL DE BOMBEIROS
+BELO HORIZONTE
+10° BATALHÃO DE BOMBEIROS MILITAR
+DIVINÓPOLIS
+1ª Cia BM
+Divinópolis
+1° ao 4° Pel BM
+Sede
+7ª RISP
+Divinópolis
+Municípios: Carmo do Cajuru, Divinópolis, Pedra do Indaiá, São
+Gonçalo do Pará, São Sebastião do Oeste, Santo Antônio do Monte.
+(06)
+2ª Cia BM
+Pará de
+Minas
+1° Pel BM
+Pará de Minas
+7ª RISP
+Divinópolis
+Municípios: Igaratinga, Maravilhas, Onça de Pitangui, Papagaios,
+Pará de Minas, Pequi, São José da Varginha. (07)
+2º Pel BM
+Itaúna
+7ª RISP1
+Divinópolis
+Municípios: Crucilândia, Itaguara, Itatiaiuçu, Itaúna, Rio Manso.
+(05)
+3ª Cia BM
+Nova serrana
+1° Pel BM
+Nova Serrana
+7ª RISP
+Divinópolis
+Municípios: Araújos, Conceição do Pará, Leandro Ferreira, Nova
+Serrana, Perdigão, Pitangui. (06)
+PA BM
+Bom Despacho
+7ª RISP
+Divinópolis
+Municípios: Abaeté, Bom Despacho, Cedro do Abaeté, Dores do
+Indaiá, Luz, Martinho Campos, Moema, Paineiras, Pompéu, Quartel
+Geral. (10)
+4ª Cia BM
+Formiga
+1° Pel BM
+Formiga
+7ª RISP
+Divinópolis
+Municípios: Camacho, Córrego Fundo, Formiga, Itapecerica,
+Pains. (05)
+PA BM
+Arcos
+7ª RISP
+Divinópolis
+Municípios: Arcos, Bambuí, Iguatama, Japaraíba, Lagoa da Prata.
+(05)
+2º Pel BM
+Oliveira
+6ª RISP2
+Lavras
+Municípios: Carmo da Mata, Carmópolis de Minas, Cláudio,
+Oliveira, Passa Tempo, Piracema, Santo Antônio do Amparo, São
+Francisco de Paula. (08)
+PA BM3
+Campo Belo
+6ª RISP
+Lavras
+Municípios: Aguanil, Cana Verde, Campo Belo, Candeias, Cristais,
+Santana do Jacaré. (06)
+1 Crucilândia, Itaguara e Rio Manso pertencem à 2ª RISP – Contagem.
+2 Cláudio pertence à 7ª RISP – Divinópolis.
+3 Até a instalação do PA BM/2º Pel – Campo Belo, as ocorrências de urgência e emergência nos municípios desta fração serão atendidas da seguinte
+forma: Candeias e Campo Belo pelo 1º Pel/4ª Cia – Formiga; Aguanil e Cristais pelo PA BM/9º BBM – Boa Esperança, Cana Verde pela 2ª Cia/9º
+BBM – Lavras, Santana do Jacaré pelo 2º Pel/4ª Cia – Oliveira.
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+23
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+24
+COB UEOp CIA Pelotão RISP Municípios/bairros da área de atuação
+1º COMANDO OPERACIONAL DE BOMBEIROS
+BELO HORIZONTE
+5ª COMPANHIA INDEPENDENTE
+SETE LAGOAS
+1ª Cia BM
+Sete Lagoas
+1° Pelotão BM
+Sede 19ª RISP
+S. Lagoas
+Municípios: Araçaí, Cachoeira da Prata, Caetanópolis, Capim
+Branco, Fortuna de Minas, Funilândia, Inhaúma, Jequitibá,
+Matozinhos, Paraopeba, Prudente de Moraes, Santana de
+Pirapama, Sete Lagoas. (13)
+2º Pelotão BM
+Curvelo
+14ª RISP
+Curvelo
+Municípios: Augusto de Lima, Cordisburgo, Corinto, Curvelo,
+Inimutaba, Monjolos, Morro da Garça, Presidente Juscelino, Santo
+Hipólito. (9)
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+25
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+26
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+27
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+28
+COB UEOp CIA Pelotão RISP Municípios/bairros da área de atuação
+2º COMANDO OPERACIONAL DE BOMBEIROS
+UBERLÂNDIA
+5° BATALHÃO DE BOMBEIROS MILITAR
+UBERLÂNDIA
+1ª Cia BM
+Uberlândia
+1° ao 4° Pel
+BM
+Sede
+9ª RISP
+Uberlândia
+Bairros: Aclimação, Alto Umuarama, Alvorada, Brasil, Chácaras
+Andorinhas, Custódio Pereira, Distrito de Tapuirama, Dom Almir, Grand
+Ville, Granja Marileuza, Jardim Califórnia, Jardim Ipanema I, Jardim
+Ipanema II, Jardim Prosperidade, Jardim Sucupira, Joana D'arc,
+Mansões Aeroporto, Morada dos Pássaros, Morumbi, Novo Mundo,
+Portal do Vale, Quintas do Bosque, Santa Clara, Santa Mônica, São
+Francisco, Saraiva, Segismundo Pereira, Terra Nova, Tibery,
+Umuarama, Vida Nova, Vigilato Pereira, Vila Marileuza, Rural IV, Rural
+V. (35)
+5° Pel BM
+Industrial
+9ª RISP
+Uberlândia
+Bairros: Cruzeiro do Sul, Distrito Cruzeiro dos Peixotos, Distrito
+Industrial, Distrito de Martinésia, Esperança, Guarani, Jardim América I,
+Jardim América II, Jardim Brasília, Maravilha, Marta Helena, Minas
+Gerais, Morada do Sol, Nossa Senhora das Graças, Pacaembú,
+Presidente Roosevelt, Residencial Gramado, Residencial Liberdade,
+Santa Rosa, São José, Taiaman, Tocantins, Rural I, Rural III. (24)
+6º Pel BM
+Oeste
+9ª RISP
+Uberlândia
+Bairros: Chácaras Panorama, Chácaras Tubalina, Cidade Jardim,
+Distrito de Miraporanga, Dona Zulmira, Jaraguá, Jardim Europa, Jardim
+Patrícia, Jardim Canaã, Jardim das Palmeiras, Jardim Holanda, Luizote
+de Freitas, Mansour, Monte Hebron, Morada Nova, Nova Uberlândia,
+Planalto, Parque Santo Antônio, Residencial Pequis, Tubalina. (20)
+PA BM
+Centro
+9ª RISP
+Uberlândia
+Bairros: Bom Jesus, Cazeca, Centro, Daniel Fonseca, Fundinho,
+Lídice, Martins, Nossa Senhora Aparecida, Osvaldo Rezende,
+Tabajaras. (10)
+7º Pel BM
+São Jorge
+9ª RISP
+Uberlândia
+Bairros: Carajás, City Uberlândia, Glória, Granada, Jardim
+Inconfidência, Jardim Karaíba, Lagoinha, Laranjeiras, Morada da Colina,
+Pampulha, Patrimônio, Parque Camaru, Santa Luzia, São Jorge,
+Shopping Park, Shopping Sul, Rural II. (17)
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+29
+COB UEOp CIA Pelotão RISP Municípios/bairros da área de atuação
+2º COMANDO OPERACIONAL DE BOMBEIROS
+UBERLÂNDIA
+5° BATALHÃO DE BOMBEIROS MILITAR
+UBERLÂNDIA
+2ª Cia BM
+Araguari
+1º Pel BM
+Araguari
+9ª RISP
+Uberlândia
+Municípios: Araguari, Cascalho Rico, Estrela do
+Sul, Grupiara, Indianópolis. (05)
+PA BM
+Tupaciguara
+9ª RISP
+Uberlândia
+Municípios: Araporã, Centralina, Tupaciguara.
+(03)
+2° Pel BM
+Ituiutaba
+9ª RISP
+Uberlândia
+Municípios: Cachoeira Dourada, Canápolis,
+Capinópolis, Gurinhatã, Ipiaçu, Ituiutaba, Monte
+Alegre de Minas, Prata, Santa Vitória. (09)
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+30
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+31
+COB UEOp CIA Pelotão RISP Municípios/bairros da área de atuação
+2º COMANDO OPERACIONAL DE BOMBEIROS
+UBERLÂNDIA
+8° BATALHÃO DE BOMBEIROS MILITAR
+UBERABA
+1ª Cia BM
+Uberaba
+1° ao 4° Pel BM
+Sede
+5ª RISP
+Uberaba
+Municípios: Água Comprida, Conceição das Alagoas, Delta, Nova
+Ponte, Uberaba, Veríssimo. (06)
+5º Pel BM
+PEMAD
+5ª RISP
+Uberaba Município: Uberaba.
+6º Pel BM
+BRESC/CANIL
+5ª RISP
+Uberaba Conforme demanda.
+7° Pel BM
+Frutal
+5ª RISP
+Uberaba
+Municípios: Campo florido, Comendador Gomes, Fronteira, Frutal,
+Itapagipe, Pirajuba, Planura. (07)
+8º Pel BM
+Iturama
+5ª RISP
+Uberaba
+Municípios: Campina Verde, Carneirinho, Iturama, Limeira do
+Oeste, São Francisco de Sales, União de Minas. (06)
+2ª Cia BM
+Araxá
+1º Pel BM
+Araxá
+5ª RISP
+Uberaba
+Municípios: Araxá, Pedrinópolis, Perdizes, Santa Juliana, Tapira.
+(05)
+PA BM1
+São Gotardo
+5ª RISP3
+Uberaba Municípios: Santa Rosa da Serra, São Gotardo, (02)
+2º Pel BM
+Sacramento
+5ª RISP
+Uberaba Municípios: Conquista, Sacramento. (02)
+PA BM
+Campos Altos
+5ª RISP2
+Uberaba
+Municípios: Campos Altos, Córrego Danta, Estrela do Indaiá, Ibiá,
+Medeiros, Pratinha, Serra da Saudade, Tapiraí. (08)
+1 Até a instalação do PA BM/2ª Cia – São Gotardo, as ocorrências de urgência e emergência nos municípios desta fração deverão ser atendidas pelo
+2º Pel BM Sacramento.
+2 Córrego Danta, Medeiros, e Tapiraí pertencem à 7ª RISP – Divinópolis.
+3 São Gotardo pertence à 10ª RISP – Patos de Minas.
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+32
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+33
+1 As ocorrências de urgência e emergência ocorridas na área da MG-410, entre a MG-354 e o Distrito de Ponte Firme serão atendidas pela Sede do 12º
+BBM e as ocorrências de urgência e emergência ocorridas na área da MG-410, entre o Distrito de Ponte Firme e a BR-040 serão atendidas pelo 3º
+Pelotão de João Pinheiro.
+2 Lagoa Grade pertence à 10ª RISP – Patos de Minas.
+3 As ocorrências de urgência e emergência do Distrito de Beira Rio e do Distrito de Luzilândia do Oeste, ambos do município de São Gonçalo do
+Abaeté, serão atendidas pelo 4º Pel. /1ª Cia / 6ª Cia Ind - Três Marias/MG. As ocorrências programadas, sobretudo do SCIP e de proteção e defesa
+civil, serão atendidas pela sede do 12º BBM.
+4 Até a instalação do PA BM/5º Pel – Monte Carmelo, as ocorrências de urgência e emergência nos municípios desta fração deverão ser atendidas pelo 5º
+Pel/12º BBM – Patrocínio.
+5 Enquanto perdurar a inexistência de contrato de concessão da BR-040, o Pelotão de João Pinheiro atenderá ocorrências de primeira resposta típicas de
+acidentes de trânsito e incêndios, na referida rodovia, até o distrito de Luizlândia do Oeste (no entroncamento entre a BR 040 e BR 365) e o Pelotão de
+Três Marias atenderá as ocorrências a partir do referido distrito.
+COB UEOp CIA Pelotão RISP Municípios/bairros da área de atuação
+2º COMANDO OPERACIONAL DE BOMBEIROS
+UBERLÂNDIA
+12º BATALHÃO DE BOMBEIROS MILITAR
+PATOS DE MINAS
+1ª Cia BM
+Patos de
+Minas
+1° ao 4º Pel BM
+Sede
+10ª RISP
+Patos de Minas
+Municípios: Arapuá, Carmo do Paranaíba, Lagamar, Lagoa
+Formosa, Matutina, Patos de Minas, Presidente Olegário, Rio
+Paranaíba, São Gonçalo do Abaeté3, Tiros, Varjão de Minas. (11)
+5° Pel BM
+Patrocínio
+10ª RISP
+Patos de Minas
+Municípios: Cruzeiro da Fortaleza, Guimarânia, Patrocínio, Serra
+do Salitre. (04)
+PA BM4
+Monte Carmelo
+10ª RISP
+Patos de Minas
+Municípios: Abadia dos Dourados, Coromandel, Douradoquara, Iraí
+de Minas, Monte Carmelo, Romaria. (06)
+2ª Cia BM
+Unaí
+1° Pel BM
+Sede
+16ª RISP
+Unaí
+Municípios: Arinos, Bonfinópolis de Minas, Buritis, Cabeceira
+Grande, Chapada Gaúcha, Dom Bosco, Formoso, Natalândia,
+Riachinho, Unaí, Uruana de Minas, Urucuia. (12)
+2º Pel BM
+Paracatu
+16ª RISP
+Unaí Municípios: Guarda-Mor, Paracatu, Vazante. (03)
+3º Pel BM1
+João Pinheiro5
+16ª RISP2
+Unaí
+Municípios: Brasilândia de Minas, João Pinheiro, Lagoa Grande.
+(03)
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+34
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+35
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+36
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+37
+COB UEOp Companhia Pelotão RISP Municípios/bairros da área de atuação
+3º COMANDO OPERACIONAL DE BOMBEIROS
+JUIZ DE FORA
+4º BATALHÃO DE BOMBEIROS MILITAR
+JUIZ DE FORA
+1ª Cia BM
+Juiz de
+Fora
+1° ao 4° Pel BM
+Sede
+4ª RISP1
+Juiz de
+Fora
+Municípios: Arantina, Belmiro Braga, Bicas, Bom Jardim de Minas, Chácara,
+Chiador, Coronel Pacheco, Ewbank da Câmara, Goianá, Guarará, Juiz de Fora,
+Lima Duarte, Mar de Espanha, Maripá de Minas, Matias Barbosa, Olaria, Pedro
+Teixeira, Pequeri, Piau, Rio Novo, Rio Preto, Rochedo de Minas, Santa Bárbara
+do Monte Verde, Santa Rita de Jacutinga, Santana do Deserto, Santos Dumont,
+São João Nepomuceno, Senador Cortês, Simão Pereira. (29)
+4ª RISP
+Juiz de
+Fora
+Bairros de Juiz de Fora: Aldeia, Alto do Bairu, Alto Eldorado, Amazônia, Aracy,
+Araújo, Bairro de Lourdes, Bairu, Bandeirantes, Boa Vista, Bom Clima, Bairro
+Industrial, Bar do Triunfo Barbosa Lage, Belgo Mineira, Benfica, BR 040, Bom
+Jardim, Bonfim, Borborema, Bosque dos Pinheiros, Botanágua, Campo Grande,
+Carlos Chagas, Ceasa/BR 040, Centenário, Centro, Cerâmica ,Cesário Alvim,
+Chapéu Duvas, Cidade do Sol, Conjunto 24 Horas, Conjunto J. K., Costa
+Carvalho, Democrata, Eldorado, Dias Tavares, Distrito Industrial, Encosta do
+Sol, Esplanada Fazenda Yung, F. Sta. Cândida , Faz. Pedra Bonita, Filgueiras,
+Floresta, Fontesville, Franc. Bernardino, Furtado de Menezes, Grajaú, Grama,
+Granbery, Granjas, Granjas Bethel, Granjas Betânia, Granjas Guarujá, Granjas
+Primavera, Granjas Triunfo, Grota dos Bruggers, Igrejinha, Imbel, Jardim
+Alfineiros, Jardim de Fátima, Jardim L'ermitage, Jardim da Lua, Jardim Natal,
+Jardim das Pedras Preciosas, Jardim do Sol, Jardim Esperança, Jardim Glória,
+Linhares, Manoel Honório, Mariano Procópio, Morro da Glória, Jardim Santa
+Isabel, Jardim Saudade, Jd. Cachoeira, Jóquei Clube I, Jóquei Clube II, Jóquei
+Clube III, Fábrica, M. Castelo, Mercedes Benz, Milho Branco, Morada Nova,
+Morro do Sabão Morumbi, Náutico, Nova Benfica, Nova Era I, Nova Era II, Nova
+Triunfo, Nossa Senhora Aparecida, Nossa Senhora das Graças, Nova Suíça,
+Olavo Costa, Paineiras, Parque Guarani, Parque Independência, Paraibuna de
+Metais, Parque das Palmeiras, Parque Guarujá, Parque das Torres, Paula Lima,
+Poço D'antas, Poço Rico, Ponte Preta, Progresso, Quintas da Avenida, Recanto
+das Pedras, Recanto dos Lagos, Remonta, Represa, Retiro, Santa Cândida,
+Santa Catarina, Santa Helena, Santa Lúcia, Santa Paula, Santa Rita, Santa
+Tereza, Santa Terezinha, Santo Antônio, Santos Anjos, São Benedito, São
+Bernardo, São Conrado, Serra Verde, Solidariedade, Terras Altas, Tiguera, Três
+Moinhos, Usina Quatro, Vale do Amanhecer, Vale do Ipê, Vila Alpina, Vila dos
+Sonhos, Vila Ideal, Vila Montanhesa, Vila São José, Vila Ozanan, Vila Vitorino
+Braga, Vivendas da Serra, S. Franc. de Paula, Santa Amélia, Santa Clara, Santa
+Cruz, Santa Lúcia I, Santa Lúcia II, Santa Lúcia III, Santa Maria, Santa Tereza,
+São Damião, São Dimas, São Judas Tadeu, Verbo Divino, Vila Bejani, Vila
+Espada, Vila Esperança I, Vila Esperança II, Vila Mello Reis, Vila Militar, Vila
+Paraíso, Vila São Sebastião, Vivendas dos Fontes. (161)
+1 Arantina, Bom Jardim de Minas e Ewbank da Câmara pertencem à 13ª RISP – Barbacena.
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+38
+COB UEOp Companhia Pelotão RISP Municípios/bairros da área de atuação
+3º COMANDO OPERACIONAL DE BOMBEIROS
+JUIZ DE FORA
+4º BATALHÃO DE BOMBEIROS MILITAR
+JUIZ DE FORA
+1ª Cia BM
+Juiz de Fora
+5º Pel BM
+PEMAD
+4ª RISP
+Juiz de Fora Município: Juiz de Fora
+6º Pel BM
+Sul
+4ª RISP
+Juiz de Fora
+Bairros de Juiz de Fora: Aeroporto, Aldolfo Vireque, Alto dos Passos,
+Alto dos Pinheiros, Bela Aurora, Boa Vista, Bom Pastor, Bomba de
+Fogo, Borboleta, Bosque do Imperador, Bosque Imperial, Caiçaras,
+Cascatinha, Chalés do Imperador, Cidade Nova, Cidade Universitária,
+Colinas do Imperador, Cruzeiro do Sul, Cruzeiro Santo Antônio,
+Estrela Sul, Graminha, Granjas Itaoca, Ipiranga, Ipiranguinha, Jardim
+Gaúcho, Jardim Laranjeiras, Jardim Umuarama, Mundo Novo, Parque
+da Lajinha, Previdenciários, Sagrado Coração de Jesus, Salvaterra,
+Santa Cecília, Santa Efigênia, Santa Luzia, São Geraldo, São Mateus,
+Teixeiras, Vale Verde, Dom Bosco, Faz. São Judas Tadeu, Granville,
+Itatiaia, Marilândia, Martelos, Morro do Imperador, N. Senhora de
+Fátima, Nova Califórnia, Novo Horizonte, Paço Del'rey, Parque
+Imperial, Parque Jardim da Serra, Parque São Pedro, Parque
+Soledade, Portal das Torres, Residencial Pinheiros, Santana, Santos
+Dumont, São Clemente, São Pedro, Serro Azul, Spinaville, Tupã, Vina
+Del'mar. (64)
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+39
+COB UEOp Cia BM Pel BM RISP Municípios/bairros da área de atuação
+3º COMANDO OPERACIONAL DE BOMBEIROS
+JUIZ DE FORA
+4º BATALHÃO DE BOMBEIROS MILITAR
+JUIZ DE FORA
+1ª Cia BM
+Juiz de Fora
+7º Pel
+Leopoldina
+4ª RISP
+Juiz de Fora
+Municípios: Argirita, Laranjal, Leopoldina, Palma, Recreio.
+(05)
+PA BM
+Além Paraíba
+4ª RISP
+Juiz de Fora
+Municípios: Além Paraíba, Estrela Dalva, Pirapetinga, Santo
+Antônio do Aventureiro, Volta Grande. (05)
+PA BM
+Cataguases
+4ª RISP1
+Juiz de Fora
+Municípios: Cataguases, Descoberto, Dona Euzébia,
+Santana de Cataguases, Itamarati de Minas. (05)
+2ª Cia BM
+Ubá
+1º Pel BM
+Ubá
+4ª RISP
+Juiz de Fora
+Municípios: Astolfo Dutra, Brás Pires, Divinésia, Dores do
+Turvo, Guarani, Guidoval, Guiricema, Mercês, Piraúba, Rio
+Pomba, Rodeiro, Senador Firmino, Silveirânia, Tabuleiro,
+Tocantins, Ubá, Visconde do Rio Branco. (17)
+2° Pel BM
+Muriaé
+4ª RISP
+Juiz de Fora
+Municípios: Antônio Prado de Minas, Barão de Monte Alto,
+Carangola, Divino, Eugenópolis, Faria Lemos, Fervedouro,
+Miradouro, Miraí, Muriaé, Patrocínio do Muriaé, Pedra
+Dourada, Rosário da Limeira, São Francisco do Glória, São
+Sebastião da Vargem Alegre, Tombos, Vieiras. (17)
+3º Pel BM
+Viçosa
+4ª RISP1
+Juiz de Fora
+Municípios: Araponga, Cajuri, Canaã, Coimbra, Ervália,
+Paula Cândido, Pedra do Anta, Porto Firme, Presidente
+Bernardes, São Geraldo, São Miguel do Anta, Teixeiras,
+Viçosa. (13)
+Brigada
+Municipal
+Astolfo Dutra
+4ª RISP1
+Juiz de Fora Município: Astolfo Dutra.
+1 Porto Firme e Presidente Bernardes pertencem à 13ª RISP – Barbacena.
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+40
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+41
+COB UEOp Cia BM Pel BM RISP Municípios/bairros da área de atuação
+3º COMANDO OPERACIONAL DE BOMBEIROS
+JUIZ DE FORA
+2ª COMPANHIA INDEPENDENTE DE BOMBEIROS MILITAR
+BARBACENA
+1ª Cia BM
+Barbacena
+1° Pel BM
+Sede
+13ª RISP
+Barbacena
+Municípios: Alfredo Vasconcelos, Alto Rio Doce, Antônio
+Carlos, Aracitaba, Barbacena, Barroso, Bias Fortes,
+Cipotânea, Desterro do Melo, Ibertioga, Ressaquinha,
+Oliveira Fortes, Paiva, Santa Bárbara do Tugúrio, Santa Rita
+de Ibitipoca, Santana do Garambéu, Senhora dos
+Remédios. (17)
+2° Pel BM
+São João Del
+Rei
+13ª RISP
+Barbacena
+Municípios: Andrelândia, Conceição da Barra de Minas,
+Coronel Xavier Chaves, Dores de Campos, Lagoa Dourada,
+Madre de Deus de Minas, Nazareno, Piedade do Rio
+Grande, Prados, Resende Costa, Ritápolis, Santa Cruz de
+Minas, São João Del Rei, São Tiago, São Vicente de Minas,
+Tiradentes. (16)
+2ª Cia BM
+Conselheiro
+Lafaiete
+1° Pel BM
+Conselheiro
+Lafaiete
+13ª RISP
+Barbacena
+Municípios: Capela Nova, Caranaíba, Carandaí, Casa
+Grande, Catas Altas da Noruega, Conselheiro Lafaiete,
+Cristiano Otoni, Desterro de Entre Rios, Entre Rios de Minas,
+Itaverava, Lamim, Piranga, Queluzito, Rio Espera, Santana
+dos Montes, São Brás do Suaçuí, Senhora de Oliveira. (17)
+PA BM
+Congonhas
+13ª RISP1
+Barbacena
+Municípios: Belo Vale, Congonhas, Jeceaba, Ouro Branco,
+Piedade dos Gerais. (05)
+1 Piedade dos Gerais pertence à 2ª RISP – Contagem.
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+42
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+43
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+44
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+45
+COB UEOp CIA Pelotão RISP Municípios/bairros da área de atuação
+4º COMANDO OPERACIONAL DE BOMBEIROS
+MONTES CLAROS
+7º BATALHÃO DE BOMBEIROS MILITAR
+MONTES CLAROS
+1ª Cia BM
+Montes
+Claros
+1° ao 4° Pel
+BM
+Sede
+11ª RISP
+Montes
+Claros
+Municípios: Claro dos Poções, Coração de Jesus,
+Glaucilândia, Itacambira, Juramento, Mirabela,
+Montes Claros, Patis, São João da Lagoa, São João
+do Pacuí. (10)
+PA BM
+Bocaiúva
+11ª RISP1
+Montes
+Claros
+Municípios: Bocaiúva, Buenópolis, Engenheiro
+Navarro, Francisco Dumont, Joaquim Felício,
+Guaraciama, Olhos D’água. (07)
+6º Pel BM
+PEMAD
+11ª RISP
+Montes
+Claros
+Município: Montes Claros
+7º Pel BM
+Janaúba
+11ª RISP
+Montes
+Claros
+Municípios: Catuti, Espinosa, Gameleiras, Jaíba,
+Janaúba, Mamonas, Matias Cardoso, Mato Verde,
+Monte Azul, Montezuma, Nova Porteirinha, Pai
+Pedro, Porteirinha, Riacho dos Machados, Santo
+Antônio do Retiro, Serranópolis de Minas,
+Verdelândia. (17)
+8° Pel BM
+Januária
+11ª RISP
+Montes
+Claros
+Municípios: Bonito de Minas, Brasília de Minas,
+Campo Azul, Cônego Marinho, Ibiracatu, Icaraí de
+Minas, Itacarambi, Januária, Japonvar, Juvenília,
+Lontra, Luislândia, Manga, Miravânia, Montalvânia,
+Pedras de Maria da Cruz, Pintópolis, São Francisco,
+São João da Ponte, São João das Missões, Ubaí,
+Varzelândia. (22)
+9° Pel BM
+Salinas
+11ª RISP
+Montes
+Claros
+Municípios: Berizal, Curral de Dentro, Fruta de Leite,
+Indaiabira, Josenópolis, Ninheira, Novorizonte, Padre
+Carvalho, Rio Pardo de Minas, Rubelita, Salinas,
+Santa Cruz de Salinas, São João do Paraíso,
+Taiobeiras, Vargem Grande do Rio Pardo. (15)
+PA BM
+Francisco Sá
+11ª RISP
+Montes
+Claros
+Municípios: Botumirim, Capitão Enéas, Cristália,
+Francisco Sá, Grão Mogol. (05)
+1 Buenópolis e Joaquim Felício pertencem à 14ª RISP – Curvelo.
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+46
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+47
+COB UEOp CIA Pelotão RISP Municípios/bairros da área de atuação
+4º COMANDO OPERACIONAL DE BOMBEIROS
+MONTES CLAROS
+6ª COMPANHIA INDEPENDENTE
+DIAMANTINA
+1ª Cia BM
+Diamantina
+1º Pel BM
+Diamantina
+14ª RISP
+Curvelo
+Municípios: Alvorada de Minas, Congonhas do Norte,
+Couto de Magalhães de Minas, Datas, Diamantina, Felício
+dos Santos, Gouveia, Presidente Kubitschek, Santo Antônio
+do Itambé, São Gonçalo do Rio Preto, Senador Modestino
+Gonçalves, Serra Azul de Minas, Serro. (13)
+2º Pel BM
+Pirapora
+14ª RISP1
+Curvelo
+Municípios: Buritizeiro, Ibiaí, Jequitaí, Lagoa dos Patos,
+Lassance, Pirapora, Ponto Chique, Santa Fé de Minas, São
+Romão, Várzea da Palma. (10)
+3º Pel BM
+Capelinha
+14ª RISP
+Curvelo
+Municípios: Água Boa, Angelândia, Aricanduva,
+Capelinha, Carbonita, Chapada do Norte, Itamarandiba,
+Leme do Prado, Minas Novas, Setubinha, Turmalina,
+Veredinha. (12)
+4º Pel BM²
+Três Marias4
+14ª RISP³
+Curvelo
+Municípios: Biquinhas, Felixlândia, Morada Nova de
+Minas, Três Marias. (04)
+1 Ibiaí, Lagoa dos Patos e Ponto Chique pertencem à 11ª RISP – Montes Claros.
+2 As ocorrências de urgência e emergência do Distrito de Beira Rio e do Distrito de Luzilândia do Oeste, ambos do município de São Gonçalo do Abaeté, serão
+atendidas pelo 4º Pel. /1ª Cia / 6ª Cia Ind - Três Marias/MG.
+³ Biquinhas e Morada Nova de Minas pertencem à 7ª RISP – Divinópolis.
+4 Enquanto perdurar a inexistência de contrato de concessão da BR-040, o Pelotão de João Pinheiro atenderá ocorrências de primeira resposta típicas de
+acidentes de trânsito e incêndios, na referida rodovia, até o distrito de Luizlândia do Oeste (no entroncamento entre a BR 040 e BR 365) e o Pelotão de Três
+Marias atenderá as ocorrências a partir do referido distrito.
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+48
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+49
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+50
+Arquivo atualizado em agosto de 2024
+Fonte: Terceira Seção do Estado-Maior
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+51
+1
+Jampruca pertence à 15ª RISP – Teófilo Otoni.
+COB UEOp CIA Pelotão RISP Municípios/bairros da área de atuação
+5º COMANDO OPERACIONAL DE BOMBEIROS
+GOVERNADOR VALADARES
+6° BATALHÃO DE BOMBEIROS MILITAR
+GOVERNADOR VALADARES
+1ª Cia BM
+Governador
+Valadares
+1° ao 4° Pel
+Sede
+8ª RISP1
+Governador
+Valadares
+Municípios: Alpercata, Alvarenga, Capitão Andrade, Central de Minas,
+Coroaci, Divino das Laranjeiras, Engenheiro Caldas, Fernandes Tourinho,
+Frei Inocêncio, Galiléia, Governador Valadares, Itabirinha, Itanhomi,
+Jampruca, Mantena, Marilac, Mathias Lobato, Mendes Pimentel, Nacip
+Raydan, Nova Belém, Periquito, São Félix de Minas, São Geraldo da Piedade,
+São Geraldo do Baixio, São João do Manteninha, São José da Safira, Sardoá,
+Sobrália, Tarumirim, Tumiritinga, Virgolândia. (31)
+8ª RISP
+Governador
+Valadares
+Bairros de Governador Valadares: Acampamento da Vale, Altinópolis, Alto
+Esplanada, Azteca, Bela Vista, Betel, Belvedere, Borges, Canaã, Capim,
+Carapina, Castanheiras, Cardo, Centro, Chácaras Braúnas, Cidade Jardim,
+Cidade Nova, Conjunto Sotero, Conquista ,Inácio Ramos (SIR), Distrito
+Industrial, Elvamar, Encosta do Sol, Esperança, Esplanada, Floresta,
+Fraternidade, Grã-Duquesa, Ilha dos Araújos, Interlagos, Jardim Alice, Jardim
+Alvorada Jardim Atalaia, Jardim Ipê ,Jardim Pérola, Jardim Primavera Jardim
+do Trevo, JK I, JK II, JK III, Jother Peres, Kennedy, Mãe de Deus, Maravilha,
+Nova Santa Rita, Lagoa Santa, Lourdes, Maria Eugênia, Monte Carmelo,
+Morada do Vale, Morada do Vale II, Morada do Vale III, Nova Vila Bretas,
+Novo Horizonte, Palmeiras, Penha, Planalto, Querosene, Parque das
+Aroeiras, Recanto das Garças, Redenção, Residencial Figueiras, Recanto
+das Cachoeiras, Retiro dos Lagos, Sagrada Família, Sta. Efigênia, Sta.
+Helena, Sta. Paula, Sta. Rita, Sta. Rosa, Sta. Rosa de Lima, Sta. Terezinha,
+São Braz, São Cristóvão, São José, São Raimundo, Santo Agostinho, Santo
+Antônio, Santos Dumont, Santos Dumont II, São Geraldo, São Paulo, São
+Pedro, São Tarcísio, Senhora das Graças, Senhora de Fátima, Sion, Sítio das
+Flores, Tiradentes, Turmalina, Universitário, Vale Verde, Vale Pastoril, Vale
+Pastoril II, Vale Primavera , Vera Cruz ,Vila Bretas, Vila dos Montes, Vila
+Mariana, Vila Mariquita, Vila Império, Vila Isa, Vila Ozanan, Vila Parque São
+João, Vila Parque Ibituruna, Vila Rica, Vila do Sol, Vila do Sol II ,Vila União,
+Village da Serra Vista Alegre, Vitória. (111)
+5° Pel BM
+PEMAD/
+PBRESC
+8ª RISP
+Governador
+Valadares
+Município: Governador Valadares.
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+52
+COB UEOp CIA Pelotão RISP Municípios/bairros da área de atuação
+5º COMANDO OPERACIONAL DE BOMBEIROS
+GOVERNADOR VALADARES
+6° BATALHÃO DE BOMBEIROS MILITAR
+GOVERNADOR VALADARES
+1ª Cia BM
+Governador
+Valadares
+6º Pel BM
+Resplendor
+8ª RISP1
+Governador
+Valadares
+Municípios: Aimorés, Conselheiro Pena, Cuparaque,
+Goiabeira, Itueta, Pocrane, Resplendor, Santa Rita do Itueto.
+(08)
+7º Pel BM
+São João
+Evangelista
+8ª RISP
+Governador
+Valadares
+Municípios: Cantagalo, Coluna, Frei Lagonegro, José Raydan,
+Paulistas, Peçanha, Rio Vermelho, Santa Maria do Suaçuí, São
+João Evangelista, São José do Jacuri, São Pedro do Suaçuí,
+São Sebastião do Maranhão. (12)
+PA BM
+Guanhães
+8ª RISP
+Governador
+Valadares
+Municípios: Carmésia, Divinolândia de Minas, Dom Joaquim,
+Dores de Guanhães, Gonzaga, Guanhães, Materlândia,
+Sabinópolis, Santa Efigênia de Minas, Senhora do Porto,
+Virginópolis. (11)
+1 Pocrane pertence à 12ª RISP – Ipatinga.
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+53
+COB UEOp CIA Pelotão RISP Municípios/bairros da área de atuação
+5º COMANDO OPERACIONAL DE BOMBEIROS
+GOVERNADOR VALADARES
+6° BATALHÃO DE BOMBEIROS MILITAR
+GOVERNADOR VALADARES
+2ª Cia BM
+Teófilo Otoni
+1º Pel BM
+Teófilo Otoni
+15ª RISP
+Teófilo Otoni
+Municípios: Águas Formosas, Ataléia, Bertópolis,
+Campanário, Caraí, Carlos Chagas, Catuji, Crisólita,
+Franciscópolis, Frei Gaspar, Itaipé, Itambacuri, Ladainha,
+Machacalis, Malacacheta, Nanuque, Nova Módica, Novo
+Cruzeiro, Novo Oriente de Minas, Ouro Verde de Minas, Padre
+Paraíso, Pavão, Pescador, Poté, Santa Helena de Minas, São
+José do Divino, Serra dos Aimorés, Teófilo Otoni, Umburatiba.
+(29)
+2º Pel BM
+Almenara
+15ª RISP
+Teófilo Otoni
+Municípios: Almenara, Bandeira, Felisburgo, Fronteira dos
+Vales, Jacinto, Jequitinhonha, Joaíma, Jordânia, Mata Verde,
+Palmópolis, Rio do Prado, Rubim, Salto da Divisa, Santa Maria
+do Salto, Santo Antônio do Jacinto. (15)
+3º Pel BM
+Araçuaí
+15ª RISP
+Teófilo Otoni
+Municípios: Araçuaí, Berilo, Coronel Murta, Francisco Badaró,
+Jenipapo de Minas, Itinga, José Gonçalves de Minas, Virgem
+da Lapa. (08)
+4º Pel BM1
+Itaobim
+15ª RISP
+Teófilo Otoni
+Municípios: Águas Vermelhas, Cachoeira do Pajeú,
+Comercinho, Divisa Alegre, Divisópolis, Itaobim, Medina,
+Monte Formoso, Pedra Azul, Ponto dos Volantes. (10)
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+54
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+55
+COB UEOp Companhia Pelotão RISP Municípios/bairros da área de atuação
+5º COMANDO OPERACIONAL DE BOMBEIROS
+GOVERNADOR VALADARES
+11º BATALHÃO DE BOMBEIROS MILITAR
+IPATINGA
+1ª Cia BM
+Ipatinga
+1° ao 4º Pel BM
+Sede
+12ª RISP
+Ipatinga
+Municípios: Açucena, Belo Oriente, Bugre, Braúnas, Iapu, Ipaba,
+Ipatinga, Joanésia, Mesquita, Naque, Pingo-d’água, Santana do Paraíso,
+São João do Oriente. (13)
+PA BM
+São Gonçalo do
+Rio abaixo
+12ª RISP
+Ipatinga
+Municípios: Barão de Cocais, Bom Jesus do Amparo, Santa Bárbara,
+São Gonçalo do Rio Abaixo. (04)
+5° Pel BM
+Coronel
+Fabriciano
+12ª RISP
+Ipatinga Municípios: Antônio Dias, Coronel Fabriciano, Jaguaraçu. (03)
+6º Pel BM
+Itabira
+12ª RISP1
+Ipatinga
+Municípios: Ferros, Itabira, Itambé do Mato Dentro, Passabém, Santa
+Maria de Itabira, Santo Antônio do Rio Abaixo, São Sebastião do Rio
+Preto. (07)
+PA BM
+João Monlevade
+12ª RISP
+Ipatinga
+Municípios: Alvinópolis, Bela Vista de Minas, João Monlevade, Nova Era,
+Rio Piracicaba, São Domingos do Prata. (06)
+7º Pel BM
+Timóteo
+12ª RISP
+Ipatinga Municípios: Dionísio, Marliéria, São José do Goiabal, Timóteo. (04)
+2ª Cia BM
+Manhuaçu
+1° Pel BM
+Manhuaçu
+12ª RISP
+Ipatinga
+Municípios: Abre Campo, Alto Caparaó, Alto Jequitibá, Caiana, Caparaó,
+Caputira, Chalé, Conceição de Ipanema, Durandé, Espera Feliz, Ipanema,
+Lajinha, Luisburgo, Manhuaçu, Manhumirim, Martins Soares, Matipó,
+Mutum, Orizânia, Pedra Bonita, Reduto, Santa Margarida, Santana do
+Manhuaçu, São João do Manhuaçu, São José do Mantimento, Sericita,
+Simonésia, Taparuba. (28)
+2º Pel BM2
+Caratinga
+12ª RISP
+Ipatinga
+Municípios: Bom Jesus do Galho, Caratinga, Córrego Novo, Dom Cavati,
+Entre Folhas, Imbé de Minas, Inhapim, Piedade de Caratinga, Raul
+Soares, Santa Bárbara do Leste, Santa Rita de Minas, São Domingos das
+Dores, São Sebastião do Anta, Ubaporanga, Vargem Alegre, Vermelho
+Novo. (16)
+3º Pel BM
+Ponte Nova
+12ª RISP
+Ipatinga
+Municípios: Acaiaca, Amparo do Serra, Barra Longa, Dom Silvério,
+Guaraciaba, Jequeri, Oratórios, Piedade de Ponte Nova, Ponte Nova, Rio
+Casca, Rio Doce, Santa Cruz do Escalvado, Santo Antônio do Grama, São
+Pedro dos Ferros, Sem-Peixe, Urucânia. (16)
+Brigada
+Municipal
+Ipanema
+12ª RISP
+Ipatinga Municípios: Ipanema
+1 Santo Antônio do Rio Abaixo e São Sebastião do Rio Preto pertencem à 14ª RISP – Curvelo.
+2 Os bairros: Porto Seguro, Parques dos Vales, Lagoa Silvana, Condomínio Alphaville e Lagoa Silvana da cidade de Caratinga serão atendidos pela
+Sede.
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+56
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+57
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+58
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+59
+1 Cordislândia e São Gonçalo do Sapucaí pertencem à 17ª RISP – Pouso Alegre.
+COB UEOp CIA Pelotão RISP Municípios/bairros da área de atuação
+6º COMANDO OPERACIONAL DE BOMBEIROS
+POÇOS DE CALDAS
+9° BATALHÃO DE BOMBEIROS MILITAR
+VARGINHA
+1ª Cia BM
+Varginha
+1° ao 4° Pel BM
+Sede
+6ª RISP
+Lavras Municípios: Elói Mendes, Três Pontas, Varginha. (03)
+PA BM
+Boa Esperança
+6ª RISP
+Lavras Municípios Boa Esperança, Coqueiral, Guapé, Ilicínea, Santana da Vargem. (05)
+2ª Cia BM
+Lavras
+1° Pel BM
+Lavras
+6ª RISP
+Lavras
+Municípios: Bom Sucesso, Carrancas, Ibituruna, Ijaci, Ingaí, Itumirim, Itutinga, Lavras,
+Luminárias, Nepomuceno, Perdões, Ribeirão Vermelho. (12)
+2º Pel BM
+Três Corações
+6ª RISP1
+Lavras
+Municípios: Cambuquira, Campanha, Carmo da Cachoeira, Conceição do Rio
+Verde, Cordislândia, Jesuânia, Lambari, Monsenhor Paulo, Olímpio Noronha, São
+Bento Abade, São Gonçalo do Sapucaí, São Tomé das Letras, Três Corações. (13)
+3º Pel BM
+São Lourenço
+17ª RISP
+Pouso
+Alegre
+Municípios: Aiuruoca, Alagoa, Baependi, Bocaina de Minas, Carmo de Minas,
+Carvalhos, Caxambu, Cristina, Cruzília, Dom Viçoso, Itamonte, Itanhandu, Liberdade,
+Minduri, Passa Quatro, Passa Vinte, Pouso Alto, São Lourenço, São Sebastião do Rio
+Verde, Seritinga, Serranos, Soledade de Minas, Virgínia. (23)
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+60
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+61
+COB UEOp CIA Pelotão RISP Municípios/bairros da área de atuação
+6º COMANDO OPERACIONAL DE BOMBEIROS
+POÇOS DE CALDAS
+1ª COMPANHIA INDEPENDENTE DE BOMBEIROS MILITAR
+POÇOS DE CALDAS
+1ª Cia BM
+Poços de
+Caldas
+1° Pel BM
+Sede
+18ª RISP
+Poços de Caldas
+Municípios: Bandeira do Sul, Botelhos, Cabo Verde, Caldas,
+Campestre, Poços de Caldas. (06)
+PA BM
+Andradas
+18ª RISP1
+Poços de Caldas
+Municípios: Albertina, Andradas, Ibitiúra de Minas, Ipuiúna,
+Jacutinga e Santa Rita de Caldas. (06)
+2ª Cia BM
+Passos
+1º Pel BM
+Passos
+18ª RISP
+Poços de
+Caldas
+Municípios: Alpinópolis, Bom Jesus da Penha, Capetinga,
+Carmo do Rio Claro, Cássia, Claraval, Delfinópolis, Fortaleza
+de Minas, Ibiraci, Itaú de Minas, Passos, São João Batista do
+Glória, São José da Barra. (13)
+2° Pel BM
+S. Sebastião do
+Paraíso
+18ª RISP
+Poços de
+Caldas
+Municípios: Itamogi, Jacuí, Monte Santo de Minas, Pratápolis,
+São Sebastião do Paraíso, São Tomás de Aquino. (06)
+3° Pel BM
+Piumhi
+18ª RISP2
+Poços de
+Caldas
+Municípios: Capitólio, Doresópolis, Pimenta, Piumhi, São
+Roque de Minas, Vargem Bonita. (06)
+3ª Cia BM
+Alfenas
+1° Pel BM
+Alfenas
+18ª RISP
+Poços de
+Caldas
+Municípios: Alfenas, Alterosa, Areado, Campo do Meio,
+Campos Gerais, Conceição da Aparecida, Divisa Nova, Fama,
+Paraguaçu, Serrania. (10)
+PA BM
+Machado
+18ª RISP3
+Poços de
+Caldas
+Municípios: Carvalhópolis, Machado, Poço Fundo, São João
+da Mata, Turvolândia. (05)
+2° Pel BM
+Guaxupé
+18ª RISP
+Poços de
+Caldas
+Municípios: Arceburgo, Guaranésia, Guaxupé, Juruaia,
+Monte Belo, Muzambinho, Nova Resende, São Pedro da
+União. (08)
+1 Albertina e Jacutina pertencem à 17ª RISP – Pouso Alegre.
+2 Pimenta pertence à 7ª RISP – Divinópolis.
+3 São João da Mata e Turvolândia pertencem à 17ª RISP – Pouso Alegre.
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+62
+ANEXO ÚNICO À RESOLUÇÃO Nº 1.215, DE 25 DE SETEMBRO DE 2024.
+63
+COB UEOp CIA Pelotão RISP Municípios/bairros da área de atuação
+6º COMANDO OPERACIONAL DE BOMBEIROS
+POÇOS DE CALDAS
+7ª COMPANHIA INDEPENDENTE DE BOMBEIROS
+MILITAR
+POUSO ALEGRE
+1º Cia
+Pouso
+Alegre
+1° Pel BM
+Sede
+17ª RISP –
+Pouso Alegre
+Municípios: Bom Repouso, Borda da Mata, Bueno Brandão,
+Cachoeira de Minas, Careaçu, Conceição dos Ouros,
+Congonhal, Espírito Santo do Dourado, Estiva, Heliodora,
+Inconfidentes, Monte Sião, Natércia, Ouro Fino, Pouso Alegre,
+Santa Rita do Sapucaí, São Sebastião da Bela Vista, Senador
+José Bento, Silvianópolis, Tocos do Moji. (20)
+2° Pel BM
+Itajubá
+17ª RISP –
+Pouso Alegre
+Municípios: Brasópolis, Conceição das Pedras, Consolação,
+Delfim Moreira, Gonçalves, Itajubá, Maria da Fé, Marmelópolis,
+Paraisópolis, Pedralva, Piranguçu, Piranguinho, São José do
+Alegre, Sapucaí-Mirim, Wenceslau Braz. (15)
+3º Pel BM
+Extrema
+17ª RISP –
+Pouso Alegre
+Municípios: Camanducaia, Cambuí, Córrego do Bom Jesus,
+Extrema, Itapeva, Munhoz, Senador Amaral, Toledo. (08)
+Brigada municipal
+Paraisópolis
+17ª RISP –
+Pouso Alegre Município: Paraisópolis.
+(a) Erlon Dias do Nascimento Botelho, Coronel BM
+Comandante Geral
