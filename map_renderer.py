@@ -35,8 +35,34 @@ from operational_units import (
 
 DEFAULT_CENTER = (-18.5, -44.5)
 DEFAULT_ZOOM = 6
-UC_OVERLAY_COLOR = "#27ae60"
-MUNICIPALITY_COLOR = "#F48030"
+MUNICIPALITY_STYLE = {
+    "color": "#cccccc",
+    "weight": 1.2,
+    "fill": True,
+    "fillColor": "#ffffff",
+    "fillOpacity": 0.05,
+}
+SELECTED_MUNICIPALITY_STYLE = {
+    "color": "#cccccc",
+    "weight": 1.5,
+    "fill": True,
+    "fillColor": "#ffffff",
+    "fillOpacity": 0.06,
+}
+UC_STYLE = {
+    "color": "#52b788",
+    "weight": 2.0,
+    "fill": True,
+    "fillColor": "#52b788",
+    "fillOpacity": 0.12,
+}
+SELECTED_UC_STYLE = {
+    "color": "#52b788",
+    "weight": 2.0,
+    "fill": True,
+    "fillColor": "#52b788",
+    "fillOpacity": 0.18,
+}
 
 
 def _decode_display_text(value: object) -> str:
@@ -84,10 +110,10 @@ def _fire_marker_level(frp: float | None) -> str:
 
 def _fire_marker_size(level: str) -> int:
     return {
-        "high": 22,
-        "medium": 17,
-        "low": 12,
-    }.get(level, 12)
+        "high": 26,
+        "medium": 22,
+        "low": 17,
+    }.get(level, 17)
 
 
 def _fire_marker_html(level: str) -> str:
@@ -155,7 +181,11 @@ def _format_time(raw: str | None) -> str:
     if raw is None:
         return "Não informado"
     t = str(raw).zfill(4)
-    return f"{t[:2]}h{t[2:]} UTC ({t[:2]}:{t[2:]} no horário universal)"
+    try:
+        brasilia_hour = (int(t[:2]) - 3) % 24
+    except ValueError:
+        return "Não informado"
+    return f"{brasilia_hour:02d}:{t[2:]} (horário de Brasília)"
 
 
 def _format_frp(frp: float | None) -> str:
@@ -184,7 +214,7 @@ def _popup_html(event: dict) -> str:
 
     rows = [
         ("Data da detecção", f"{date}{period} — dia em que o satélite identificou este foco"),
-        ("Horário da detecção", f"{_format_time(event.get('acq_time'))}; em Brasília, subtraia 3 horas"),
+        ("Horário da detecção", _format_time(event.get("acq_time"))),
         ("Potência Radiativa do Fogo (FRP)", _format_frp(frp) + " — estimativa da energia/calor emitido pelo fogo no momento da passagem do satélite"),
         ("Satélite/sensor", _format_satellite(event.get("satellite")) + " — plataforma que detectou o foco"),
         ("Confiança da detecção", _format_confidence(event.get("confidence"))),
@@ -227,13 +257,7 @@ def _render_base_map(events: list[dict]) -> folium.Map:
                 ),
             },
             name="Municípios de MG",
-            style_function=lambda _: {
-                "color": MUNICIPALITY_COLOR,
-                "weight": 0.8,
-                "fill": True,
-                "fillColor": MUNICIPALITY_COLOR,
-                "fillOpacity": 0.05,
-            },
+            style_function=lambda _: MUNICIPALITY_STYLE,
             tooltip=folium.GeoJsonTooltip(
                 fields=["sv_tipo", "sv_nome"],
                 aliases=["Tipo:", "Nome:"],
@@ -252,13 +276,7 @@ def _render_base_map(events: list[dict]) -> folium.Map:
                 ),
             },
             name="Unidades de Conservação",
-            style_function=lambda _: {
-                "color": UC_OVERLAY_COLOR,
-                "weight": 1.5,
-                "fill": True,
-                "fillColor": UC_OVERLAY_COLOR,
-                "fillOpacity": 0.2,
-            },
+            style_function=lambda _: UC_STYLE,
             tooltip=folium.GeoJsonTooltip(
                 fields=["sv_tipo", "sv_nome"],
                 aliases=["Tipo:", "Nome:"],
@@ -294,7 +312,7 @@ def _render_filtered_map(
     events: list[dict],
     bounds: tuple[float, float, float, float],
     outline_features: list[dict],
-    outline_color: str,
+    outline_style: dict,
     overlay_features: list[dict] | None = None,
 ) -> str:
     min_lat, min_lon, max_lat, max_lon = bounds
@@ -317,13 +335,7 @@ def _render_filtered_map(
                 ),
             },
             name="COB selecionado",
-            style_function=lambda _: {
-                "color": outline_color,
-                "weight": 2.5,
-                "fill": True,
-                "fillColor": outline_color,
-                "fillOpacity": 0.15,
-            },
+            style_function=lambda _: outline_style,
             tooltip=folium.GeoJsonTooltip(
                 fields=["sv_tipo", "sv_nome"],
                 aliases=["Tipo:", "Nome:"],
@@ -342,13 +354,7 @@ def _render_filtered_map(
                 ),
             },
             name="Unidades de Conservação sobrepostas",
-            style_function=lambda _: {
-                "color": UC_OVERLAY_COLOR,
-                "weight": 2,
-                "fill": True,
-                "fillColor": UC_OVERLAY_COLOR,
-                "fillOpacity": 0.25,
-            },
+            style_function=lambda _: SELECTED_UC_STYLE,
             tooltip=folium.GeoJsonTooltip(
                 fields=["sv_tipo", "sv_nome"],
                 aliases=["Tipo:", "Nome:"],
@@ -398,7 +404,7 @@ def render_map_html(
                 filtered_events,
                 uc_bounds,
                 [uc_feature],
-                UC_OVERLAY_COLOR,
+                SELECTED_UC_STYLE,
             )
 
         if unit_id is not None and get_operational_unit(unit_id) is not None:
@@ -415,7 +421,7 @@ def render_map_html(
                 filtered_events,
                 unit_bounds,
                 outline_features,
-                MUNICIPALITY_COLOR,
+                SELECTED_MUNICIPALITY_STYLE,
                 uc_features,
             )
 
@@ -435,7 +441,7 @@ def render_map_html(
             filtered_events,
             area_bounds,
             outline_features,
-            MUNICIPALITY_COLOR,
+            SELECTED_MUNICIPALITY_STYLE,
             uc_features,
         )
     except Exception as exc:

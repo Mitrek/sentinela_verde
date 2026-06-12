@@ -651,6 +651,17 @@ body {
 }
 
 .fire-marker--high {
+  width: 26px;
+  height: 26px;
+  background: #d92323;
+  border: 2px solid rgba(255, 220, 220, 0.92);
+  box-shadow:
+    0 0 0 4px rgba(217, 35, 35, 0.18),
+    0 0 12px rgba(217, 35, 35, 0.42),
+    0 2px 5px rgba(0, 0, 0, 0.42);
+}
+
+.fire-marker--medium {
   width: 22px;
   height: 22px;
   background: #f46f25;
@@ -661,22 +672,13 @@ body {
     0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
-.fire-marker--medium {
+.fire-marker--low {
   width: 17px;
   height: 17px;
   background: #e98a3a;
   border: 1.5px solid rgba(255, 220, 190, 0.75);
   box-shadow:
     0 1px 4px rgba(0, 0, 0, 0.35);
-}
-
-.fire-marker--low {
-  width: 12px;
-  height: 12px;
-  background: #f0ebe4;
-  border: 1.5px solid rgba(38, 59, 80, 0.95);
-  box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.35);
 }
 
 .leaflet-control-zoom a {

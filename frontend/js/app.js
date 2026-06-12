@@ -43,14 +43,22 @@ function confidenceLabel(c) {
 
 function formattedDetectionTime(raw) {
   const time = String(raw ?? "").padStart(4, "0");
-  return `${time.slice(0, 2)}h${time.slice(2)} UTC (${time.slice(0, 2)}:${time.slice(2)} no horário universal)`;
+  const hour = Number(time.slice(0, 2));
+  const minute = time.slice(2);
+
+  if (Number.isNaN(hour) || minute.length !== 2) {
+    return "Não informado";
+  }
+
+  const brasiliaHour = (hour + 21) % 24;
+  return `${String(brasiliaHour).padStart(2, "0")}:${minute} (horário de Brasília)`;
 }
 
 function fireMarkerSize(level) {
   const sizes = {
-    high: 22,
-    medium: 17,
-    low: 12,
+    high: 26,
+    medium: 22,
+    low: 17,
   };
   return sizes[level] || sizes.low;
 }
@@ -124,7 +132,7 @@ function buildMarker(event) {
       </div>
       <table class="popup-table">
         <tr><td>Data da detecção</td><td>${event.acq_date}<br><small>Dia em que o satélite identificou este foco.</small></td></tr>
-        <tr><td>Horário da detecção</td><td>${formattedDetectionTime(event.acq_time)}<br><small>Horário universal; em Brasília, subtraia 3 horas.</small></td></tr>
+        <tr><td>Horário da detecção</td><td>${formattedDetectionTime(event.acq_time)}</td></tr>
         <tr><td>Potência Radiativa do Fogo (FRP)</td><td><strong>${frp} MW</strong><br><small>Estimativa da energia/calor emitido pelo fogo no momento da passagem do satélite.</small></td></tr>
         <tr><td>Satélite/sensor</td><td>${event.satellite}<br><small>Plataforma que detectou o foco.</small></td></tr>
         <tr><td>Confiança da detecção</td><td>${confidenceLabel(event.confidence)}</td></tr>

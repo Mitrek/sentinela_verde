@@ -17,6 +17,7 @@ from areas import (
     get_area_bounds,
     get_area_by_id,
     get_area_geometry,
+    get_mg_boundary_feature,
     load_areas,
 )
 from config import (
@@ -24,13 +25,12 @@ from config import (
     FETCH_DAYS,
     FETCH_INTERVAL_MINUTES,
     FIRMS_API_KEY,
-    MAP_OUTPUT_PATH,
     REGION_BBOX,
 )
 from conservation_units import get_ucs_for_boundary, load_ucs
 from db import get_all_events, get_recent_events, init_db, insert_fire_events
 from fetcher import fetch_firms_data, start_scheduler
-from map_renderer import render_map, render_map_html
+from map_renderer import render_map_html
 from operational_units import (
     filter_events_by_operational_unit,
     get_operational_unit,
@@ -46,11 +46,6 @@ scheduler: BackgroundScheduler | None = None
 
 BASE_DIR = Path(__file__).resolve().parent
 DB_FILE_PATH = str((BASE_DIR / DB_PATH).resolve()) if not Path(DB_PATH).is_absolute() else DB_PATH
-MAP_FILE_PATH = (
-    str((BASE_DIR / MAP_OUTPUT_PATH).resolve())
-    if not Path(MAP_OUTPUT_PATH).is_absolute()
-    else MAP_OUTPUT_PATH
-)
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 
@@ -68,7 +63,6 @@ async def _fetch_and_store_async() -> int:
 
     events = await fetch_firms_data(FIRMS_API_KEY, REGION_BBOX, FETCH_DAYS)
     inserted_count = insert_fire_events(DB_FILE_PATH, events)
-    render_map(_get_map_events(), MAP_FILE_PATH)
     last_fetch_at = datetime.now(UTC).isoformat()
 
     return inserted_count
@@ -149,6 +143,14 @@ async def api_geojson_ucs(unit_id: str) -> JSONResponse:
     """GeoJSON FeatureCollection of UC polygons that intersect the selected unit."""
     geometry = get_operational_unit_geometry(unit_id)
     features = get_ucs_for_boundary(unit_id, geometry)
+    return JSONResponse({"type": "FeatureCollection", "features": features})
+
+
+@app.get("/api/geojson/mg")
+async def api_geojson_mg() -> JSONResponse:
+    """GeoJSON FeatureCollection containing the Minas Gerais state outline."""
+    feature = get_mg_boundary_feature()
+    features = [feature] if feature is not None else []
     return JSONResponse({"type": "FeatureCollection", "features": features})
 
 

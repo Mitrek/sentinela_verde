@@ -46,8 +46,8 @@ def test_render_map_html_for_area_includes_cob_outline_and_linked_ucs(monkeypatc
     assert "Unidade de Conserva" in html
     assert "sv_tipo" in html
     assert "sv_nome" in html
-    assert "#F48030" in html
-    assert "#27ae60" in html
+    assert "#cccccc" in html
+    assert "#52b788" in html
     assert "fire-marker fire-marker--medium" in html
     assert "fire-marker-icon" not in html
     assert "\U0001F525" not in html
@@ -80,8 +80,8 @@ def test_render_map_html_for_operational_unit(monkeypatch):
     assert "Munic" in html
     assert "da Unidade" in html
     assert "UC da Unidade" in html
-    assert "#F48030" in html
-    assert "#27ae60" in html
+    assert "#cccccc" in html
+    assert "#52b788" in html
     assert "fire-marker fire-marker--medium" in html
     assert "fire-marker-icon" not in html
     assert "\U0001F525" not in html
@@ -102,17 +102,19 @@ def test_fire_popup_explains_detection_fields():
 
     assert "Data da detecção" in html
     assert "Horário da detecção" in html
+    assert "09:00 (horário de Brasília)" in html
     assert "Potência Radiativa do Fogo (FRP)" in html
     assert "FRP = Fire Radiative Power" in html
-    assert "subtraia 3 horas" in html
+    assert "subtraia 3 horas" not in html
+    assert "horário universal" not in html
     assert "\U0001F525" not in html
     assert "\U0001F4CD" not in html
 
 
 def test_fire_marker_level_and_size_by_intensity():
     assert map_renderer._fire_marker_level(10) == "low"
-    assert map_renderer._fire_marker_size("low") == 12
+    assert map_renderer._fire_marker_size("low") == 17
     assert map_renderer._fire_marker_level(45) == "medium"
-    assert map_renderer._fire_marker_size("medium") == 17
+    assert map_renderer._fire_marker_size("medium") == 22
     assert map_renderer._fire_marker_level(120) == "high"
-    assert map_renderer._fire_marker_size("high") == 22
+    assert map_renderer._fire_marker_size("high") == 26

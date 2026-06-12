@@ -4,7 +4,7 @@ import json
 import unicodedata
 from pathlib import Path
 
-from shapely.geometry import Point, shape
+from shapely.geometry import Point, mapping, shape
 from shapely.ops import unary_union
 
 
@@ -295,6 +295,22 @@ def get_all_mg_geometry() -> object | None:
         return _ALL_MG_GEOMETRY_CACHE
     except Exception as exc:
         print(f"Failed to build all-MG geometry: {exc}")
+        return None
+
+
+def get_mg_boundary_feature() -> dict | None:
+    """Return a dissolved Minas Gerais boundary feature."""
+    try:
+        geometry = get_all_mg_geometry()
+        if geometry is None:
+            return None
+        return {
+            "type": "Feature",
+            "geometry": mapping(geometry),
+            "properties": {"codarea": "31", "name": "Minas Gerais"},
+        }
+    except Exception as exc:
+        print(f"Failed to build MG boundary feature: {exc}")
         return None
 
 

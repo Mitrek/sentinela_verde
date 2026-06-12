@@ -2,13 +2,13 @@
 const STYLES = {
   dark: {
     fire:         { high: "#F46F25", medium: "#E98A3A", low: "#F0EBE4" },
-    municipality: { color: "#cccccc", weight: 1.2, fillColor: "#ffffff", fillOpacity: 0.05 },
-    uc:           { color: "#52b788", weight: 2.0, fillColor: "#52b788", fillOpacity: 0.12 },
+    municipality: { color: "#cccccc", weight: 1.2, fill: true, fillColor: "#ffffff", fillOpacity: 0.05 },
+    uc:           { color: "#52b788", weight: 2.0, fill: true, fillColor: "#52b788", fillOpacity: 0.12 },
   },
   satellite: {
     fire:         { high: "#F46F25", medium: "#E98A3A", low: "#F0EBE4" },
-    municipality: { color: "#ffffff", weight: 1.5, fillColor: "#ffffff", fillOpacity: 0.06 },
-    uc:           { color: "#39d353", weight: 2.0, fillColor: "#39d353", fillOpacity: 0.18 },
+    municipality: { color: "#ffffff", weight: 1.5, fill: true, fillColor: "#ffffff", fillOpacity: 0.06 },
+    uc:           { color: "#39d353", weight: 2.0, fill: true, fillColor: "#39d353", fillOpacity: 0.18 },
   },
 };
 
@@ -38,14 +38,22 @@ function confidenceLabel(c) {
 
 function formattedDetectionTime(raw) {
   const time = String(raw ?? "").padStart(4, "0");
-  return `${time.slice(0, 2)}h${time.slice(2)} UTC (${time.slice(0, 2)}:${time.slice(2)} no horário universal)`;
+  const hour = Number(time.slice(0, 2));
+  const minute = time.slice(2);
+
+  if (Number.isNaN(hour) || minute.length !== 2) {
+    return "Não informado";
+  }
+
+  const brasiliaHour = (hour + 21) % 24;
+  return `${String(brasiliaHour).padStart(2, "0")}:${minute} (horário de Brasília)`;
 }
 
 function fireMarkerSize(level) {
   const sizes = {
-    high: 22,
-    medium: 17,
-    low: 12,
+    high: 26,
+    medium: 22,
+    low: 17,
   };
   return sizes[level] || sizes.low;
 }
@@ -83,6 +91,8 @@ const tileLayers = {
 };
 
 tileLayers.dark.addTo(map);
+map.createPane("state-boundary-pane");
+map.getPane("state-boundary-pane").style.zIndex = 450;
 
 let activeLayer = "dark";
 let currentFires = [];
@@ -107,12 +117,39 @@ document.querySelectorAll(".layer-btn").forEach(btn => {
 });
 
 // ─── Polygon layers ───────────────────────────────────────────────────────────
+let stateBoundaryLayer = null;
 let municipalityLayer = null;
 let ucLayer = null;
+
+const STATE_BOUNDARY_STYLE = {
+  color: "#ffffff",
+  weight: 1.8,
+  fill: false,
+  fillOpacity: 0,
+  opacity: 0.9,
+  interactive: false,
+};
 
 function clearPolygonLayers() {
   if (municipalityLayer) { map.removeLayer(municipalityLayer); municipalityLayer = null; }
   if (ucLayer)           { map.removeLayer(ucLayer);           ucLayer = null; }
+}
+
+async function loadStateBoundary() {
+  if (stateBoundaryLayer) return;
+
+  try {
+    const mgData = await fetch("/api/geojson/mg").then(r => r.json());
+    if (!mgData.features || mgData.features.length === 0) return;
+
+    stateBoundaryLayer = L.geoJSON(mgData, {
+      style: STATE_BOUNDARY_STYLE,
+      interactive: false,
+      pane: "state-boundary-pane",
+    }).addTo(map);
+  } catch (e) {
+    console.error("Erro ao carregar limite de Minas Gerais:", e);
+  }
 }
 
 async function loadPolygonLayers(unitId) {
@@ -120,6 +157,7 @@ async function loadPolygonLayers(unitId) {
   if (!unitId) return;
 
   try {
+    const styles = STYLES[activeLayer] || STYLES.dark;
     const [munData, ucData] = await Promise.all([
       fetch(`/api/geojson/unit/${encodeURIComponent(unitId)}`).then(r => r.json()),
       fetch(`/api/geojson/ucs/${encodeURIComponent(unitId)}`).then(r => r.json()),
@@ -127,13 +165,7 @@ async function loadPolygonLayers(unitId) {
 
     if (munData.features && munData.features.length > 0) {
       municipalityLayer = L.geoJSON(munData, {
-        style: {
-          color: "#F48030",
-          weight: 1.5,
-          fill: true,
-          fillColor: "#F48030",
-          fillOpacity: 0.08,
-        },
+        style: styles.municipality,
         onEachFeature: (feature, layer) => {
           const name = feature.properties?.sv_nome || feature.properties?.NM_MUN || "";
           if (name) layer.bindTooltip(`Município: ${name}`, { sticky: true });
@@ -145,13 +177,7 @@ async function loadPolygonLayers(unitId) {
 
     if (ucData.features && ucData.features.length > 0) {
       ucLayer = L.geoJSON(ucData, {
-        style: {
-          color: "#27ae60",
-          weight: 2,
-          fill: true,
-          fillColor: "#27ae60",
-          fillOpacity: 0.18,
-        },
+        style: styles.uc,
         onEachFeature: (feature, layer) => {
           const name = feature.properties?.sv_nome || feature.properties?.nome_uc || "";
           if (name) layer.bindTooltip(`UC: ${name}`, { sticky: true });
@@ -182,7 +208,7 @@ function buildMarker(event) {
       </div>
       <table class="popup-table">
         <tr><td>Data da detecção</td><td>${event.acq_date ?? "—"}<br><small>Dia em que o satélite identificou este foco.</small></td></tr>
-        <tr><td>Horário da detecção</td><td>${formattedDetectionTime(event.acq_time)}<br><small>Horário universal; em Brasília, subtraia 3 horas.</small></td></tr>
+        <tr><td>Horário da detecção</td><td>${formattedDetectionTime(event.acq_time)}</td></tr>
         <tr><td>Potência Radiativa do Fogo (FRP)</td><td><strong>${frp} MW</strong><br><small>Estimativa da energia/calor emitido pelo fogo no momento da passagem do satélite.</small></td></tr>
         <tr><td>Satélite/sensor</td><td>${event.satellite ?? "—"}<br><small>Plataforma que detectou o foco.</small></td></tr>
         <tr><td>Confiança da detecção</td><td>${confidenceLabel(event.confidence)}</td></tr>
@@ -349,6 +375,8 @@ fractionSelect.addEventListener("change", () => {
 
 // ─── Boot ─────────────────────────────────────────────────────────────────────
 async function boot() {
+  await loadStateBoundary();
+
   try {
     operationalUnits = await fetch("/api/operational-units").then(r => r.json());
     const cobs = operationalUnits.filter(u => u.type === "cob");
