@@ -25,18 +25,25 @@ from config import (
     FETCH_DAYS,
     FETCH_INTERVAL_MINUTES,
     FIRMS_API_KEY,
+    INPE_ENABLED,
+    INPE_FETCH_INTERVAL_MINUTES,
+    INPE_KML_URL,
     REGION_BBOX,
 )
 from conservation_units import get_uc_fire_alert_groups, get_ucs_for_boundary, load_ucs
 from db import get_all_events, get_recent_events, init_db, insert_fire_events
 from fetcher import fetch_firms_data, start_scheduler
+from inpe_fetcher import fetch_inpe_data
 from map_renderer import render_map_html
 from operational_units import (
     filter_events_by_operational_unit,
+    filter_events_by_operational_units,
     get_operational_unit,
     get_operational_unit_bounds,
     get_operational_unit_features,
     get_operational_unit_geometry,
+    get_operational_units_features,
+    get_operational_units_geometry,
     load_operational_units,
 )
 
@@ -58,6 +65,32 @@ def _get_map_events(hours: int = 48) -> list[dict]:
     return get_all_events(DB_FILE_PATH)
 
 
+def _resolve_selected_units(
+    unit: str | None,
+    units: list[str] | None,
+) -> list[str]:
+    resolved = []
+    seen = set()
+    for unit_id in units or []:
+        if unit_id in seen or get_operational_unit(unit_id) is None:
+            continue
+        resolved.append(unit_id)
+        seen.add(unit_id)
+
+    if unit and unit not in seen and get_operational_unit(unit) is not None:
+        resolved.append(unit)
+
+    return resolved
+
+
+def _filter_events_for_units(events: list[dict], selected_units: list[str]) -> list[dict]:
+    if not selected_units:
+        return filter_events_by_mg(events)
+    if len(selected_units) == 1:
+        return filter_events_by_operational_unit(events, selected_units[0])
+    return filter_events_by_operational_units(events, selected_units)
+
+
 async def _fetch_and_store_async() -> int:
     global last_fetch_at
 
@@ -72,6 +105,15 @@ def fetch_and_store() -> int:
     return asyncio.run(_fetch_and_store_async())
 
 
+async def _fetch_and_store_inpe_async() -> int:
+    events = await fetch_inpe_data(INPE_KML_URL)
+    return insert_fire_events(DB_FILE_PATH, events)
+
+
+def fetch_and_store_inpe() -> int:
+    return asyncio.run(_fetch_and_store_inpe_async())
+
+
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     global scheduler
@@ -79,6 +121,16 @@ async def lifespan(_: FastAPI):
     init_db(DB_FILE_PATH)
     await _fetch_and_store_async()
     scheduler = start_scheduler(fetch_and_store, FETCH_INTERVAL_MINUTES)
+
+    if INPE_ENABLED:
+        await _fetch_and_store_inpe_async()
+        scheduler.add_job(
+            fetch_and_store_inpe,
+            trigger="interval",
+            minutes=INPE_FETCH_INTERVAL_MINUTES,
+            max_instances=1,
+            coalesce=True,
+        )
 
     try:
         yield
@@ -122,12 +174,10 @@ async def get_map(
 async def api_fires(
     hours: int = Query(default=48, ge=1),
     unit: str | None = Query(default=None),
+    units: list[str] | None = Query(default=None),
 ) -> JSONResponse:
     events = get_recent_events(DB_FILE_PATH, hours=hours)
-    if unit and get_operational_unit(unit) is not None:
-        events = filter_events_by_operational_unit(events, unit)
-    else:
-        events = filter_events_by_mg(events)
+    events = _filter_events_for_units(events, _resolve_selected_units(unit, units))
     return JSONResponse(events)
 
 
@@ -138,11 +188,41 @@ async def api_geojson_unit(unit_id: str) -> JSONResponse:
     return JSONResponse({"type": "FeatureCollection", "features": features})
 
 
+@app.get("/api/geojson/units")
+async def api_geojson_units(
+    unit: str | None = Query(default=None),
+    units: list[str] | None = Query(default=None),
+) -> JSONResponse:
+    selected_units = _resolve_selected_units(unit, units)
+    features = (
+        get_operational_unit_features(selected_units[0])
+        if len(selected_units) == 1
+        else get_operational_units_features(selected_units)
+    )
+    return JSONResponse({"type": "FeatureCollection", "features": features})
+
+
 @app.get("/api/geojson/ucs/{unit_id}")
 async def api_geojson_ucs(unit_id: str) -> JSONResponse:
     """GeoJSON FeatureCollection of UC polygons that intersect the selected unit."""
     geometry = get_operational_unit_geometry(unit_id)
     features = get_ucs_for_boundary(unit_id, geometry)
+    return JSONResponse({"type": "FeatureCollection", "features": features})
+
+
+@app.get("/api/geojson/ucs")
+async def api_geojson_ucs_units(
+    unit: str | None = Query(default=None),
+    units: list[str] | None = Query(default=None),
+) -> JSONResponse:
+    selected_units = _resolve_selected_units(unit, units)
+    if len(selected_units) == 1:
+        geometry = get_operational_unit_geometry(selected_units[0])
+        boundary_id = selected_units[0]
+    else:
+        geometry = get_operational_units_geometry(selected_units)
+        boundary_id = f"units:{'|'.join(selected_units)}"
+    features = get_ucs_for_boundary(boundary_id, geometry)
     return JSONResponse({"type": "FeatureCollection", "features": features})
 
 
@@ -158,16 +238,14 @@ async def api_geojson_mg() -> JSONResponse:
 async def api_uc_fire_alerts(
     after: str | None = Query(default=None),
     unit: str | None = Query(default=None),
+    units: list[str] | None = Query(default=None),
 ) -> JSONResponse:
     """Grouped UC fire alerts for satellite acquisitions after the alarm cursor."""
     if not after or len(after) != 15 or "T" not in after:
         return JSONResponse([])
 
     events = get_recent_events(DB_FILE_PATH, hours=48)
-    if unit and get_operational_unit(unit) is not None:
-        events = filter_events_by_operational_unit(events, unit)
-    else:
-        events = filter_events_by_mg(events)
+    events = _filter_events_for_units(events, _resolve_selected_units(unit, units))
 
     return JSONResponse(get_uc_fire_alert_groups(events, after))
 
@@ -176,10 +254,12 @@ async def api_uc_fire_alerts(
 async def api_status(
     area: str | None = Query(default=None),
     unit: str | None = Query(default=None),
+    units: list[str] | None = Query(default=None),
 ) -> JSONResponse:
     events = get_recent_events(DB_FILE_PATH, hours=48)
-    if unit and get_operational_unit(unit) is not None:
-        events = filter_events_by_operational_unit(events, unit)
+    selected_units = _resolve_selected_units(unit, units)
+    if selected_units:
+        events = _filter_events_for_units(events, selected_units)
     elif area and get_area_by_id(area) is not None:
         events = filter_events_by_area(events, area)
     else:

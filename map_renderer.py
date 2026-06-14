@@ -152,6 +152,7 @@ _SATELLITE_LABELS = {
     "NOAA-20": "NOAA-20 / VIIRS",
     "S": "Suomi NPP / VIIRS",
     "NPP": "Suomi NPP / VIIRS",
+    "INPE": "INPE Queimadas",
 }
 
 
@@ -215,7 +216,9 @@ def _popup_html(event: dict) -> str:
     rows = [
         ("Data da detecção", f"{date}{period} — dia em que o satélite identificou este foco"),
         ("Horário da detecção", _format_time(event.get("acq_time"))),
-        ("Potência Radiativa do Fogo (FRP)", _format_frp(frp) + " — estimativa da energia/calor emitido pelo fogo no momento da passagem do satélite"),
+        ("Potência Radiativa do Fogo (FRP)",
+         "Desconhecido" if event.get("satellite") == "INPE"
+         else _format_frp(frp) + " — estimativa da energia/calor emitido pelo fogo no momento da passagem do satélite"),
         ("Satélite/sensor", _format_satellite(event.get("satellite")) + " — plataforma que detectou o foco"),
         ("Confiança da detecção", _format_confidence(event.get("confidence"))),
         ("Coordenadas", f"{event.get('latitude', ''):.4f}, {event.get('longitude', ''):.4f}"),

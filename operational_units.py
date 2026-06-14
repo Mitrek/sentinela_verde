@@ -11,6 +11,7 @@ from areas import (
     build_municipality_geometry,
     get_municipality_features,
     get_municipality_names,
+    load_areas,
 )
 
 
@@ -47,10 +48,38 @@ _TITLECASE_WORDS = {
     "MILITAR",
     "OPERACIONAL",
 }
+_MUNICIPALITY_ALIASES = {
+    "Barão de Monte Alto": "Barão do Monte Alto",
+    "Brasópolis": "Brazópolis",
+    "Cachoeira do Pajeú": "Cachoeira de Pajeú",
+    "Prudente de Moraes": "Prudente de Morais",
+}
 
 
 def _clean_line(line: str) -> str:
     return " ".join(line.replace("–", "-").strip().split())
+
+
+def _normalize_municipality_lookup_key(value: str | None) -> str:
+    normalized = _normalize_name(value)
+    normalized = normalized.translate(
+        str.maketrans(
+            {
+                "’": "",
+                "‘": "",
+                "`": "",
+                "´": "",
+                "-": " ",
+                "‐": " ",
+                "‑": " ",
+                "‒": " ",
+                "–": " ",
+                "—": " ",
+            }
+        )
+    )
+    normalized = re.sub(r"(?<=[a-z])\d+(?=\s|[,.;:)]|$)", "", normalized)
+    return " ".join(normalized.split())
 
 
 def _is_noise_line(line: str) -> bool:
@@ -173,7 +202,7 @@ def _normalize_source_label(label: str, location_lines: list[str]) -> str:
 
 def _scan_municipalities(text: str, municipalities_by_normalized_name: dict[str, str]) -> list[str]:
     found = []
-    padded_text = f" {_normalize_name(text)} "
+    padded_text = f" {_normalize_municipality_lookup_key(text)} "
     occupied_spans: list[tuple[int, int]] = []
     sorted_municipalities = sorted(
         municipalities_by_normalized_name.items(),
@@ -182,14 +211,13 @@ def _scan_municipalities(text: str, municipalities_by_normalized_name: dict[str,
     )
 
     for normalized_name, display_name in sorted_municipalities:
-        match = re.search(rf"(?<!\w){re.escape(normalized_name)}(?!\w)", padded_text)
-        if match is None:
-            continue
-        span = match.span()
-        if any(start < span[1] and span[0] < end for start, end in occupied_spans):
-            continue
-        occupied_spans.append(span)
-        found.append(display_name)
+        for match in re.finditer(rf"(?<!\w){re.escape(normalized_name)}(?!\w)", padded_text):
+            span = match.span()
+            if any(start < span[1] and span[0] < end for start, end in occupied_spans):
+                continue
+            occupied_spans.append(span)
+            found.append(display_name)
+            break
     return found
 
 
@@ -208,7 +236,7 @@ def _extract_bairro_municipality(
     for start in range(line_index - 1, max(-1, line_index - 6), -1):
         for size in range(1, 4):
             candidate = " ".join(lines[start:start + size])
-            normalized_candidate = _normalize_name(candidate)
+            normalized_candidate = _normalize_municipality_lookup_key(candidate)
             display_name = municipalities_by_normalized_name.get(normalized_candidate)
             if display_name:
                 return [display_name]
@@ -241,7 +269,7 @@ def _extract_direct_municipios(
     deduped = []
     seen = set()
     for municipio in municipios:
-        normalized_name = _normalize_name(municipio)
+        normalized_name = _normalize_municipality_lookup_key(municipio)
         if normalized_name not in seen:
             deduped.append(municipio)
             seen.add(normalized_name)
@@ -297,9 +325,12 @@ def _parse_units_from_text(text: str) -> list[dict]:
     raw_lines = [_clean_line(line) for line in text.splitlines()]
     lines = [line for line in raw_lines if not _is_noise_line(line)]
     municipalities_by_normalized_name = {
-        _normalize_name(name): name
+        _normalize_municipality_lookup_key(name): name
         for name in get_municipality_names()
     }
+    for alias, canonical_name in _MUNICIPALITY_ALIASES.items():
+        if canonical_name in municipalities_by_normalized_name.values():
+            municipalities_by_normalized_name[_normalize_municipality_lookup_key(alias)] = canonical_name
 
     units = []
     used_ids = set()
@@ -372,7 +403,7 @@ def _parse_units_from_text(text: str) -> list[dict]:
         deduped = []
         seen = set()
         for municipio in municipios:
-            normalized_name = _normalize_name(municipio)
+            normalized_name = _normalize_municipality_lookup_key(municipio)
             if normalized_name not in seen:
                 deduped.append(municipio)
                 seen.add(normalized_name)
@@ -390,7 +421,37 @@ def _parse_units_from_text(text: str) -> list[dict]:
         if unit["id"] not in units_by_id:
             continue
 
+    _reconcile_top_level_cobs(units, set(municipalities_by_normalized_name))
+
     return [unit for unit in units if unit["municipios"]]
+
+
+def _reconcile_top_level_cobs(units: list[dict], valid_municipality_keys: set[str]) -> None:
+    """Use areas.json as the authoritative source for top-level COB coverage."""
+    areas_by_cob_number = {
+        re.sub(r"\D+", "", str(area.get("id", ""))): area
+        for area in load_areas()
+        if area.get("id")
+    }
+
+    for unit in units:
+        if unit.get("type") != "cob" or unit.get("parent_id") is not None:
+            continue
+
+        match = re.match(r"^\s*(\d+)", unit.get("name", ""))
+        if match is None:
+            continue
+
+        area = areas_by_cob_number.get(match.group(1))
+        if area is None:
+            continue
+
+        area_municipality_keys = {
+            _normalize_municipality_lookup_key(name)
+            for name in area.get("municipios", [])
+        }
+        if area_municipality_keys <= valid_municipality_keys:
+            unit["municipios"] = list(area.get("municipios", []))
 
 
 def load_operational_units() -> list[dict]:
@@ -414,11 +475,42 @@ def get_operational_unit(unit_id: str) -> dict | None:
     return (_UNITS_BY_ID_CACHE or {}).get(unit_id)
 
 
+def get_operational_units(unit_ids: list[str] | tuple[str, ...] | set[str]) -> list[dict]:
+    seen = set()
+    units = []
+    for unit_id in unit_ids:
+        if unit_id in seen:
+            continue
+        unit = get_operational_unit(unit_id)
+        if unit is None:
+            continue
+        units.append(unit)
+        seen.add(unit_id)
+    return units
+
+
+def get_operational_unit_municipios(unit_ids: list[str] | tuple[str, ...] | set[str]) -> list[str]:
+    municipios = []
+    seen = set()
+    for unit in get_operational_units(unit_ids):
+        for municipio in unit.get("municipios", []):
+            normalized_name = _normalize_municipality_lookup_key(municipio)
+            if normalized_name in seen:
+                continue
+            municipios.append(municipio)
+            seen.add(normalized_name)
+    return municipios
+
+
 def get_operational_unit_features(unit_id: str) -> list[dict]:
     unit = get_operational_unit(unit_id)
     if unit is None:
         return []
     return get_municipality_features(unit.get("municipios", []))
+
+
+def get_operational_units_features(unit_ids: list[str] | tuple[str, ...] | set[str]) -> list[dict]:
+    return get_municipality_features(get_operational_unit_municipios(unit_ids))
 
 
 def get_operational_unit_geometry(unit_id: str) -> object | None:
@@ -428,6 +520,16 @@ def get_operational_unit_geometry(unit_id: str) -> object | None:
     return build_municipality_geometry(
         unit.get("municipios", []),
         cache_key=f"operational:{unit_id}",
+    )
+
+
+def get_operational_units_geometry(unit_ids: list[str] | tuple[str, ...] | set[str]) -> object | None:
+    normalized_ids = tuple(sorted({unit["id"] for unit in get_operational_units(unit_ids)}))
+    if not normalized_ids:
+        return None
+    return build_municipality_geometry(
+        get_operational_unit_municipios(normalized_ids),
+        cache_key=f"operational:{'|'.join(normalized_ids)}",
     )
 
 
@@ -454,4 +556,21 @@ def filter_events_by_operational_unit(events: list[dict], unit_id: str) -> list[
         ]
     except Exception as exc:
         print(f"Failed to filter events for operational unit {unit_id}: {exc}")
+        return events
+
+
+def filter_events_by_operational_units(
+    events: list[dict],
+    unit_ids: list[str] | tuple[str, ...] | set[str],
+) -> list[dict]:
+    try:
+        geometry = get_operational_units_geometry(unit_ids)
+        if geometry is None:
+            return events
+        return [
+            event for event in events
+            if geometry.covers(Point(float(event["longitude"]), float(event["latitude"])))
+        ]
+    except Exception as exc:
+        print(f"Failed to filter events for operational units {unit_ids}: {exc}")
         return events

@@ -2,11 +2,13 @@
 const STYLES = {
   dark: {
     fire:         { high: "#F46F25", medium: "#E98A3A", low: "#F0EBE4" },
+    context:      { color: "#8f969b", weight: 0.7, fill: true, fillColor: "#8f969b", fillOpacity: 0.05, opacity: 0.45 },
     municipality: { color: "#cccccc", weight: 1.2, fill: true, fillColor: "#ffffff", fillOpacity: 0.05 },
     uc:           { color: "#52b788", weight: 2.0, fill: true, fillColor: "#52b788", fillOpacity: 0.12 },
   },
   satellite: {
     fire:         { high: "#F46F25", medium: "#E98A3A", low: "#F0EBE4" },
+    context:      { color: "#b6bdc2", weight: 0.8, fill: true, fillColor: "#b6bdc2", fillOpacity: 0.04, opacity: 0.5 },
     municipality: { color: "#ffffff", weight: 1.5, fill: true, fillColor: "#ffffff", fillOpacity: 0.06 },
     uc:           { color: "#39d353", weight: 2.0, fill: true, fillColor: "#39d353", fillOpacity: 0.18 },
   },
@@ -111,11 +113,97 @@ const tileLayers = {
 };
 
 tileLayers.dark.addTo(map);
+map.createPane("municipality-context-pane");
+map.getPane("municipality-context-pane").style.zIndex = 350;
 map.createPane("state-boundary-pane");
 map.getPane("state-boundary-pane").style.zIndex = 450;
 
 let activeLayer = "dark";
 let currentFires = [];
+
+const mapLoading = document.getElementById("map-loading");
+const mapLoadingText = document.getElementById("map-loading-text");
+let loadingCount = 0;
+
+function setControlsLoading(isLoading) {
+  document.querySelectorAll(".filter-control").forEach(control => {
+    if (isLoading) {
+      if (!control.dataset.loadingWasDisabled) {
+        control.dataset.loadingWasDisabled = control.disabled ? "true" : "false";
+      }
+      control.disabled = true;
+      return;
+    }
+
+    if (control.dataset.loadingWasDisabled) {
+      control.disabled = control.dataset.loadingWasDisabled === "true";
+      delete control.dataset.loadingWasDisabled;
+    }
+  });
+
+  const refreshButton = document.getElementById("refresh-btn");
+  if (!refreshButton) return;
+
+  if (isLoading) {
+    if (!refreshButton.dataset.loadingWasDisabled) {
+      refreshButton.dataset.loadingWasDisabled = refreshButton.disabled ? "true" : "false";
+    }
+    refreshButton.disabled = true;
+  } else if (refreshButton.dataset.loadingWasDisabled) {
+    refreshButton.disabled = refreshButton.dataset.loadingWasDisabled === "true";
+    delete refreshButton.dataset.loadingWasDisabled;
+  }
+}
+
+function updateLoadingOverlay(label) {
+  const isLoading = loadingCount > 0;
+  if (label && mapLoadingText) mapLoadingText.textContent = label;
+  mapLoading.classList.toggle("show", isLoading);
+  mapLoading.setAttribute("aria-hidden", isLoading ? "false" : "true");
+  setControlsLoading(isLoading);
+}
+
+function beginLoading(label = "Carregando focos de incêndio...") {
+  loadingCount += 1;
+  updateLoadingOverlay(label);
+
+  let finished = false;
+  return () => {
+    if (finished) return;
+    finished = true;
+    loadingCount = Math.max(0, loadingCount - 1);
+    updateLoadingOverlay();
+  };
+}
+
+function waitForNextPaint() {
+  return new Promise(resolve => {
+    requestAnimationFrame(() => requestAnimationFrame(resolve));
+  });
+}
+
+function waitForTileLayerReady(layer, timeoutMs = 2500) {
+  return new Promise(resolve => {
+    if (!layer || layer._tilesToLoad === 0) {
+      resolve();
+      return;
+    }
+
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      clearTimeout(timeout);
+      layer.off("load", finish);
+      layer.off("tileerror", finish);
+      resolve();
+    };
+
+    const timeout = setTimeout(finish, timeoutMs);
+    layer.once("load", finish);
+    layer.once("tileerror", finish);
+  });
+}
 
 document.querySelectorAll(".layer-btn").forEach(btn => {
   btn.addEventListener("click", () => {
@@ -128,6 +216,7 @@ document.querySelectorAll(".layer-btn").forEach(btn => {
 
     // Re-apply polygon styles for new mode
     const s = STYLES[activeLayer];
+    if (municipalityContextLayer) municipalityContextLayer.setStyle(s.context);
     if (municipalityLayer) municipalityLayer.setStyle(s.municipality);
     if (ucLayer)           ucLayer.setStyle(s.uc);
 
@@ -138,6 +227,7 @@ document.querySelectorAll(".layer-btn").forEach(btn => {
 
 // ─── Polygon layers ───────────────────────────────────────────────────────────
 let stateBoundaryLayer = null;
+let municipalityContextLayer = null;
 let municipalityLayer = null;
 let ucLayer = null;
 
@@ -149,6 +239,19 @@ const STATE_BOUNDARY_STYLE = {
   opacity: 0.9,
   interactive: false,
 };
+
+async function loadMunicipalityContextLayer() {
+  if (municipalityContextLayer) return;
+
+  const data = await fetch("/static/geojson/mg_municipios_simplified.geojson").then(r => r.json());
+  if (!data.features || data.features.length === 0) return;
+
+  municipalityContextLayer = L.geoJSON(data, {
+    style: (STYLES[activeLayer] || STYLES.dark).context,
+    interactive: false,
+    pane: "municipality-context-pane",
+  }).addTo(map);
+}
 
 function clearPolygonLayers() {
   if (municipalityLayer) { map.removeLayer(municipalityLayer); municipalityLayer = null; }
@@ -172,15 +275,16 @@ async function loadStateBoundary() {
   }
 }
 
-async function loadPolygonLayers(unitId) {
+async function loadPolygonLayers(unitIds) {
   clearPolygonLayers();
-  if (!unitId) return;
+  if (!unitIds || unitIds.length === 0) return;
 
   try {
     const styles = STYLES[activeLayer] || STYLES.dark;
+    const query = unitsQueryString(unitIds);
     const [munData, ucData] = await Promise.all([
-      fetch(`/api/geojson/unit/${encodeURIComponent(unitId)}`).then(r => r.json()),
-      fetch(`/api/geojson/ucs/${encodeURIComponent(unitId)}`).then(r => r.json()),
+      fetch(`/api/geojson/units?${query}`).then(r => r.json()),
+      fetch(`/api/geojson/ucs?${query}`).then(r => r.json()),
     ]);
 
     if (munData.features && munData.features.length > 0) {
@@ -260,69 +364,315 @@ function updateStats(fires) {
   document.getElementById("stat-low").textContent   = low;
 }
 
-// ─── Cascading dropdowns ──────────────────────────────────────────────────────
-const cobSelect      = document.getElementById("cob-select");
-const battalionSelect = document.getElementById("battalion-select");
-const companySelect  = document.getElementById("company-select");
-const fractionSelect = document.getElementById("fraction-select");
+// ─── Nested unit tree ─────────────────────────────────────────────────────────
+const unitTreeRoot = document.getElementById("unit-tree");
+const unitTreeTrigger = document.getElementById("unit-tree-trigger");
+const unitTreePanel = document.getElementById("unit-tree-panel");
+const unitTreeSummary = document.getElementById("unit-tree-summary");
+const unitTreeSearch = document.getElementById("unit-tree-search");
+const unitTreeSelectAll = document.getElementById("unit-tree-select-all");
+const unitTreeList = document.getElementById("unit-tree-list");
+const applyFiltersBtn = document.getElementById("apply-filters-btn");
 
 let operationalUnits = [];
+let unitsById = new Map();
+let childrenByParent = new Map();
+let rootUnitIds = [];
+let checkedUnitIds = new Set();
+let expandedUnitIds = new Set();
+let unitTreeSearchValue = "";
 
-function selectedUnitId() {
-  return fractionSelect.value || companySelect.value || battalionSelect.value || cobSelect.value || null;
+function compactUnitName(name) {
+  return String(name || "")
+    .replace(/\bComando Operacional de Bombeiros\b/gi, "COB")
+    .replace(/\bBatalh[ãa]o de Bombeiros Militar\b/gi, "BBM");
 }
 
-function childrenOf(parentId, types) {
-  return operationalUnits.filter(u => u.parent_id === parentId && types.includes(u.type));
-}
+function buildUnitTree(units) {
+  unitsById = new Map(units.map(unit => [unit.id, unit]));
+  childrenByParent = new Map();
 
-function resetSelect(select, placeholder) {
-  select.innerHTML = "";
-  const opt = document.createElement("option");
-  opt.value = "";
-  opt.textContent = placeholder;
-  select.appendChild(opt);
-  select.disabled = true;
-}
-
-function populateSelect(select, units, placeholder) {
-  resetSelect(select, placeholder);
-  units.forEach(u => {
-    const opt = document.createElement("option");
-    opt.value = u.id;
-    opt.textContent = u.name;
-    select.appendChild(opt);
+  units.forEach(unit => {
+    const parentId = unit.parent_id || null;
+    if (!childrenByParent.has(parentId)) childrenByParent.set(parentId, []);
+    childrenByParent.get(parentId).push(unit);
   });
-  select.disabled = units.length === 0;
+
+  for (const [parentId, children] of childrenByParent.entries()) {
+    children.sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
+    childrenByParent.set(parentId, children);
+  }
+
+  rootUnitIds = (childrenByParent.get(null) || []).map(unit => unit.id);
 }
 
-function populateBattalions() {
-  const battalions = childrenOf(cobSelect.value || null, ["batalhao"]);
-  populateSelect(battalionSelect, battalions, "Todos os batalhões");
-  populateSelect(companySelect,  [], "Todas as companhias");
-  populateSelect(fractionSelect, [], "Todos os pelotões e postos");
+function childUnits(unitId) {
+  return childrenByParent.get(unitId) || [];
 }
 
-function populateCompanies() {
-  const companies = childrenOf(battalionSelect.value, ["companhia"]);
-  populateSelect(companySelect,  companies, "Todas as companhias");
-  populateSelect(fractionSelect, [], "Todos os pelotões e postos");
+function hasChildren(unitId) {
+  return childUnits(unitId).length > 0;
 }
 
-function populateFractions() {
-  const parentId  = companySelect.value || battalionSelect.value;
-  const fractions = childrenOf(parentId, ["pelotao", "posto"]);
-  populateSelect(fractionSelect, fractions, "Todos os pelotões e postos");
+function collectDescendantIds(unitId, ids = []) {
+  for (const child of childUnits(unitId)) {
+    ids.push(child.id);
+    collectDescendantIds(child.id, ids);
+  }
+  return ids;
 }
+
+function setSubtreeChecked(unitId, checked) {
+  if (checked) {
+    checkedUnitIds.add(unitId);
+  } else {
+    checkedUnitIds.delete(unitId);
+  }
+
+  for (const childId of collectDescendantIds(unitId, [])) {
+    if (checked) checkedUnitIds.add(childId);
+    else checkedUnitIds.delete(childId);
+  }
+}
+
+function hasAnyCheckedDescendant(unitId) {
+  for (const child of childUnits(unitId)) {
+    if (checkedUnitIds.has(child.id) || hasAnyCheckedDescendant(child.id)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function syncAncestors(unitId) {
+  let currentId = unitsById.get(unitId)?.parent_id || null;
+  while (currentId) {
+    const children = childUnits(currentId);
+    const allChildrenChecked = children.length > 0 && children.every(child => checkedUnitIds.has(child.id));
+    if (allChildrenChecked) checkedUnitIds.add(currentId);
+    else checkedUnitIds.delete(currentId);
+    currentId = unitsById.get(currentId)?.parent_id || null;
+  }
+}
+
+function isUnitChecked(unitId) {
+  return checkedUnitIds.has(unitId);
+}
+
+function isUnitIndeterminate(unitId) {
+  return !isUnitChecked(unitId) && hasAnyCheckedDescendant(unitId);
+}
+
+function matchesSearch(unit, searchValue) {
+  if (!searchValue) return true;
+  const fullName = unit.name.toLocaleLowerCase("pt-BR");
+  const compactName = compactUnitName(unit.name).toLocaleLowerCase("pt-BR");
+  return fullName.includes(searchValue) || compactName.includes(searchValue);
+}
+
+function nodeVisible(unitId, searchValue) {
+  const unit = unitsById.get(unitId);
+  if (!unit) return false;
+  if (matchesSearch(unit, searchValue)) return true;
+  return childUnits(unitId).some(child => nodeVisible(child.id, searchValue));
+}
+
+function shouldExpandNode(unitId) {
+  if (unitTreeSearchValue) return true;
+  return expandedUnitIds.has(unitId);
+}
+
+function selectedUnitIds() {
+  const effective = [];
+
+  function visit(unitId) {
+    if (checkedUnitIds.has(unitId)) {
+      effective.push(unitId);
+      return;
+    }
+    for (const child of childUnits(unitId)) visit(child.id);
+  }
+
+  rootUnitIds.forEach(visit);
+  return effective;
+}
+
+function updateTreeSummary() {
+  const effective = selectedUnitIds();
+  if (effective.length === 0) {
+    unitTreeSummary.textContent = "Todo o estado de Minas Gerais";
+    return;
+  }
+  if (effective.length === 1) {
+    unitTreeSummary.textContent = compactUnitName(unitsById.get(effective[0])?.name || "1 unidade");
+    return;
+  }
+  unitTreeSummary.textContent = `${effective.length} unidades selecionadas`;
+}
+
+function updateSelectAllState() {
+  const allChecked = rootUnitIds.length > 0 && rootUnitIds.every(id => checkedUnitIds.has(id));
+  const someChecked = rootUnitIds.some(id => checkedUnitIds.has(id) || hasAnyCheckedDescendant(id));
+  unitTreeSelectAll.checked = allChecked;
+  unitTreeSelectAll.indeterminate = !allChecked && someChecked;
+}
+
+function renderTreeNode(unit, depth = 0) {
+  if (!nodeVisible(unit.id, unitTreeSearchValue)) return null;
+
+  const node = document.createElement("div");
+  node.className = "unit-tree-node";
+  if (shouldExpandNode(unit.id)) node.classList.add("expanded");
+
+  const row = document.createElement("div");
+  row.className = "unit-tree-row";
+  row.style.setProperty("--depth", String(depth));
+  node.appendChild(row);
+
+  const toggle = document.createElement("button");
+  toggle.type = "button";
+  toggle.className = "unit-tree-toggle filter-control";
+  if (!hasChildren(unit.id)) toggle.classList.add("is-leaf");
+  toggle.setAttribute("aria-label", `Expandir ${unit.name}`);
+  toggle.addEventListener("click", event => {
+    event.stopPropagation();
+    if (!hasChildren(unit.id)) return;
+    if (expandedUnitIds.has(unit.id)) expandedUnitIds.delete(unit.id);
+    else expandedUnitIds.add(unit.id);
+    renderUnitTree();
+  });
+  row.appendChild(toggle);
+
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.className = "unit-tree-checkbox filter-control";
+  checkbox.checked = isUnitChecked(unit.id);
+  checkbox.indeterminate = isUnitIndeterminate(unit.id);
+  checkbox.addEventListener("change", async event => {
+    setSubtreeChecked(unit.id, event.target.checked);
+    syncAncestors(unit.id);
+    renderUnitTree();
+    updateTreeSummary();
+    resetUcAlarmForFilterChange();
+  });
+  row.appendChild(checkbox);
+
+  const label = document.createElement("span");
+  label.className = "unit-tree-label";
+  label.textContent = compactUnitName(unit.name);
+  row.appendChild(label);
+
+  row.addEventListener("click", event => {
+    if (event.target === checkbox || event.target === toggle) return;
+
+    if (hasChildren(unit.id)) {
+      if (expandedUnitIds.has(unit.id)) expandedUnitIds.delete(unit.id);
+      else expandedUnitIds.add(unit.id);
+      renderUnitTree();
+      return;
+    }
+
+    checkbox.click();
+  });
+
+  const children = childUnits(unit.id).filter(child => nodeVisible(child.id, unitTreeSearchValue));
+  if (children.length > 0) {
+    const childrenEl = document.createElement("div");
+    childrenEl.className = "unit-tree-children";
+    children.forEach(child => {
+      const childNode = renderTreeNode(child, depth + 1);
+      if (childNode) childrenEl.appendChild(childNode);
+    });
+    node.appendChild(childrenEl);
+  }
+
+  return node;
+}
+
+function renderUnitTree() {
+  unitTreeList.innerHTML = "";
+  const visibleRoots = rootUnitIds
+    .map(id => unitsById.get(id))
+    .filter(unit => unit && nodeVisible(unit.id, unitTreeSearchValue));
+
+  if (visibleRoots.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "unit-tree-empty";
+    empty.textContent = "Nenhuma unidade encontrada.";
+    unitTreeList.appendChild(empty);
+  } else {
+    visibleRoots.forEach(unit => {
+      const node = renderTreeNode(unit, 0);
+      if (node) unitTreeList.appendChild(node);
+    });
+  }
+
+  updateTreeSummary();
+  updateSelectAllState();
+}
+
+function openUnitTree() {
+  unitTreeRoot.classList.add("open");
+  unitTreePanel.hidden = false;
+  unitTreeTrigger.setAttribute("aria-expanded", "true");
+}
+
+function closeUnitTree() {
+  unitTreeRoot.classList.remove("open");
+  unitTreePanel.hidden = true;
+  unitTreeTrigger.setAttribute("aria-expanded", "false");
+}
+
+unitTreeTrigger.addEventListener("click", () => {
+  if (unitTreePanel.hidden) {
+    openUnitTree();
+    unitTreeSearch.focus();
+  } else {
+    closeUnitTree();
+  }
+});
+
+unitTreeSearch.addEventListener("input", event => {
+  unitTreeSearchValue = String(event.target.value || "").trim().toLocaleLowerCase("pt-BR");
+  renderUnitTree();
+});
+
+unitTreeSelectAll.addEventListener("change", event => {
+  rootUnitIds.forEach(rootId => setSubtreeChecked(rootId, event.target.checked));
+  renderUnitTree();
+  updateTreeSummary();
+  resetUcAlarmForFilterChange();
+});
+
+applyFiltersBtn.addEventListener("click", async () => {
+  closeUnitTree();
+  await applyFilters();
+});
+
+document.addEventListener("click", event => {
+  if (unitTreeRoot.contains(event.target)) return;
+  closeUnitTree();
+});
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") closeUnitTree();
+});
 
 // ─── Status + fire fetch ──────────────────────────────────────────────────────
 const lastUpdatedEl = document.getElementById("last-updated");
 const totalEventsEl = document.getElementById("total-events");
 
+function unitsQueryString(unitIds) {
+  const params = new URLSearchParams();
+  unitIds.forEach(unitId => params.append("units", unitId));
+  return params.toString();
+}
+
 async function updateStatus() {
   try {
-    const unit = selectedUnitId();
-    const url  = unit ? `/api/status?unit=${encodeURIComponent(unit)}` : "/api/status";
+    const unitIds = selectedUnitIds();
+    const query = unitsQueryString(unitIds);
+    const url  = query ? `/api/status?${query}` : "/api/status";
     const data = await fetch(url).then(r => r.json());
     lastUpdatedEl.textContent = data.last_fetch_at || "Nunca";
     totalEventsEl.textContent = data.total_events ?? 0;
@@ -331,21 +681,30 @@ async function updateStatus() {
   }
 }
 
-async function applyFilters() {
+async function loadCurrentSelection() {
+  const unitIds = selectedUnitIds();
+  const query = unitsQueryString(unitIds);
+  const firesUrl = query ? `/api/fires?${query}` : "/api/fires";
+  const [fires] = await Promise.all([
+    fetch(firesUrl).then(r => r.json()),
+    loadPolygonLayers(unitIds),
+  ]);
+  currentFires = fires;
+  renderFires(fires);
+  await updateStatus();
+  await checkUcAlerts();
+}
+
+async function applyFilters(loadingLabel = "Carregando focos de incêndio...") {
+  const finishLoading = beginLoading(loadingLabel);
   try {
-    const unit = selectedUnitId();
-    const firesUrl = unit ? `/api/fires?unit=${encodeURIComponent(unit)}` : "/api/fires";
-    const [fires] = await Promise.all([
-      fetch(firesUrl).then(r => r.json()),
-      loadPolygonLayers(unit),
-    ]);
-    currentFires = fires;
-    renderFires(fires);
-    await updateStatus();
-    await checkUcAlerts();
+    await waitForNextPaint();
+    await loadCurrentSelection();
   } catch (e) {
     console.error("Erro ao carregar focos:", e);
     showToast("Erro ao carregar focos de incêndio.", "error");
+  } finally {
+    finishLoading();
   }
 }
 
@@ -354,17 +713,17 @@ const refreshBtn  = document.getElementById("refresh-btn");
 const refreshIcon = document.getElementById("refresh-icon");
 
 refreshBtn.addEventListener("click", async () => {
-  refreshBtn.disabled = true;
+  const finishLoading = beginLoading("Atualizando dados...");
   refreshIcon.classList.add("spinning");
   try {
     const res = await fetch("/api/fetch", { method: "POST" });
     if (!res.ok) throw new Error("fetch failed");
-    await applyFilters();
+    await loadCurrentSelection();
   } catch {
     showToast("Falha ao buscar novos dados.", "error");
   } finally {
-    refreshBtn.disabled = false;
     refreshIcon.classList.remove("spinning");
+    finishLoading();
   }
 });
 
@@ -391,7 +750,7 @@ const alertFrpEl = document.getElementById("uc-alert-frp");
 let alarmEnabled = false;
 let alarmAlerting = false;
 let alarmAfter = null;
-let alarmUnit = null;
+let alarmUnits = [];
 let alarmTimer = null;
 let audioContext = null;
 let alarmSoundTimer = null;
@@ -477,7 +836,7 @@ function disableUcAlarm(showMessage = false) {
   alarmEnabled = false;
   alarmAlerting = false;
   alarmAfter = null;
-  alarmUnit = null;
+  alarmUnits = [];
   clearAlarmTimer();
   stopAlarmSound();
   hideUcAlert();
@@ -490,7 +849,7 @@ async function checkUcAlerts() {
 
   try {
     const params = new URLSearchParams({ after: alarmAfter });
-    if (alarmUnit) params.set("unit", alarmUnit);
+    alarmUnits.forEach(unitId => params.append("units", unitId));
     const alerts = await fetch(`/api/alerts/uc-fires?${params.toString()}`).then(r => r.json());
     const alert = alerts.find(item => !acknowledgedAlertKeys.has(item.alert_key));
     if (!alert) return;
@@ -511,7 +870,7 @@ function enableUcAlarm() {
   alarmEnabled = true;
   alarmAlerting = false;
   alarmAfter = maxAcquisitionKey(currentFires);
-  alarmUnit = selectedUnitId();
+  alarmUnits = selectedUnitIds();
   setAlarmButtonState();
   clearAlarmTimer();
   alarmTimer = setInterval(checkUcAlerts, UC_ALARM_POLL_MS);
@@ -538,45 +897,37 @@ alertAckBtn.addEventListener("click", () => {
   showToast("Alerta reconhecido. Alarme de UC desligado.", "info");
 });
 
-// ─── Event listeners ──────────────────────────────────────────────────────────
-cobSelect.addEventListener("change", () => {
-  resetUcAlarmForFilterChange();
-  populateBattalions();
-  applyFilters();
-});
-battalionSelect.addEventListener("change", () => {
-  resetUcAlarmForFilterChange();
-  populateCompanies();
-  populateFractions();
-  applyFilters();
-});
-companySelect.addEventListener("change", () => {
-  resetUcAlarmForFilterChange();
-  populateFractions();
-  applyFilters();
-});
-fractionSelect.addEventListener("change", () => {
-  resetUcAlarmForFilterChange();
-  applyFilters();
-});
-
 // ─── Boot ─────────────────────────────────────────────────────────────────────
 async function boot() {
-  await loadStateBoundary();
+  await waitForTileLayerReady(tileLayers.dark);
+  const finishLoading = beginLoading("Carregando focos de incêndio...");
 
   try {
+    await waitForNextPaint();
+
     operationalUnits = await fetch("/api/operational-units").then(r => r.json());
-    const cobs = operationalUnits.filter(u => u.type === "cob");
-    populateSelect(cobSelect, cobs, "Todo o estado de Minas Gerais");
-    if (cobs.length > 0) {
-      cobSelect.value = cobs[0].id;
-      populateBattalions();
+    buildUnitTree(operationalUnits);
+    if (rootUnitIds.length > 0) {
+      const firstRootId = rootUnitIds[0];
+      setSubtreeChecked(firstRootId, true);
     }
+    renderUnitTree();
+
+    await loadCurrentSelection();
   } catch (e) {
     console.error("Erro ao carregar unidades operacionais:", e);
+    showToast("Erro ao carregar dados iniciais.", "error");
+  } finally {
+    finishLoading();
   }
 
-  await applyFilters();
+  Promise.all([
+    loadStateBoundary(),
+    loadMunicipalityContextLayer(),
+  ]).catch(e => {
+    console.error("Erro ao carregar camadas de contexto:", e);
+  });
+
   setInterval(updateStatus, 5 * 60 * 1000);
 }
 

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import unicodedata
+from copy import deepcopy
 from pathlib import Path
 
 from shapely.geometry import Point, mapping, shape
@@ -39,6 +40,16 @@ def _decode_mojibake(value: str | None) -> str:
         return value.encode("latin-1").decode("utf-8")
     except (UnicodeEncodeError, UnicodeDecodeError):
         return value
+
+
+def _feature_with_display_name(feature: dict, name_key: str | None = None) -> dict:
+    """Return a feature copy with decoded display text for map tooltips."""
+    display_feature = deepcopy(feature)
+    properties = display_feature.setdefault("properties", {})
+    key = name_key or _get_municipality_name_key()
+    if key is not None:
+        properties["sv_nome"] = _decode_mojibake(properties.get(key))
+    return display_feature
 
 
 def _load_geojson() -> dict:
@@ -128,6 +139,7 @@ def get_municipality_names() -> list[str]:
 def get_municipality_features(municipios: list[str] | set[str]) -> list[dict]:
     """Return GeoJSON municipality features matching the provided names."""
     features_by_name = _get_municipality_features_by_name()
+    municipality_key = _get_municipality_name_key()
     features = []
     seen_names = set()
     for municipio in municipios:
@@ -136,7 +148,7 @@ def get_municipality_features(municipios: list[str] | set[str]) -> list[dict]:
             continue
         feature = features_by_name.get(normalized_name)
         if feature is not None:
-            features.append(feature)
+            features.append(_feature_with_display_name(feature, municipality_key))
             seen_names.add(normalized_name)
     return features
 
@@ -271,7 +283,11 @@ def get_all_mg_features() -> list[dict]:
     if _ALL_MG_FEATURES_CACHE is not None:
         return _ALL_MG_FEATURES_CACHE
     try:
-        _ALL_MG_FEATURES_CACHE = _load_geojson().get("features", [])
+        municipality_key = _get_municipality_name_key()
+        _ALL_MG_FEATURES_CACHE = [
+            _feature_with_display_name(feature, municipality_key)
+            for feature in _load_geojson().get("features", [])
+        ]
         return _ALL_MG_FEATURES_CACHE
     except Exception as exc:
         print(f"Failed to load all MG features: {exc}")
