@@ -38,6 +38,21 @@ function confidenceLabel(c) {
   return c === "h" ? "Alta (~95%)" : c === "n" ? "Nominal (~75%)" : "Baixa (~35%)";
 }
 
+const SATELLITE_LABELS = {
+  "Terra":   "Terra (MODIS)",
+  "Aqua":    "Aqua (MODIS)",
+  "N":       "NOAA-20 / VIIRS",
+  "N-20":    "NOAA-20 / VIIRS",
+  "NOAA-20": "NOAA-20 / VIIRS",
+  "S":       "Suomi NPP / VIIRS",
+  "NPP":     "Suomi NPP / VIIRS",
+  "INPE":    "INPE Queimadas",
+};
+
+function satelliteLabel(sat) {
+  return SATELLITE_LABELS[sat] || sat || "—";
+}
+
 function formattedDetectionTime(raw) {
   const time = String(raw ?? "").padStart(4, "0");
   const hour = Number(time.slice(0, 2));
@@ -120,6 +135,14 @@ map.getPane("state-boundary-pane").style.zIndex = 450;
 
 let activeLayer = "dark";
 let currentFires = [];
+let showFirms = true;
+let showInpe  = true;
+
+function visibleFires() {
+  return currentFires.filter(f =>
+    f.satellite === "INPE" ? showInpe : showFirms
+  );
+}
 
 const mapLoading = document.getElementById("map-loading");
 const mapLoadingText = document.getElementById("map-loading-text");
@@ -221,7 +244,7 @@ document.querySelectorAll(".layer-btn").forEach(btn => {
     if (ucLayer)           ucLayer.setStyle(s.uc);
 
     // Re-render fire markers with new palette
-    if (currentFires.length > 0) renderFires(currentFires);
+    if (currentFires.length > 0) renderFires(visibleFires());
   });
 });
 
@@ -320,6 +343,10 @@ function buildMarker(event) {
   const frp    = event.frp ?? 0;
   const tier   = frpTier(frp);
   const color  = frpColor(frp);
+  const isInpe = event.satellite === "INPE";
+  const frpCell = isInpe
+    ? "Desconhecido"
+    : `<strong>${frp} MW</strong><br><small>Estimativa da energia/calor emitido pelo fogo no momento da passagem do satélite.</small>`;
 
   const marker = L.marker([event.latitude, event.longitude], {
     icon: createFireIcon(tier),
@@ -333,8 +360,8 @@ function buildMarker(event) {
       <table class="popup-table">
         <tr><td>Data da detecção</td><td>${event.acq_date ?? "—"}<br><small>Dia em que o satélite identificou este foco.</small></td></tr>
         <tr><td>Horário da detecção</td><td>${formattedDetectionTime(event.acq_time)}</td></tr>
-        <tr><td>Potência Radiativa do Fogo (FRP)</td><td><strong>${frp} MW</strong><br><small>Estimativa da energia/calor emitido pelo fogo no momento da passagem do satélite.</small></td></tr>
-        <tr><td>Satélite/sensor</td><td>${event.satellite ?? "—"}<br><small>Plataforma que detectou o foco.</small></td></tr>
+        <tr><td>Potência Radiativa do Fogo (FRP)</td><td>${frpCell}</td></tr>
+        <tr><td>Satélite/sensor</td><td>${satelliteLabel(event.satellite)}<br><small>Plataforma que detectou o foco.</small></td></tr>
         <tr><td>Confiança da detecção</td><td>${confidenceLabel(event.confidence)}</td></tr>
         <tr><td>Lat / Lon</td><td>${Number(event.latitude).toFixed(3)}, ${Number(event.longitude).toFixed(3)}</td></tr>
       </table>
@@ -690,7 +717,7 @@ async function loadCurrentSelection() {
     loadPolygonLayers(unitIds),
   ]);
   currentFires = fires;
-  renderFires(fires);
+  renderFires(visibleFires());
   await updateStatus();
   await checkUcAlerts();
 }
@@ -707,6 +734,19 @@ async function applyFilters(loadingLabel = "Carregando focos de incêndio...") {
     finishLoading();
   }
 }
+
+// ─── Source toggles ───────────────────────────────────────────────────────────
+document.getElementById("source-firms").addEventListener("click", function () {
+  showFirms = !showFirms;
+  this.classList.toggle("active", showFirms);
+  renderFires(visibleFires());
+});
+
+document.getElementById("source-inpe").addEventListener("click", function () {
+  showInpe = !showInpe;
+  this.classList.toggle("active", showInpe);
+  renderFires(visibleFires());
+});
 
 // ─── Refresh button ───────────────────────────────────────────────────────────
 const refreshBtn  = document.getElementById("refresh-btn");

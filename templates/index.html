@@ -22,12 +22,15 @@
     <div class="topbar-meta">
       <div class="meta-item">Última atualização: <strong id="last-updated">—</strong></div>
       <div class="meta-item">Focos ativos: <strong id="total-events">—</strong></div>
-      <div class="meta-item">Satélites ativos: <strong>NASA FIRMS (MODIS/VIIRS)</strong></div>
     </div>
     <div class="topbar-right">
       <div class="layer-switcher">
         <button class="layer-btn active" data-layer="dark">Escuro</button>
         <button class="layer-btn" data-layer="satellite">Satélite</button>
+      </div>
+      <div class="layer-switcher">
+        <button class="layer-btn active" id="source-firms">NASA FIRMS</button>
+        <button class="layer-btn active" id="source-inpe">INPE</button>
       </div>
       <button id="refresh-btn">
         <span id="refresh-icon">↻</span> Atualizar
