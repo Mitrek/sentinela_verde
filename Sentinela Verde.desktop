@@ -1,9 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Sentinela Verde
-Comment=Start the Sentinela Verde web app
-Exec=/home/mitrek/Desktop/Sentinela\ Verde/Sentina\ Verde.sh
-Path=/home/mitrek/Desktop/Sentinela Verde
-Terminal=true
-Icon=utilities-terminal
-Categories=Development;

@@ -56,13 +56,13 @@ def main() -> None:
     parser.add_argument(
         "--source",
         type=Path,
-        default=Path("shapefiles/MG_Municipios_2025.geojson"),
+        default=Path("sentinela_verde/data/geojson/mg_municipios.geojson"),
         help="Full-resolution source municipality GeoJSON.",
     )
     parser.add_argument(
         "--output",
         type=Path,
-        default=Path("static/geojson/mg_municipios_simplified.geojson"),
+        default=Path("sentinela_verde/web/static/geojson/mg_municipios_simplified.geojson"),
         help="Output path for simplified browser GeoJSON.",
     )
     parser.add_argument(

@@ -4,7 +4,7 @@ import json
 
 import anyio
 
-import main
+from sentinela_verde import main
 
 
 def test_api_fires_filters_multiple_units(monkeypatch):

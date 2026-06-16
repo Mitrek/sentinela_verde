@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from shapely.geometry import Polygon
 
-import areas
-import operational_units
+from sentinela_verde.geo import areas
+from sentinela_verde.geo import operational_units
 
 
 def test_get_mg_boundary_feature_returns_state_outline(monkeypatch):

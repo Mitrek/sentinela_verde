@@ -54,7 +54,7 @@ def test_build_simplified_geojson_keeps_identity_and_decoded_name(tmp_path):
 
 
 def test_generated_simplified_geojson_has_all_municipalities():
-    path = Path("static/geojson/mg_municipios_simplified.geojson")
+    path = Path("sentinela_verde/web/static/geojson/mg_municipios_simplified.geojson")
     data = json.loads(path.read_text(encoding="utf-8"))
 
     assert data["type"] == "FeatureCollection"
@@ -63,9 +63,9 @@ def test_generated_simplified_geojson_has_all_municipalities():
 
 
 def test_frontend_declares_context_layer_and_loading_overlay():
-    app_js = Path("static/js/app.js").read_text(encoding="utf-8")
-    index_html = Path("templates/index.html").read_text(encoding="utf-8")
-    style_css = Path("static/css/style.css").read_text(encoding="utf-8")
+    app_js = Path("sentinela_verde/web/static/js/app.js").read_text(encoding="utf-8")
+    index_html = Path("sentinela_verde/web/templates/index.html").read_text(encoding="utf-8")
+    style_css = Path("sentinela_verde/web/static/css/style.css").read_text(encoding="utf-8")
 
     assert "mg_municipios_simplified.geojson" in app_js
     assert "municipalityContextLayer" in app_js

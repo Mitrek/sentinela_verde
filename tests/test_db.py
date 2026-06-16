@@ -3,7 +3,7 @@ from __future__ import annotations
 import sqlite3
 from datetime import UTC, datetime, timedelta
 
-from db import get_all_events, get_recent_events, init_db, insert_fire_events
+from sentinela_verde.db import get_all_events, get_recent_events, init_db, insert_fire_events
 
 
 def sample_event() -> dict:

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from shapely.geometry import Polygon
 
-import conservation_units
+from sentinela_verde.geo import conservation_units
 
 
 def feature(uc_id: str, name: str, coordinates: list[tuple[float, float]]) -> dict:

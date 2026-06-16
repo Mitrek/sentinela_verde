@@ -3,7 +3,7 @@ from __future__ import annotations
 import httpx
 import pytest
 
-from fetcher import FIRMS_SOURCES, fetch_firms_data
+from sentinela_verde.services.firms import FIRMS_SOURCES, fetch_firms_data
 
 
 VIIRS_SAMPLE_CSV = """latitude,longitude,bright_ti4,scan,track,acq_date,acq_time,satellite,confidence,version,bright_ti5,frp,daynight

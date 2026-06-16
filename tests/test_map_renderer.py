@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from shapely.geometry import Polygon
 
-import map_renderer
+from sentinela_verde.geo import map_renderer
 
 
 def polygon_feature(feature_id: str, name: str, coordinates: list[tuple[float, float]]) -> dict:

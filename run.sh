@@ -13,4 +13,4 @@ fi
 cd "$APP_DIR"
 source "$VENV_DIR/bin/activate"
 
-exec uvicorn main:app --reload --host "${HOST:-0.0.0.0}" --port "${PORT:-8000}" "$@"
+exec uvicorn sentinela_verde.main:app --reload --host "${HOST:-0.0.0.0}" --port "${PORT:-8000}" "$@"

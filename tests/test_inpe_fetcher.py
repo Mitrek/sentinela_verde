@@ -3,7 +3,7 @@ from __future__ import annotations
 import httpx
 import pytest
 
-from inpe_fetcher import fetch_inpe_data
+from sentinela_verde.services.inpe import fetch_inpe_data
 
 
 KML_NS = "http://www.opengis.net/kml/2.2"

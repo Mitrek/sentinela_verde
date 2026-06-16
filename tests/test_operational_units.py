@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from areas import _normalize_name, get_municipality_names, load_areas
-import operational_units
+from sentinela_verde.geo import operational_units
+from sentinela_verde.geo.areas import _normalize_name, get_municipality_names, load_areas
 
 
 def test_parse_units_aggregates_hierarchy_and_municipality_lists(monkeypatch):

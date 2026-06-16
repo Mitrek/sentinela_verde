@@ -15,7 +15,7 @@ mkdir -p /opt/fire_catcher
 chown firecatcher:firecatcher /opt/fire_catcher
 
 echo "→ Copying project files to /opt/fire_catcher"
-rsync -av --exclude 'venv' --exclude '.git' ./ /opt/fire_catcher/
+rsync -av --exclude '.venv' --exclude 'venv' --exclude '.git' ./ /opt/fire_catcher/
 chown -R firecatcher:firecatcher /opt/fire_catcher
 
 echo "→ Creating virtualenv and installing requirements"
@@ -23,8 +23,8 @@ sudo -u firecatcher python3.11 -m venv /opt/fire_catcher/venv
 sudo -u firecatcher /opt/fire_catcher/venv/bin/pip install --upgrade pip
 sudo -u firecatcher /opt/fire_catcher/venv/bin/pip install -r /opt/fire_catcher/requirements.txt
 
-echo "→ Creating static output directory"
-sudo -u firecatcher mkdir -p /opt/fire_catcher/static
+echo "→ Creating static asset directory"
+sudo -u firecatcher mkdir -p /opt/fire_catcher/sentinela_verde/web/static
 
 echo "→ Copying .env file"
 if [ -f ".env" ]; then
