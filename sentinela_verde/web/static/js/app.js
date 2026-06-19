@@ -857,6 +857,8 @@ document.addEventListener("keydown", event => {
 const lastUpdatedEl = document.getElementById("last-updated");
 const totalEventsEl = document.getElementById("total-events");
 
+let knownLastFetchAt = null;
+
 function unitsQueryString(unitIds) {
   const params = new URLSearchParams();
   unitIds.forEach(unitId => params.append("units", unitId));
@@ -871,6 +873,13 @@ async function updateStatus() {
     const data = await fetch(url).then(r => r.json());
     lastUpdatedEl.textContent = formattedLastUpdate(data.last_fetch_at);
     totalEventsEl.textContent = data.total_events ?? 0;
+
+    if (knownLastFetchAt !== null && data.last_fetch_at !== knownLastFetchAt) {
+      knownLastFetchAt = data.last_fetch_at;
+      await applyFilters("Novos dados disponíveis...");
+    } else {
+      knownLastFetchAt = data.last_fetch_at;
+    }
   } catch (e) {
     console.error("Erro ao buscar status:", e);
   }
@@ -921,17 +930,11 @@ const refreshBtn  = document.getElementById("refresh-btn");
 const refreshIcon = document.getElementById("refresh-icon");
 
 refreshBtn.addEventListener("click", async () => {
-  const finishLoading = beginLoading("Atualizando dados...");
   refreshIcon.classList.add("spinning");
   try {
-    const res = await fetch("/api/fetch", { method: "POST" });
-    if (!res.ok) throw new Error("fetch failed");
-    await loadCurrentSelection();
-  } catch {
-    showToast("Falha ao buscar novos dados.", "error");
+    await applyFilters("Atualizando dados...");
   } finally {
     refreshIcon.classList.remove("spinning");
-    finishLoading();
   }
 });
 
@@ -1136,7 +1139,7 @@ async function boot() {
     console.error("Erro ao carregar camadas de contexto:", e);
   });
 
-  setInterval(updateStatus, 5 * 60 * 1000);
+  setInterval(updateStatus, 60 * 1000);
 }
 
 boot();

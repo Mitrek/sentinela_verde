@@ -21,12 +21,11 @@ from sentinela_verde.config import (
     INPE_KML_URL,
     REGION_BBOX,
 )
-from sentinela_verde.db import get_all_events, get_recent_events, init_db, insert_fire_events
+from sentinela_verde.db import get_recent_events, init_db, insert_fire_events
 from sentinela_verde.geo.areas import (
     annotate_events_with_municipality,
     filter_events_by_area,
     filter_events_by_mg,
-    get_area_bounds,
     get_area_by_id,
     get_area_geometry,
     get_mg_boundary_feature,
@@ -42,7 +41,6 @@ from sentinela_verde.geo.operational_units import (
     filter_events_by_operational_unit,
     filter_events_by_operational_units,
     get_operational_unit,
-    get_operational_unit_bounds,
     get_operational_unit_features,
     get_operational_unit_geometry,
     get_operational_units_features,
@@ -65,12 +63,7 @@ templates = Jinja2Templates(directory=str(WEB_DIR / "templates"))
 
 
 def _get_map_events(hours: int = 48) -> list[dict]:
-    recent_events = get_recent_events(DB_FILE_PATH, hours=hours)
-    if recent_events:
-        return recent_events
-
-    # TODO: Remove this fallback once live fetches reliably keep the 48h window populated.
-    return get_all_events(DB_FILE_PATH)
+    return get_recent_events(DB_FILE_PATH, hours=hours)
 
 
 def _resolve_selected_units(
@@ -313,40 +306,6 @@ async def api_areas() -> JSONResponse:
 async def api_ucs() -> JSONResponse:
     return JSONResponse(load_ucs())
 
-
-@app.get("/api/debug/area/{area_id}")
-async def api_debug_area(area_id: str) -> JSONResponse:
-    recent_events = get_recent_events(DB_FILE_PATH, hours=48)
-    geometry = get_area_geometry(area_id)
-
-    return JSONResponse(
-        {
-            "total_recent_events": len(recent_events),
-            "total_all_events": len(get_all_events(DB_FILE_PATH)),
-            "sample_event": recent_events[0] if recent_events else None,
-            "geometry_built": geometry is not None,
-            "geometry_bounds": get_area_bounds(area_id) if geometry is not None else None,
-            "events_after_filter": len(filter_events_by_area(recent_events, area_id)),
-        }
-    )
-
-
-@app.get("/api/debug/unit/{unit_id}")
-async def api_debug_unit(unit_id: str) -> JSONResponse:
-    recent_events = get_recent_events(DB_FILE_PATH, hours=48)
-    unit = get_operational_unit(unit_id)
-    geometry = get_operational_unit_geometry(unit_id)
-
-    return JSONResponse(
-        {
-            "unit": unit,
-            "total_recent_events": len(recent_events),
-            "total_all_events": len(get_all_events(DB_FILE_PATH)),
-            "geometry_built": geometry is not None,
-            "geometry_bounds": get_operational_unit_bounds(unit_id) if geometry is not None else None,
-            "events_after_filter": len(filter_events_by_operational_unit(recent_events, unit_id)),
-        }
-    )
 
 
 @app.post("/api/fetch")
