@@ -53,6 +53,11 @@ function satelliteLabel(sat) {
   return SATELLITE_LABELS[sat] || sat || "—";
 }
 
+function detectionSourceLabel(event) {
+  if (event?.satellite === "Teste") return "Teste (Simulado)";
+  return event?.satellite === "INPE" ? "INPE Queimadas" : "NASA FIRMS";
+}
+
 function formattedDetectionTime(raw) {
   const time = String(raw ?? "").padStart(4, "0");
   const hour = Number(time.slice(0, 2));
@@ -64,6 +69,22 @@ function formattedDetectionTime(raw) {
 
   const brasiliaHour = (hour + 21) % 24;
   return `${String(brasiliaHour).padStart(2, "0")}:${minute} (horário de Brasília)`;
+}
+
+function formattedLastUpdate(raw) {
+  if (!raw) return "Nunca";
+
+  const date = new Date(raw);
+  if (Number.isNaN(date.getTime())) return "Nunca";
+
+  const weekday = new Intl.DateTimeFormat("pt-BR", { weekday: "long" }).format(date);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  const hour = String(date.getHours()).padStart(2, "0");
+  const minute = String(date.getMinutes()).padStart(2, "0");
+
+  return `${hour}h${minute}min em ${weekday}, ${day}/${month}/${year}`;
 }
 
 function acquisitionKey(event) {
@@ -139,9 +160,10 @@ let showFirms = true;
 let showInpe  = true;
 
 function visibleFires() {
-  return currentFires.filter(f =>
-    f.satellite === "INPE" ? showInpe : showFirms
-  );
+  return currentFires.filter(f => {
+    if (f.satellite === "Teste") return true;
+    return f.satellite === "INPE" ? showInpe : showFirms;
+  });
 }
 
 const mapLoading = document.getElementById("map-loading");
@@ -228,25 +250,36 @@ function waitForTileLayerReady(layer, timeoutMs = 2500) {
   });
 }
 
-document.querySelectorAll(".layer-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    if (btn.dataset.layer === activeLayer) return;
-    document.querySelectorAll(".layer-btn").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    tileLayers[activeLayer].remove();
-    activeLayer = btn.dataset.layer;
-    tileLayers[activeLayer].addTo(map);
+function setActiveLayer(nextLayer) {
+  if (nextLayer === activeLayer) return;
 
-    // Re-apply polygon styles for new mode
-    const s = STYLES[activeLayer];
-    if (municipalityContextLayer) municipalityContextLayer.setStyle(s.context);
-    if (municipalityLayer) municipalityLayer.setStyle(s.municipality);
-    if (ucLayer)           ucLayer.setStyle(s.uc);
+  tileLayers[activeLayer].remove();
+  activeLayer = nextLayer;
+  tileLayers[activeLayer].addTo(map);
+  document.querySelectorAll(".layer-btn").forEach(button => {
+    button.classList.toggle("active", button.dataset.layer === activeLayer);
+  });
 
-    // Re-render fire markers with new palette
-    if (currentFires.length > 0) renderFires(visibleFires());
+  // Re-apply polygon styles for new mode
+  const s = STYLES[activeLayer];
+  if (municipalityContextLayer) municipalityContextLayer.setStyle(s.context);
+  if (municipalityLayer) municipalityLayer.setStyle(s.municipality);
+  if (ucLayer)           ucLayer.setStyle(s.uc);
+
+  // Re-render fire markers with new palette
+  if (currentFires.length > 0) renderFires(visibleFires());
+}
+
+document.querySelectorAll(".layer-btn").forEach(button => {
+  button.addEventListener("click", () => {
+    setActiveLayer(button.dataset.layer);
   });
 });
+
+function setSwitchState(button, enabled) {
+  button.classList.toggle("active", enabled);
+  button.setAttribute("aria-pressed", enabled ? "true" : "false");
+}
 
 // ─── Polygon layers ───────────────────────────────────────────────────────────
 let stateBoundaryLayer = null;
@@ -339,17 +372,34 @@ async function loadPolygonLayers(unitIds) {
 // ─── Marker management ────────────────────────────────────────────────────────
 const markerLayer = L.layerGroup().addTo(map);
 
+function createTestFireIcon() {
+  const size = 22;
+  return L.divIcon({
+    className: "fire-div-icon",
+    html: `<span class="fire-marker fire-marker--teste"></span>`,
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
+    popupAnchor: [0, -(size / 2)],
+  });
+}
+
 function buildMarker(event) {
   const frp    = event.frp ?? 0;
-  const tier   = frpTier(frp);
-  const color  = frpColor(frp);
   const isInpe = event.satellite === "INPE";
-  const frpCell = isInpe
-    ? "Desconhecido"
-    : `<strong>${frp} MW</strong><br><small>Estimativa da energia/calor emitido pelo fogo no momento da passagem do satélite.</small>`;
+  const isTest = event.satellite === "Teste";
+  const tier   = frpTier(frp);
+  const color  = isTest ? "#9b59b6" : frpColor(frp);
+  const frpCell = isTest
+    ? "Simulado"
+    : isInpe
+      ? "Desconhecido"
+      : `<strong>${frp} MW</strong><br><small>Estimativa da energia/calor emitido pelo fogo no momento da passagem do satélite.</small>`;
+  const testBadge = isTest
+    ? `<div class="popup-test-badge">FOCO DE TESTE</div>`
+    : "";
 
   const marker = L.marker([event.latitude, event.longitude], {
-    icon: createFireIcon(tier),
+    icon: isTest ? createTestFireIcon() : createFireIcon(tier),
   });
 
   marker.bindPopup(`
@@ -357,11 +407,12 @@ function buildMarker(event) {
       <div class="popup-header" style="border-left:3px solid ${color}">
         <span class="popup-tier">Intensidade ${frpLabel(frp)}</span>
       </div>
+      ${testBadge}
       <table class="popup-table">
         <tr><td>Data da detecção</td><td>${event.acq_date ?? "—"}<br><small>Dia em que o satélite identificou este foco.</small></td></tr>
         <tr><td>Horário da detecção</td><td>${formattedDetectionTime(event.acq_time)}</td></tr>
         <tr><td>Potência Radiativa do Fogo (FRP)</td><td>${frpCell}</td></tr>
-        <tr><td>Satélite/sensor</td><td>${satelliteLabel(event.satellite)}<br><small>Plataforma que detectou o foco.</small></td></tr>
+        <tr><td>Fonte de detecção</td><td>${detectionSourceLabel(event)}<br><small>Base que reportou este foco de incêndio.</small></td></tr>
         <tr><td>Confiança da detecção</td><td>${confidenceLabel(event.confidence)}</td></tr>
         <tr><td>Lat / Lon</td><td>${Number(event.latitude).toFixed(3)}, ${Number(event.longitude).toFixed(3)}</td></tr>
       </table>
@@ -381,15 +432,131 @@ function renderFires(fires) {
 }
 
 // ─── Stats panel ─────────────────────────────────────────────────────────────
+const severityCards = {
+  high: document.getElementById("stat-high-card"),
+  mid: document.getElementById("stat-mid-card"),
+  low: document.getElementById("stat-low-card"),
+};
+const severityEmpty = document.getElementById("severity-empty");
+const municipalityList = document.getElementById("municipality-list");
+const municipalityShowAll = document.getElementById("municipality-show-all");
+let municipalitySummaryExpanded = false;
+
+const sidebar = document.getElementById("sidebar");
+const mobileSheetToggle = document.getElementById("mobile-sheet-toggle");
+const sidebarTabs = document.querySelectorAll(".sidebar-tab");
+const sidebarTabPanels = document.querySelectorAll(".sidebar-tab-panel");
+
+function refreshMapSize() {
+  window.setTimeout(() => map.invalidateSize(), 220);
+}
+
+function setMobileSheetExpanded(isExpanded) {
+  if (!sidebar || !mobileSheetToggle) return;
+
+  sidebar.classList.toggle("sidebar-expanded", isExpanded);
+  mobileSheetToggle.setAttribute("aria-expanded", isExpanded ? "true" : "false");
+  refreshMapSize();
+}
+
+function activateSidebarTab(tab) {
+  sidebarTabs.forEach(button => {
+    const isActive = button === tab;
+    button.classList.toggle("active", isActive);
+    button.setAttribute("aria-selected", isActive ? "true" : "false");
+  });
+
+  sidebarTabPanels.forEach(panel => {
+    panel.hidden = panel.id !== tab.getAttribute("aria-controls");
+    panel.classList.toggle("active", !panel.hidden);
+  });
+
+  closeUnitTree();
+}
+
+sidebarTabs.forEach(tab => {
+  tab.addEventListener("click", () => activateSidebarTab(tab));
+});
+
+if (mobileSheetToggle) {
+  mobileSheetToggle.addEventListener("click", () => {
+    setMobileSheetExpanded(!sidebar.classList.contains("sidebar-expanded"));
+  });
+}
+
+function setSeverityCard(tier, count) {
+  const card = severityCards[tier];
+  if (!card) return;
+
+  card.hidden = count === 0;
+  document.getElementById(`stat-${tier}`).textContent = count;
+}
+
+function municipalityCounts(fires) {
+  const counts = new Map();
+  fires.forEach(fire => {
+    const municipality = fire.municipality || "Município não identificado";
+    counts.set(municipality, (counts.get(municipality) || 0) + 1);
+  });
+
+  return [...counts.entries()]
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, "pt-BR"));
+}
+
+function renderMunicipalitySummary(fires) {
+  const municipalities = municipalityCounts(fires);
+  const visibleMunicipalities = municipalitySummaryExpanded
+    ? municipalities
+    : municipalities.slice(0, 5);
+
+  municipalityList.innerHTML = "";
+
+  if (municipalities.length === 0) {
+    const item = document.createElement("li");
+    item.className = "municipality-empty";
+    item.textContent = "Nenhum município afetado";
+    municipalityList.appendChild(item);
+  } else {
+    visibleMunicipalities.forEach(({ name, count }) => {
+      const item = document.createElement("li");
+      item.className = "municipality-item";
+
+      const nameEl = document.createElement("span");
+      nameEl.className = "municipality-name";
+      nameEl.textContent = name;
+      item.appendChild(nameEl);
+
+      const countEl = document.createElement("span");
+      countEl.className = "municipality-count";
+      countEl.textContent = count === 1 ? "1 foco" : `${count} focos`;
+      item.appendChild(countEl);
+
+      municipalityList.appendChild(item);
+    });
+  }
+
+  municipalityShowAll.hidden = municipalities.length <= 5;
+  municipalityShowAll.textContent = municipalitySummaryExpanded ? "Ver menos" : "Ver todos";
+}
+
 function updateStats(fires) {
   const high = fires.filter(f => (f.frp ?? 0) > 100).length;
   const mid  = fires.filter(f => (f.frp ?? 0) > 30 && (f.frp ?? 0) <= 100).length;
   const low  = fires.filter(f => (f.frp ?? 0) <= 30).length;
+
   document.getElementById("stat-total").textContent = fires.length;
-  document.getElementById("stat-high").textContent  = high;
-  document.getElementById("stat-mid").textContent   = mid;
-  document.getElementById("stat-low").textContent   = low;
+  setSeverityCard("high", high);
+  setSeverityCard("mid", mid);
+  setSeverityCard("low", low);
+  severityEmpty.hidden = high + mid + low > 0;
+  renderMunicipalitySummary(fires);
 }
+
+municipalityShowAll.addEventListener("click", () => {
+  municipalitySummaryExpanded = !municipalitySummaryExpanded;
+  renderMunicipalitySummary(visibleFires());
+});
 
 // ─── Nested unit tree ─────────────────────────────────────────────────────────
 const unitTreeRoot = document.getElementById("unit-tree");
@@ -678,6 +845,7 @@ applyFiltersBtn.addEventListener("click", async () => {
 
 document.addEventListener("click", event => {
   if (unitTreeRoot.contains(event.target)) return;
+  if (unitTreePanel.contains(event.target)) return;
   closeUnitTree();
 });
 
@@ -701,7 +869,7 @@ async function updateStatus() {
     const query = unitsQueryString(unitIds);
     const url  = query ? `/api/status?${query}` : "/api/status";
     const data = await fetch(url).then(r => r.json());
-    lastUpdatedEl.textContent = data.last_fetch_at || "Nunca";
+    lastUpdatedEl.textContent = formattedLastUpdate(data.last_fetch_at);
     totalEventsEl.textContent = data.total_events ?? 0;
   } catch (e) {
     console.error("Erro ao buscar status:", e);
@@ -738,13 +906,13 @@ async function applyFilters(loadingLabel = "Carregando focos de incêndio...") {
 // ─── Source toggles ───────────────────────────────────────────────────────────
 document.getElementById("source-firms").addEventListener("click", function () {
   showFirms = !showFirms;
-  this.classList.toggle("active", showFirms);
+  setSwitchState(this, showFirms);
   renderFires(visibleFires());
 });
 
 document.getElementById("source-inpe").addEventListener("click", function () {
   showInpe = !showInpe;
-  this.classList.toggle("active", showInpe);
+  setSwitchState(this, showInpe);
   renderFires(visibleFires());
 });
 

@@ -24,13 +24,20 @@
       <div class="meta-item">Focos ativos: <strong id="total-events">—</strong></div>
     </div>
     <div class="topbar-right">
-      <div class="layer-switcher">
-        <button class="layer-btn active" data-layer="dark">Escuro</button>
-        <button class="layer-btn" data-layer="satellite">Satélite</button>
+      <div class="layer-switcher" role="group" aria-label="Tipo de mapa">
+        <button class="layer-btn active" type="button" data-layer="dark">Escuro</button>
+        <button class="layer-btn" type="button" data-layer="satellite">Satélite</button>
       </div>
-      <div class="layer-switcher">
-        <button class="layer-btn active" id="source-firms">NASA FIRMS</button>
-        <button class="layer-btn active" id="source-inpe">INPE</button>
+      <div class="source-toggle-group" role="group" aria-label="Fontes de detecção">
+        <span class="source-toggle-label">Fontes de detecção</span>
+        <button id="source-firms" class="alarm-toggle topbar-toggle active" type="button" aria-pressed="true">
+          <span class="alarm-toggle-switch" aria-hidden="true"></span>
+          <span>NASA FIRMS</span>
+        </button>
+        <button id="source-inpe" class="alarm-toggle topbar-toggle active" type="button" aria-pressed="true">
+          <span class="alarm-toggle-switch" aria-hidden="true"></span>
+          <span>INPE Queimadas</span>
+        </button>
       </div>
       <button id="refresh-btn">
         <span id="refresh-icon">↻</span> Atualizar
@@ -45,6 +52,17 @@
   <!-- ── Sidebar ───────────────────────────────────────────────────────────── -->
   <aside id="sidebar">
 
+    <button
+      id="mobile-sheet-toggle"
+      class="mobile-sheet-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="sidebar"
+    >
+      <span class="mobile-sheet-handle" aria-hidden="true"></span>
+      <span>Filtros e visão</span>
+    </button>
+
     <div class="sidebar-logo">
       <img src="/static/brasaocbmmg.png" class="sidebar-logo-badge" alt="CBMMG"
            style="background:none;padding:2px;object-fit:contain;">
@@ -54,7 +72,38 @@
       </div>
     </div>
 
+    <div class="sidebar-tabs" role="tablist" aria-label="Painéis da barra lateral">
+      <button
+        id="sidebar-tab-filters"
+        class="sidebar-tab active"
+        type="button"
+        role="tab"
+        aria-selected="true"
+        aria-controls="sidebar-panel-filters"
+      >
+        Filtros
+      </button>
+      <button
+        id="sidebar-tab-vision"
+        class="sidebar-tab"
+        type="button"
+        role="tab"
+        aria-selected="false"
+        aria-controls="sidebar-panel-vision"
+      >
+        Visão
+      </button>
+    </div>
+
     <div class="sidebar-panels">
+
+      <div
+        id="sidebar-panel-vision"
+        class="sidebar-tab-panel"
+        role="tabpanel"
+        aria-labelledby="sidebar-tab-vision"
+        hidden
+      >
 
       <!-- Visão geral -->
       <div class="panel">
@@ -64,59 +113,24 @@
             <div class="stat-value" id="stat-total">—</div>
             <div class="stat-label">Total de focos de incêndio</div>
           </div>
-          <div class="stat-card">
+          <div class="stat-card severity-card" id="stat-high-card">
             <div class="stat-value" style="color:#F48030" id="stat-high">—</div>
             <div class="stat-label"><span class="stat-dot" style="background:#F48030"></span>Alta (&gt;100 MW)</div>
           </div>
-          <div class="stat-card">
+          <div class="stat-card severity-card" id="stat-mid-card">
             <div class="stat-value" style="color:#F68C29" id="stat-mid">—</div>
             <div class="stat-label"><span class="stat-dot" style="background:#F68C29"></span>Moderada</div>
           </div>
-          <div class="stat-card">
+          <div class="stat-card severity-card" id="stat-low-card">
             <div class="stat-value" id="stat-low">—</div>
             <div class="stat-label"><span class="stat-dot" style="background:#F0EBE4;border:1.5px solid #7a6a55"></span>Baixa (≤30 MW)</div>
           </div>
+          <div class="stat-empty" id="severity-empty" hidden>Nenhum foco por severidade</div>
         </div>
-      </div>
-
-      <!-- Filtros -->
-      <div class="panel">
-        <div class="panel-title">Filtros</div>
-        <div class="filter-group">
-          <label class="filter-label" for="unit-tree-trigger">Unidade BM</label>
-          <div class="unit-tree" id="unit-tree">
-            <button
-              id="unit-tree-trigger"
-              class="filter-select unit-tree-trigger filter-control"
-              type="button"
-              aria-expanded="false"
-              aria-controls="unit-tree-panel"
-            >
-              <span id="unit-tree-summary">Carregando unidades...</span>
-            </button>
-
-            <div id="unit-tree-panel" class="unit-tree-panel" hidden>
-              <div class="unit-tree-panel-header">
-                <input
-                  id="unit-tree-search"
-                  class="unit-tree-search filter-control"
-                  type="search"
-                  placeholder="Buscar unidade"
-                  autocomplete="off"
-                />
-              </div>
-              <label class="unit-tree-select-all">
-                <input id="unit-tree-select-all" class="filter-control" type="checkbox" />
-                <span>Selecionar tudo</span>
-              </label>
-              <div id="unit-tree-list" class="unit-tree-list" role="tree"></div>
-              <div class="unit-tree-actions">
-                <button id="apply-filters-btn" class="unit-tree-apply-btn filter-control" type="button">
-                  Aplicar filtros
-                </button>
-              </div>
-            </div>
-          </div>
+        <div class="municipality-summary">
+          <div class="municipality-summary-title">Municípios afetados</div>
+          <ul id="municipality-list" class="municipality-list"></ul>
+          <button id="municipality-show-all" class="municipality-show-all" type="button" hidden>Ver todos</button>
         </div>
       </div>
 
@@ -146,6 +160,58 @@
             <span class="legend-range">≤ 30 MW</span>
           </li>
         </ul>
+      </div>
+
+      </div>
+
+      <div
+        id="sidebar-panel-filters"
+        class="sidebar-tab-panel active"
+        role="tabpanel"
+        aria-labelledby="sidebar-tab-filters"
+      >
+
+        <!-- Filtros -->
+        <div class="panel">
+          <div class="panel-title">Filtros</div>
+          <div class="filter-group">
+            <label class="filter-label" for="unit-tree-trigger">Unidade BM</label>
+            <div class="unit-tree" id="unit-tree">
+              <button
+                id="unit-tree-trigger"
+                class="filter-select unit-tree-trigger filter-control"
+                type="button"
+                aria-expanded="false"
+                aria-controls="unit-tree-panel"
+              >
+                <span id="unit-tree-summary">Carregando unidades...</span>
+              </button>
+
+              <div id="unit-tree-panel" class="unit-tree-panel" hidden>
+                <div class="unit-tree-panel-header">
+                  <input
+                    id="unit-tree-search"
+                    class="unit-tree-search filter-control"
+                    type="search"
+                    placeholder="Buscar unidade"
+                    autocomplete="off"
+                  />
+                </div>
+                <label class="unit-tree-select-all">
+                  <input id="unit-tree-select-all" class="filter-control" type="checkbox" />
+                  <span>Selecionar tudo</span>
+                </label>
+                <div id="unit-tree-list" class="unit-tree-list" role="tree"></div>
+                <div class="unit-tree-actions">
+                  <button id="apply-filters-btn" class="unit-tree-apply-btn filter-control" type="button">
+                    Aplicar filtros
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
     </div><!-- /.sidebar-panels -->

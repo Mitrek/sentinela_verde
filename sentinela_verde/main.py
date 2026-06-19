@@ -23,6 +23,7 @@ from sentinela_verde.config import (
 )
 from sentinela_verde.db import get_all_events, get_recent_events, init_db, insert_fire_events
 from sentinela_verde.geo.areas import (
+    annotate_events_with_municipality,
     filter_events_by_area,
     filter_events_by_mg,
     get_area_bounds,
@@ -50,6 +51,7 @@ from sentinela_verde.geo.operational_units import (
 )
 from sentinela_verde.services.firms import fetch_firms_data, start_scheduler
 from sentinela_verde.services.inpe import fetch_inpe_data
+from sentinela_verde.services.test_fire import get_pending_test_fires, load_and_consume_test_fires
 
 
 last_fetch_at: str | None = None
@@ -184,6 +186,11 @@ async def api_fires(
 ) -> JSONResponse:
     events = get_recent_events(DB_FILE_PATH, hours=hours)
     events = _filter_events_for_units(events, _resolve_selected_units(unit, units))
+    events = annotate_events_with_municipality(events)
+    test_fires = load_and_consume_test_fires()
+    if test_fires:
+        test_fires = annotate_events_with_municipality(test_fires)
+        events = test_fires + events
     return JSONResponse(events)
 
 
@@ -252,6 +259,9 @@ async def api_uc_fire_alerts(
 
     events = get_recent_events(DB_FILE_PATH, hours=48)
     events = _filter_events_for_units(events, _resolve_selected_units(unit, units))
+    pending_test = get_pending_test_fires()
+    if pending_test:
+        events = events + pending_test
 
     return JSONResponse(get_uc_fire_alert_groups(events, after))
 

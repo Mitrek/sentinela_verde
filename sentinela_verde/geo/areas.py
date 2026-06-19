@@ -16,6 +16,7 @@ GEOJSON_PATH = PACKAGE_DIR / "data" / "geojson" / "mg_municipios.geojson"
 _AREAS_CACHE: list[dict] | None = None
 _AREA_GEOMETRY_CACHE: dict[str, object | None] = {}
 _MUNICIPALITY_FEATURES_BY_NAME_CACHE: dict[str, dict] | None = None
+_MUNICIPALITY_GEOMETRIES_CACHE: list[tuple[str, object]] | None = None
 _GEOJSON_CACHE: dict | None = None
 _MUNICIPALITY_KEY_CACHE: str | None = None
 
@@ -135,6 +136,59 @@ def get_municipality_names() -> list[str]:
         if name:
             names.append(_decode_mojibake(name))
     return names
+
+
+def _get_municipality_geometries() -> list[tuple[str, object]]:
+    global _MUNICIPALITY_GEOMETRIES_CACHE
+
+    if _MUNICIPALITY_GEOMETRIES_CACHE is not None:
+        return _MUNICIPALITY_GEOMETRIES_CACHE
+
+    municipality_key = _get_municipality_name_key()
+    if municipality_key is None:
+        _MUNICIPALITY_GEOMETRIES_CACHE = []
+        return _MUNICIPALITY_GEOMETRIES_CACHE
+
+    geometries = []
+    for feature in _load_geojson().get("features", []):
+        properties = feature.get("properties") or {}
+        geometry = feature.get("geometry")
+        name = _decode_mojibake(properties.get(municipality_key))
+        if not name or not geometry:
+            continue
+        try:
+            geometries.append((name, shape(geometry)))
+        except Exception as exc:
+            print(f"Failed to load municipality geometry {name}: {exc}")
+
+    _MUNICIPALITY_GEOMETRIES_CACHE = geometries
+    return _MUNICIPALITY_GEOMETRIES_CACHE
+
+
+def get_municipality_for_point(latitude: float, longitude: float) -> str | None:
+    """Return the MG municipality containing the given point, if one matches."""
+    point = Point(float(longitude), float(latitude))
+    for name, geometry in _get_municipality_geometries():
+        if geometry.covers(point):
+            return name
+    return None
+
+
+def annotate_events_with_municipality(events: list[dict]) -> list[dict]:
+    """Return event copies with a municipality field derived from MG polygons."""
+    annotated_events = []
+    for event in events:
+        annotated_event = dict(event)
+        if "municipality" not in annotated_event:
+            try:
+                annotated_event["municipality"] = get_municipality_for_point(
+                    annotated_event["latitude"],
+                    annotated_event["longitude"],
+                )
+            except (KeyError, TypeError, ValueError):
+                pass
+        annotated_events.append(annotated_event)
+    return annotated_events
 
 
 def get_municipality_features(municipios: list[str] | set[str]) -> list[dict]:
