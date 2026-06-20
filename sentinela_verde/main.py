@@ -107,10 +107,13 @@ async def _fetch_and_store_inpe_async() -> int:
 
 
 async def _periodic_fetch(fetch_fn, interval_seconds: int, label: str) -> None:
+    print(f"[scheduler] {label} task started, interval={interval_seconds}s", flush=True)
     while True:
         await asyncio.sleep(interval_seconds)
+        print(f"[scheduler] {label} fetching", flush=True)
         try:
             await fetch_fn()
+            print(f"[scheduler] {label} done", flush=True)
         except Exception as exc:
             print(f"[scheduler] {label} error: {exc}", flush=True)
 
