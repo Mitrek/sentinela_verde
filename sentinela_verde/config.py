@@ -8,7 +8,7 @@ FIRMS_API_KEY: str = os.getenv("FIRMS_API_KEY", "")
 REGION_BBOX: str   = os.getenv("REGION_BBOX", "-51.5,-23.3,-39.0,-14.0")
 FETCH_DAYS: int    = int(os.getenv("FETCH_DAYS", "1"))
 FETCH_INTERVAL_MINUTES: int = int(os.getenv("FETCH_INTERVAL_MINUTES", "5"))
-DB_PATH: str       = os.getenv("DB_PATH", "fire_catcher.db")
+DB_PATH: str       = os.getenv("DB_PATH", "sentinela_verde.db")
 HOST: str          = os.getenv("HOST", "0.0.0.0")
 PORT: int          = int(os.getenv("PORT", "8000"))
 
