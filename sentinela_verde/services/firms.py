@@ -1,11 +1,9 @@
 from __future__ import annotations
 
-import asyncio
 import csv
 import io
 
 import httpx
-from apscheduler.schedulers.background import BackgroundScheduler
 
 
 FIRMS_SOURCES = ["VIIRS_SNPP_NRT", "VIIRS_NOAA20_NRT", "MODIS_NRT"]
@@ -112,20 +110,3 @@ async def fetch_firms_data(api_key: str, bbox: str, days: int) -> list[dict]:
     return merged_events
 
 
-def start_scheduler(fetch_and_store_fn, interval_minutes: int) -> BackgroundScheduler:
-    """
-    Start APScheduler BackgroundScheduler.
-    Schedule fetch_and_store_fn to run every interval_minutes minutes.
-    fetch_and_store_fn is a sync function (wrap async inside it with asyncio.run).
-    Return the scheduler instance.
-    """
-    scheduler = BackgroundScheduler()
-    scheduler.add_job(
-        fetch_and_store_fn,
-        trigger="interval",
-        minutes=interval_minutes,
-        max_instances=1,
-        coalesce=True,
-    )
-    scheduler.start()
-    return scheduler

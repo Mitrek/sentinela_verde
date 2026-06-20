@@ -5,7 +5,6 @@ from contextlib import asynccontextmanager
 from datetime import UTC, datetime
 from pathlib import Path
 
-from apscheduler.schedulers.background import BackgroundScheduler
 from fastapi import FastAPI, Query, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -47,13 +46,13 @@ from sentinela_verde.geo.operational_units import (
     get_operational_units_geometry,
     load_operational_units,
 )
-from sentinela_verde.services.firms import fetch_firms_data, start_scheduler
+from sentinela_verde.services.firms import fetch_firms_data
 from sentinela_verde.services.inpe import fetch_inpe_data
 from sentinela_verde.services.test_fire import get_pending_test_fires, load_and_consume_test_fires
 
 
 last_fetch_at: str | None = None
-scheduler: BackgroundScheduler | None = None
+_fetch_tasks: list[asyncio.Task] = []
 
 BASE_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = BASE_DIR.parent
@@ -102,42 +101,49 @@ async def _fetch_and_store_async() -> int:
     return inserted_count
 
 
-def fetch_and_store() -> int:
-    return asyncio.run(_fetch_and_store_async())
-
-
 async def _fetch_and_store_inpe_async() -> int:
     events = await fetch_inpe_data(INPE_KML_URL)
     return insert_fire_events(DB_FILE_PATH, events)
 
 
-def fetch_and_store_inpe() -> int:
-    return asyncio.run(_fetch_and_store_inpe_async())
+async def _periodic_fetch(fetch_fn, interval_seconds: int, label: str) -> None:
+    while True:
+        await asyncio.sleep(interval_seconds)
+        try:
+            await fetch_fn()
+        except Exception as exc:
+            print(f"[scheduler] {label} error: {exc}", flush=True)
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    global scheduler
+    global _fetch_tasks
 
     init_db(DB_FILE_PATH)
     await _fetch_and_store_async()
-    scheduler = start_scheduler(fetch_and_store, FETCH_INTERVAL_MINUTES)
+
+    _fetch_tasks = [
+        asyncio.create_task(
+            _periodic_fetch(_fetch_and_store_async, FETCH_INTERVAL_MINUTES * 60, "FIRMS"),
+            name="firms-fetch",
+        )
+    ]
 
     if INPE_ENABLED:
         await _fetch_and_store_inpe_async()
-        scheduler.add_job(
-            fetch_and_store_inpe,
-            trigger="interval",
-            minutes=INPE_FETCH_INTERVAL_MINUTES,
-            max_instances=1,
-            coalesce=True,
+        _fetch_tasks.append(
+            asyncio.create_task(
+                _periodic_fetch(_fetch_and_store_inpe_async, INPE_FETCH_INTERVAL_MINUTES * 60, "INPE"),
+                name="inpe-fetch",
+            )
         )
 
     try:
         yield
     finally:
-        if scheduler is not None:
-            scheduler.shutdown(wait=False)
+        for task in _fetch_tasks:
+            task.cancel()
+        await asyncio.gather(*_fetch_tasks, return_exceptions=True)
 
 
 app = FastAPI(lifespan=lifespan)
@@ -277,7 +283,7 @@ async def api_status(
         {
             "last_fetch_at": last_fetch_at,
             "total_events": len(events),
-            "scheduler_running": bool(scheduler and scheduler.running),
+            "scheduler_running": any(not t.done() for t in _fetch_tasks),
         }
     )
 
