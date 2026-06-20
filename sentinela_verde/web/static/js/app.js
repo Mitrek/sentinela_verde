@@ -1108,6 +1108,34 @@ alertAckBtn.addEventListener("click", () => {
   showToast("Alerta reconhecido. Alarme de UC desligado.", "info");
 });
 
+// ─── Infographic modal ────────────────────────────────────────────────────────
+const infographicModal   = document.getElementById("infographic-modal");
+const infographicClose   = document.getElementById("infographic-close");
+const infographicBackdrop = infographicModal.querySelector(".infographic-backdrop");
+const helpBtn            = document.getElementById("help-btn");
+
+function openInfographic() {
+  infographicModal.classList.add("show");
+  infographicModal.setAttribute("aria-hidden", "false");
+  infographicClose.focus();
+}
+
+function closeInfographic() {
+  infographicModal.classList.remove("show");
+  infographicModal.setAttribute("aria-hidden", "true");
+  helpBtn.focus();
+}
+
+helpBtn.addEventListener("click", openInfographic);
+infographicClose.addEventListener("click", closeInfographic);
+infographicBackdrop.addEventListener("click", closeInfographic);
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && infographicModal.classList.contains("show")) {
+    closeInfographic();
+  }
+});
+
 // ─── Boot ─────────────────────────────────────────────────────────────────────
 async function boot() {
   await waitForTileLayerReady(tileLayers.dark);

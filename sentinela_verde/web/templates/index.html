@@ -46,6 +46,12 @@
         <span class="alarm-toggle-switch" aria-hidden="true"></span>
         <span id="uc-alarm-toggle-label">Ativar alarme de incêndio em UC</span>
       </button>
+      <button
+        id="help-btn"
+        type="button"
+        aria-label="Como funciona a detecção de incêndios"
+        title="Como funciona a detecção?"
+      >?</button>
     </div>
   </header>
 
@@ -257,6 +263,18 @@
     </dl>
     <button id="uc-alert-ack" class="alert-ack-btn" type="button">Reconhecer alerta</button>
   </section>
+</div>
+
+<div id="infographic-modal" class="infographic-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Como funciona a detecção de incêndios">
+  <div class="infographic-backdrop"></div>
+  <div class="infographic-panel">
+    <button id="infographic-close" class="infographic-close" type="button" aria-label="Fechar">✕</button>
+    <img
+      src="/static/infographic/infographic.jpg"
+      alt="Infográfico: como funciona a detecção de incêndios no Sentinela Verde"
+      class="infographic-img"
+    />
+  </div>
 </div>
 
 <div id="toast"></div>
