@@ -74,13 +74,13 @@ async def _fetch_source_data(
         response = await client.get(url)
         response.raise_for_status()
     except httpx.HTTPError as exc:
-        print(f"Failed to fetch FIRMS data from {source}: {exc}")
+        print(f"[FIRMS] fetch error from {source}: {exc}", flush=True)
         return []
 
     try:
         return _parse_csv(response.text)
     except (ValueError, TypeError) as exc:
-        print(f"Failed to parse FIRMS CSV from {source}: {exc}")
+        print(f"[FIRMS] parse error from {source}: {exc}", flush=True)
         return []
 
 

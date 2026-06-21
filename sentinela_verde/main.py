@@ -94,9 +94,11 @@ def _filter_events_for_units(events: list[dict], selected_units: list[str]) -> l
 async def _fetch_and_store_async() -> int:
     global last_fetch_at
 
-    events = await fetch_firms_data(FIRMS_API_KEY, REGION_BBOX, FETCH_DAYS)
-    inserted_count = insert_fire_events(DB_FILE_PATH, events)
-    last_fetch_at = datetime.now(UTC).isoformat()
+    try:
+        events = await fetch_firms_data(FIRMS_API_KEY, REGION_BBOX, FETCH_DAYS)
+        inserted_count = insert_fire_events(DB_FILE_PATH, events)
+    finally:
+        last_fetch_at = datetime.now(UTC).isoformat()
 
     return inserted_count
 
